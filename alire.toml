@@ -1,0 +1,19 @@
+name = "libmold"
+description = "Meta-variable Operations for Lean Development (lib)"
+version = "0.1.0-dev"
+
+authors = ["Francesc Rocher"]
+maintainers = ["Francesc Rocher <francesc.rocher@gmail.com>"]
+maintainers-logins = ["rocher"]
+
+licenses = "MIT"
+
+[build-profiles]
+"libmold" = "development"
+
+[build-switches."*"]
+ada_version = ["-gnat2022", "-gnatX"]
+
+[[depends-on]]
+ada_toml = "~0.3.0"
+simple_logging = "^1.2.0"
