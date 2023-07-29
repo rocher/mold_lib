@@ -18,7 +18,7 @@ package Mold is
 
    type Settings_Type is record
       Source_Template : Boolean;
-      Delete          : Boolean;
+      Delete_Source   : Boolean;
       Overwrite       : Boolean;
       Action          : Undef_Var_Action;
       Alert           : Undef_Var_Alert;
@@ -30,7 +30,7 @@ package Mold is
    --!pp off
    (
       Source_Template => True,
-      Delete          => True,
+      Delete_Source   => True,
       Overwrite       => False,
       Action          => Ignore,
       Alert           => Warning,
@@ -43,6 +43,7 @@ package Mold is
    (
       Files,
       Renamed,
+      Overwritten,
       Variables,
       Defined,
       Undefined,
@@ -88,9 +89,9 @@ package Mold is
    --  names must follow TOML convention. See https://toml.io for more
    --  information.
    --
-   --  If Delete is true, then all Source files are removed once the variable
-   --  substitution has been completed successfully, otherwise Source files
-   --  are kept for future uses (possibly because a different file is
+   --  If Delete_Source is true, then all Source files are removed once the
+   --  variable substitution has been completed successfully, otherwise Source
+   --  files are kept for future uses (possibly because a different file is
    --  generated each time mold is applied). If Overwrite is True, then
    --  destination files are overwritten, if exists.
    --
@@ -132,13 +133,14 @@ package Mold is
    --  results that, when not null, holds this information:
    --
    --     Files       : files processed
-   --     Renamed     : template file names with variables substituted
-   --     Variables   : variables found in mold files
-   --     Defined     : variables with a defined value in Definitions files
-   --     Undefined   : variables with undefined value
-   --     Substituted : variables substituted with a defined value
+   --     Renamed     : template file names with variables replaced
+   --     Overwritten : existing destination files overwritten
+   --     Variables   : total number of variables found in all processed files
+   --     Defined     : variables with a defined value in Definitions file
+   --     Undefined   : substitutions found with undefined value
+   --     Replaced    : variables replaced with a defined value
    --     Ignored     : undefined variables ignored
-   --     Emptied     : undefined variables substituted with ""
+   --     Emptied     : undefined variables replaced with ""
    --     Warnings    : warnings issued during variable substitution
    --     Errors      : errors issued during variable substitution
    --
@@ -150,22 +152,36 @@ package Mold is
    --  Examples with defined variable foo="bar" and variable baz undefined:
    --
    --  ------------------------------------------------------------------------
-   --  Kind       Action   Alert    Origin      Replaced   Error Type
+   --  Kind       Action   Alert    Origin      Replaced   Log      r i e W E
    --  ------------------------------------------------------------------------
-   --  Normal     <any>    <any>    "{{foo}}"   "bar"      None
+   --  Normal     <any>    <any>    "{{foo}}"   "bar"      None     T F F F F
 
-   --  Normal     Ignore   None     "{{baz}}"   "{{baz}}"  None
-   --  Normal     Ignore   Warning  "{{baz}}"   "{{baz}}"  Warning <-- DEFAULT
+   --  Normal     Ignore   None     "{{baz}}"   "{{baz}}"  None     F T F F F
+   --  Normal     Ignore   Warning  "{{baz}}"   "{{baz}}"  Warning  F T F T F
    --
-   --  Normal     Empty    None     "{{baz}}"   ""         None
-   --  Normal     Empty    Warning  "{{baz}}"   ""         Warning
+   --  Normal     Empty    None     "{{baz}}"   ""         None     F F T F F
+   --  Normal     Empty    Warning  "{{baz}}"   ""         Warning  F F T T F
    --
-   --  Optional   --       --       "{{?foo}}"  "bar"      None
-   --  Optional   --       --       "{{?baz}}"  ""         None
+   --  Optional   --       --       "{{?foo}}"  "bar"      None     T F F F F
+   --  Optional   --       --       "{{?baz}}"  ""         None     F F T F F
    --
-   --  Mandatory  --       --       "{{#foo}}"  "bar"      None
-   --  Mandatory  --       --       "{{#baz}}"  "{{#baz}}" Error
+   --  Mandatory  --       --       "{{#foo}}"  "bar"      None     T F F F F
+   --  Mandatory  --       --       "{{#baz}}"  "{{#baz}}" Error    F T F F T
    --  ------------------------------------------------------------------------
+   --
+   --  Meaning of columns 'sieWE': each one can take value True or False
+   --
+   --     'r' : replaced with a defined value
+   --     'i' : ignored (not replaced)
+   --     'e' : emptied (removed)
+   --     'W' : warning issued
+   --     'E' : error issued
+   --
+   --  Caveat:
+   --     * Use optional variables to replace them with a defined value, or to
+   --       simply remove them when not defined
+   --     * Use mandatory variables to ensure that a variable has been always
+   --       defined with a proper value
    --
    --  NOTE: This function is not thread-safe; use a single call each time or
    --  protect function execution when using tasks.

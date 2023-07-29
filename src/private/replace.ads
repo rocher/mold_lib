@@ -12,7 +12,7 @@ with Ada.Strings.Unbounded.Hash;
 
 with Mold;
 
-package Subs is
+package Replace is
 
    package Variables_Package is new Hashed_Maps
      (Key_Type => Unbounded_String, Element_Type => Unbounded_String,
@@ -28,7 +28,7 @@ package Subs is
    --  Variables_Map object.
    --  ------------------------------------------------------------------------
 
-   function Replace
+   function Apply
    --!pp off
    (
       Source    : String;
@@ -48,7 +48,4 @@ package Subs is
    --  Return the number of errors detected.
    --  ------------------------------------------------------------------------
 
-   procedure Inc (Results : Mold.Results_Access; Field : Mold.Field_Type);
-   --  Increment results field.
-
-end Subs;
+end Replace;

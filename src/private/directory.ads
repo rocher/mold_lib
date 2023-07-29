@@ -7,7 +7,7 @@
 -------------------------------------------------------------------------------
 
 with Mold;
-with Subs;
+with Replace;
 
 package Directory is
 
@@ -15,7 +15,7 @@ package Directory is
    --!pp off
    (
       Name      : String;
-      Variables : Subs.Variables_Access;
+      Variables : Replace.Variables_Access;
       Settings  : Mold.Settings_Access;
       Results   : Mold.Results_Access
    )

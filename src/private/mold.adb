@@ -9,7 +9,7 @@
 with Ada.Directories;
 with Simple_Logging;
 
-with Subs;
+with Replace;
 
 package body Mold is
 
@@ -18,8 +18,8 @@ package body Mold is
 
    use all type Dir.File_Kind;
 
-   Global_Variables : aliased Subs.Variables_Map;
-   Global_Errors           : Natural;
+   Global_Variables : aliased Replace.Variables_Map;
+   Global_Errors    : Natural;
 
    ---------
    -- Run --
@@ -66,7 +66,7 @@ package body Mold is
          goto Finalize_Function;
       end if;
 
-      Global_Variables := Subs.Read_Variables_Map (Definitions, Results);
+      Global_Variables := Replace.Read_Variables_Map (Definitions, Results);
       if Global_Variables.Is_Empty then
          Log.Error ("Could not load a valid set of variables");
          Global_Errors := 1;
@@ -74,7 +74,7 @@ package body Mold is
       end if;
 
       Global_Errors :=
-        Subs.Replace (Source, Global_Variables'Access, Settings, Results);
+        Replace.Apply (Source, Global_Variables'Access, Settings, Results);
       Global_Variables.Clear;
 
       <<Finalize_Function>>

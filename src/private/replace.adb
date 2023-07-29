@@ -13,25 +13,15 @@ with Simple_Logging;
 
 with Directory;
 with File;
+with Results; use Results;
 
-package body Subs is
+package body Replace is
 
    package Dir renames Ada.Directories;
    package Log renames Simple_Logging;
 
    use all type Dir.File_Kind;
    use all type Mold.Results_Access;
-
-   ---------
-   -- Inc --
-   ---------
-
-   procedure Inc (Results : Mold.Results_Access; Field : Mold.Field_Type) is
-   begin
-      if Results /= null then
-         Results.all (Field) := @ + 1;
-      end if;
-   end Inc;
 
    ------------------------
    -- Read_Variables_Map --
@@ -50,18 +40,23 @@ package body Subs is
       if Read_Result.Success then
          for Element of Read_Result.Value.Iterate_On_Table loop
             Vars.Include (Element.Key, Element.Value.As_Unbounded_String);
-            Inc (Results, Mold.Variables);
+            Log.Debug
+              ("defined var " & To_String (Element.Key) & " = " &
+               Element.Value.As_String);
+            Inc (Results, Mold.Defined);
          end loop;
+      else
+         Log.Debug ("Error reading definitions file");
       end if;
 
       return Vars;
    end Read_Variables_Map;
 
-   -------------
-   -- Replace --
-   -------------
+   -----------
+   -- Apply --
+   -----------
 
-   function Replace
+   function Apply
    --!pp off
    (
       Source    : String;
@@ -82,6 +77,6 @@ package body Subs is
       end if;
 
       return Errors;
-   end Replace;
+   end Apply;
 
-end Subs;
+end Replace;

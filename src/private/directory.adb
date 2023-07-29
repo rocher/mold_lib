@@ -26,7 +26,7 @@ package body Directory is
    --!pp off
    (
       Name      : String;
-      Variables : Subs.Variables_Access;
+      Variables : Standard.Replace.Variables_Access;
       Settings  : Mold.Settings_Access;
       Results   : Mold.Results_Access
    )
