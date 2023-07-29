@@ -1,6 +1,9 @@
 name = "libmold"
-description = "Meta-variable Operations for Lean Development (lib)"
 version = "0.1.0-dev"
+tags = ["template", "repository"]
+
+description = "Meta-variable Operations for Lean Development (lib)"
+long-description = "\nMOLD : Meta-variable Operations for Lean Development (lib)\n==========================================================\n\nMold is a library to work with repository templates. For example, you can\nhave a repository in GitHub that is used as a template to create new,\ncustomized repositories for other users.\nAll template files end with the extension '.mold', for example 'README.md.mold'.\nTemplate variables are written as '{{variable}}'.\n\nMold replaces all variables in all template files with the corresponsding value.\nVariable values are defined in a simple TOML file (no arrays allowed) with a\n'variable = value' definition per line.\n\nMold applies the variable substitution in all template files, recursively in\nall directories. Newly created files don't have the '.mold'\nextension. If a file is specified, then the operaton is applied only to that file."
 
 authors = ["Francesc Rocher"]
 maintainers = ["Francesc Rocher <francesc.rocher@gmail.com>"]
@@ -16,4 +19,5 @@ ada_version = ["-gnat2022", "-gnatX"]
 
 [[depends-on]]
 ada_toml = "~0.3.0"
+gnat = ">=2021 | (>=12 & <2000)"
 simple_logging = "^1.2.0"

@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 --
---  MOLD - Meta-variable Operations for Lean Development (lib)
+--  Mold - Meta-variable Operations for Lean Development (lib)
 --  Copyright (c) 2023 Francesc Rocher <francesc.rocher@gmail.com>
 --  SPDX-License-Identifier: MIT
 --
@@ -19,12 +19,36 @@ package Subs is
       Hash => Ada.Strings.Unbounded.Hash, Equivalent_Keys => "=", "=" => "=");
 
    subtype Variables_Map is Variables_Package.Map;
+   type Variables_Access is access all Variables_Map;
 
-   function Read_Variables_Map (Vars_File : String) return Variables_Map;
+   function Read_Variables_Map
+     (Vars_File : String; Results : Mold.Results_Access) return Variables_Map;
+   --
+   --  Read all variables definition of the given TOML Vars_File. Return a
+   --  Variables_Map object.
+   --  ------------------------------------------------------------------------
 
    function Replace
-     (Destination : String; Variables : Variables_Map;
-      Action      : Mold.Undefined_Variable_Action;
-      Alert       : Mold.Undefined_Variable_Alert) return Natural;
+   --!pp off
+   (
+      Source    : String;
+      Variables : Variables_Access;
+      Settings  : Mold.Settings_Access;
+      Results   : Mold.Results_Access
+   )
+   --!pp on
+
+      return Natural;
+   --
+   --  Replace all occurrences of variables defined in Variables in all files
+   --  with extension "mold" in the Source file or directory. For all
+   --  directories found, apply the same operation except for ".", ".." and
+   --  ".git" directories.
+   --
+   --  Return the number of errors detected.
+   --  ------------------------------------------------------------------------
+
+   procedure Inc (Results : Mold.Results_Access; Field : Mold.Field_Type);
+   --  Increment results field.
 
 end Subs;
