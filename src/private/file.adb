@@ -264,7 +264,7 @@ package body File is
 
          For_Each_Line :
          loop
-            exit when Src_File.End_Of_File;
+            exit For_Each_Line when Src_File.End_Of_File;
             Line_Number := @ + 1;
             declare
                Line     : constant String := Src_File.Get_Line;
