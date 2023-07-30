@@ -91,6 +91,10 @@ package body File is
 
                Is_Undefined : constant Boolean := (Var_Value = "");
             begin
+               Log.Debug ("Pre_Name : '" & Pre_Name & "'");
+               Log.Debug ("Var_Name : '" & Var_Name & "'");
+               Log.Debug ("Var_Value: '" & Var_Value & "'");
+
                New_Name.Append (Pre_Name);
                if Is_Undefined then
                   Errors := @ + 1;
@@ -229,15 +233,17 @@ package body File is
       begin
          Inc (Results, Mold.Files);
 
-         Log.Debug ("Dst_File_Name : " & Dst_File_Name);
-         Log.Debug ("New_File_Name : " & New_File_Name);
-         Log.Debug ("Full_File_Name: " & Full_File_Name);
-
          if Dst_File_Name /= New_File_Name then
             --  file name has variables successfully replaced
             Inc (Results, Mold.Renamed);
             Dst_File_Access := New_File_Name'Unrestricted_Access;
          end if;
+
+         Log.Debug ("Src_File_Name  : " & Name);
+         Log.Debug ("Dst_File_Name  : " & Dst_File_Name);
+         Log.Debug ("New_File_Name  : " & New_File_Name);
+         Log.Debug ("Full_File_Name : " & Full_File_Name);
+         Log.Debug ("Dst_File_Access: " & Dst_File_Access.all);
 
          --  open source file
          Src_File.Open (IO.In_File, Name);
