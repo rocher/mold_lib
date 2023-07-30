@@ -58,10 +58,6 @@ package body Directory is
             if Name'Length > 0 and then Name /= "." and then Name /= ".."
               and then Name /= ".git"
             then
-               Log.Debug ("entry name      = '" & Name & "'");
-               Log.Debug ("entry basename  = '" & Base_Name & "'");
-               Log.Debug ("entry extension = '" & Extension & "'");
-
                if Element.Kind = Dir.Directory then
                   Errors := Replace (Name, Variables, Settings, Results);
                elsif Extension = "mold" then
