@@ -25,13 +25,12 @@ package body Directory is
    function Replace
    --!pp off
    (
-      Name      : String;
-      Variables : Standard.Replace.Variables_Access;
-      Settings  : Mold.Settings_Access;
-      Results   : Mold.Results_Access
+      Name      : aliased  String;
+      Variables : not null Standard.Replace.Variables_Access;
+      Settings  : not null Mold.Settings_Access;
+      Results   :          Mold.Results_Access := null
    )
    --!pp on
-
       return Natural
    is
       Errors  : Natural         := 0;
@@ -51,8 +50,8 @@ package body Directory is
          exit when not Result.More_Entries;
          Result.Get_Next_Entry (Element);
          declare
-            Name      : constant String := Element.Simple_Name;
-            Extension : constant String := Dir.Extension (Name);
+            Name      : aliased constant String := Element.Simple_Name;
+            Extension : constant String         := Dir.Extension (Name);
          begin
             if Name'Length > 0 and then Name /= "." and then Name /= ".."
               and then Name /= ".git"

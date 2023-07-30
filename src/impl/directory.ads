@@ -14,14 +14,13 @@ package Directory is
    function Replace
    --!pp off
    (
-      Name      : String;
-      Variables : Replace.Variables_Access;
-      Settings  : Mold.Settings_Access;
-      Results   : Mold.Results_Access
+      Name      : aliased  String;
+      Variables : not null Replace.Variables_Access;
+      Settings  : not null Mold.Settings_Access;
+      Results   :          Mold.Results_Access := null
    )
    --!pp on
-
-      return Natural;
+   return Natural;
    --
    --  Recursively apply variable substitution to all files with extension
    --  "mold" in all sub-directories, starting at directory Name. Return the

@@ -30,12 +30,17 @@ package body Mold is
    (
       Source      : String          := ".";
       Definitions : String          := "mold.toml";
-      Settings    : Settings_Access := Default_Settings'Access;
-      Results     : Results_Access   := null
+      Settings    : Settings_Access := null;
+      Results     : Results_Access  := null
    )
    --!pp on
-   return Natural
+
+      return Natural
    is
+
+      Used_Settings : constant Settings_Access :=
+        (if Settings = null then Default_Settings'Access else Settings);
+
    begin
       if Results /= null then
          Results.all := [others => 0];
@@ -67,7 +72,7 @@ package body Mold is
       end if;
 
       Global_Variables :=
-        Replace.Read_Variables_Map (Definitions, Settings, Results);
+        Replace.Read_Variables_Map (Definitions, Used_Settings, Results);
       if Global_Variables.Is_Empty then
          Log.Error ("Could not load a valid set of variables");
          Global_Errors := 1;
@@ -75,7 +80,8 @@ package body Mold is
       end if;
 
       Global_Errors :=
-        Replace.Apply (Source, Global_Variables'Access, Settings, Results);
+        Replace.Apply
+          (Source, Global_Variables'Access, Used_Settings, Results);
       Global_Variables.Clear;
 
       <<Finalize_Function>>

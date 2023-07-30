@@ -24,13 +24,12 @@ package Replace is
    function Read_Variables_Map
    --!pp off
    (
-      Vars_File : String;
-      Settings  : Mold.Settings_Access;
-      Results   : Mold.Results_Access
+      Vars_File :          String;
+      Settings  : not null Mold.Settings_Access;
+      Results   :          Mold.Results_Access := null
    )
    --!pp on
-
-return Variables_Map;
+   return Variables_Map;
    --
    --  Read all variables definition of the given TOML Vars_File. Return a
    --  Variables_Map object.
@@ -39,14 +38,13 @@ return Variables_Map;
    function Apply
    --!pp off
    (
-      Source    : String;
-      Variables : Variables_Access;
-      Settings  : Mold.Settings_Access;
-      Results   : Mold.Results_Access
+      Source    :          String;
+      Variables : not null Variables_Access;
+      Settings  : not null Mold.Settings_Access;
+      Results   :          Mold.Results_Access := null
    )
    --!pp on
-
-      return Natural;
+   return Natural;
    --
    --  Replace all occurrences of variables defined in Variables in all files
    --  with extension "mold" in the Source file or directory. For all

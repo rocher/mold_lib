@@ -61,13 +61,14 @@ package Mold is
    function Apply
    --!pp off
    (
-      Source      : String := ".";
-      Definitions : String := "mold.toml";
-      Settings    : Settings_Access := Default_Settings'Access;
-      Results     : Results_Access := null
+      Source      : String          := ".";
+      Definitions : String          := "mold.toml";
+      Settings    : Settings_Access := null;
+      Results     : Results_Access  := null
    )
    --!pp on
-   return Natural;
+
+      return Natural;
    --
    --  Given Source, a file or directory, applies all variable substitution
    --  defined in Definitions file. If Source is a Directory, then

@@ -28,10 +28,14 @@ package body Replace is
    ----------------------
 
    function Set_Mold_Setting
-     (Key, Value : String; Settings : Mold.Settings_Access) return Boolean
+     (Key, Value : String; Settings : not null Mold.Settings_Access)
+      return Boolean
    is
-
       Success : Boolean := True;
+
+      -----------------
+      -- Set_Boolean --
+      -----------------
 
       procedure Set_Boolean
         (Variable : not null access Boolean; Value : String)
@@ -90,8 +94,14 @@ package body Replace is
    ------------------------
 
    function Read_Variables_Map
-     (Vars_File : String; Settings : Mold.Settings_Access;
-      Results   : Mold.Results_Access) return Variables_Map
+   --!pp off
+   (
+      Vars_File :          String;
+      Settings  : not null Mold.Settings_Access;
+      Results   :          Mold.Results_Access := null
+   )
+   --!pp on
+      return Variables_Map
    is
       use Variables_Package;
 
@@ -132,21 +142,21 @@ package body Replace is
    function Apply
    --!pp off
    (
-      Source    : String;
-      Variables : Variables_Access;
-      Settings  : Mold.Settings_Access;
-      Results   : Mold.Results_Access
+      Source    :          String;
+      Variables : not null Variables_Access;
+      Settings  : not null Mold.Settings_Access;
+      Results   :          Mold.Results_Access := null
    )
    --!pp on
-
       return Natural
    is
-      Errors : Natural := 0;
+      Name   : aliased constant String := Source;
+      Errors : Natural                 := 0;
    begin
-      if Dir.Kind (Source) = Dir.Ordinary_File then
-         Errors := File.Replace (Source, Variables, Settings, Results);
+      if Dir.Kind (Name) = Dir.Ordinary_File then
+         Errors := File.Replace (Name, Variables, Settings, Results);
       else
-         Errors := Directory.Replace (Source, Variables, Settings, Results);
+         Errors := Directory.Replace (Name, Variables, Settings, Results);
       end if;
 
       return Errors;
