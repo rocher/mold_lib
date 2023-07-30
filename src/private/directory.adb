@@ -52,7 +52,6 @@ package body Directory is
          Result.Get_Next_Entry (Element);
          declare
             Name      : constant String := Element.Simple_Name;
-            Base_Name : constant String := Dir.Base_Name (Name);
             Extension : constant String := Dir.Extension (Name);
          begin
             if Name'Length > 0 and then Name /= "." and then Name /= ".."
