@@ -54,9 +54,14 @@ package body Replace is
 
    begin
       case Key is
-         when "mold-source-template" | "mold-delete-source" | "mold-overwrite"
-           | "mold-abort-on-error" =>
+         when "mold-source-template" =>
             Set_Boolean (Settings.Source_Template'Access, Value);
+         when "mold-delete-source" =>
+            Set_Boolean (Settings.Delete_Source'Access, Value);
+         when "mold-overwrite" =>
+            Set_Boolean (Settings.Overwrite'Access, Value);
+         when "mold-abort-on-error" =>
+            Set_Boolean (Settings.Abort_On_Error'Access, Value);
 
          when "mold-action" =>
             case Value is
@@ -85,6 +90,10 @@ package body Replace is
             Log.Error ("Invalid setting key in " & Key & " = " & Value);
             Success := False;
       end case;
+
+      if Success then
+         Log.Info ("Setting applied " & Key & " = " & Value);
+      end if;
 
       return Success;
    end Set_Mold_Setting;
