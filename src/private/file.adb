@@ -224,8 +224,7 @@ package body File is
               Replace_In_File_Name (Dst_File_Name)
             else Dst_File_Name);
 
-         Full_File_Name : constant String := Dir.Full_Name (New_File_Name);
-
+         Full_File_Name  : constant String := Dir.Full_Name (New_File_Name);
          Dst_File_Access : String_Access := Dst_File_Name'Unrestricted_Access;
 
          Src_File : IO.File_Type;
@@ -254,17 +253,16 @@ package body File is
                Log.Warning ("Overwriting file " & Dst_File_Access.all);
                Inc (Results, Mold.Warnings);
                Dir.Delete_File (Dst_File_Name);
-               Dst_File.Create (Name => Dst_File_Access.all);
                Inc (Results, Mold.Overwritten);
             else
                Log.Error ("File " & Dst_File_Access.all & " already exists");
                Errors := @ + 1;
                return Errors;
             end if;
-         else
-            Dst_File.Open (IO.Out_File, Dst_File_Name);
          end if;
+         Dst_File.Create (Name => Dst_File_Access.all);
 
+         For_Each_Line :
          loop
             exit when Src_File.End_Of_File;
             Line_Number := @ + 1;
@@ -278,6 +276,8 @@ package body File is
                end if;
                Dst_File.Put_Line (New_Line);
             end;
+         end loop For_Each_Line;
+
          <<Exit_Function>>
 
          Dst_File.Close;
@@ -287,17 +287,16 @@ package body File is
             Dir.Delete_File (Name);
          end if;
 
+         return Errors;
+
       exception
-         --  file name with replaced variables is an invalid file name
+         --  file name with replaced variables yields an invalid file name
          when Dir.Name_Error =>
             Errors := @ + 1;
             Log.Error
-              ("Invalid variable replacement in file name: '" & New_File_Name &
-               "'");
+              ("Invalid replacement in file name: '" & New_File_Name & "'");
             return Errors;
       end;
-
-      return Errors;
    end Replace;
 
 begin
