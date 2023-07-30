@@ -255,7 +255,7 @@ package body File is
                begin
                   Log.Debug ("Include file " & Full_Name);
 
-                  if Extension /= Mold.Mold_Include_File_Extension then
+                  if Extension /= Mold.Include_File_Extension then
                      Log.Error
                        ("Invalid extension of include file " & Inc_Name);
                      Global.Errors := @ + 1;
