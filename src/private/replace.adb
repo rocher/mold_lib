@@ -23,12 +23,75 @@ package body Replace is
    use all type Dir.File_Kind;
    use all type Mold.Results_Access;
 
+   ----------------------
+   -- Set_Mold_Setting --
+   ----------------------
+
+   function Set_Mold_Setting
+     (Key, Value : String; Settings : Mold.Settings_Access) return Boolean
+   is
+
+      Success : Boolean := True;
+
+      procedure Set_Boolean
+        (Variable : not null access Boolean; Value : String)
+      is
+      begin
+         case Value is
+            when "TRUE" | "True" | "true" =>
+               Variable.all := True;
+            when "FALSE" | "False" | "false" =>
+               Variable.all := False;
+            when others =>
+               Log.Error ("Invalid setting value in " & Key & " = " & Value);
+               Success := False;
+         end case;
+      end Set_Boolean;
+
+   begin
+      case Key is
+         when "mold-source-template" | "mold-delete-source" | "mold-overwrite"
+           | "mold-abort-on-error" =>
+            Set_Boolean (Settings.Source_Template'Access, Value);
+
+         when "mold-action" =>
+            case Value is
+               when "IGNORE" | "Ignore" | "ignore" =>
+                  Settings.Action := Mold.Ignore;
+               when "EMPTY" | "Empty" | "empty" =>
+                  Settings.Action := Mold.Empty;
+               when others =>
+                  Log.Error
+                    ("Invalid setting value in " & Key & " = " & Value);
+                  Success := False;
+            end case;
+
+         when "mold-alert" =>
+            case Value is
+               when "NONE" | "None" | "none" =>
+                  Settings.Alert := Mold.None;
+               when "WARNING" | "Warning" | "warning" =>
+                  Settings.Alert := Mold.Warning;
+               when others =>
+                  Log.Error
+                    ("Invalid setting value in " & Key & " = " & Value);
+                  Success := False;
+            end case;
+         when others =>
+            Log.Error ("Invalid setting key in " & Key & " = " & Value);
+            Success := False;
+      end case;
+
+      return Success;
+   end Set_Mold_Setting;
+
    ------------------------
    -- Read_Variables_Map --
    ------------------------
 
    function Read_Variables_Map
-     (Vars_File : String; Results : Mold.Results_Access) return Variables_Map
+     (Vars_File : String; Settings : Mold.Settings_Access;
+      Results   : Mold.Results_Access) return Variables_Map
    is
       use Variables_Package;
 
@@ -39,11 +102,21 @@ package body Replace is
 
       if Read_Result.Success then
          for Element of Read_Result.Value.Iterate_On_Table loop
-            Vars.Include (Element.Key, Element.Value.As_Unbounded_String);
-            Log.Debug
-              ("defined var " & To_String (Element.Key) & " = " &
-               Element.Value.As_String);
-            Inc (Results, Mold.Defined);
+            if Element.Key.Length >= 10
+              and then Element.Key.Slice (1, 5) = "mold-"
+            then
+               if not Set_Mold_Setting
+                   (To_String (Element.Key), Element.Value.As_String, Settings)
+               then
+                  return Empty_Map;
+               end if;
+            else
+               Vars.Include (Element.Key, Element.Value.As_Unbounded_String);
+               Log.Debug
+                 ("defined var " & To_String (Element.Key) & " = " &
+                  Element.Value.As_String);
+               Inc (Results, Mold.Defined);
+            end if;
          end loop;
       else
          Log.Debug ("Error reading definitions file");

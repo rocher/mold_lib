@@ -66,7 +66,8 @@ package body Mold is
          goto Finalize_Function;
       end if;
 
-      Global_Variables := Replace.Read_Variables_Map (Definitions, Results);
+      Global_Variables :=
+        Replace.Read_Variables_Map (Definitions, Settings, Results);
       if Global_Variables.Is_Empty then
          Log.Error ("Could not load a valid set of variables");
          Global_Errors := 1;

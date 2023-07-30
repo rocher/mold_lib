@@ -17,12 +17,12 @@ package Mold is
    Mold_File_Extension           : constant String    := "mold";
 
    type Settings_Type is record
-      Source_Template : Boolean;
-      Delete_Source   : Boolean;
-      Overwrite       : Boolean;
-      Action          : Undef_Var_Action;
-      Alert           : Undef_Var_Alert;
-      Abort_On_Error  : Boolean;
+      Source_Template : aliased Boolean;
+      Delete_Source   : aliased Boolean;
+      Overwrite       : aliased Boolean;
+      Action          : aliased Undef_Var_Action;
+      Alert           : aliased Undef_Var_Alert;
+      Abort_On_Error  : aliased Boolean;
    end record;
    type Settings_Access is access all Settings_Type;
 

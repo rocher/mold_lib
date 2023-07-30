@@ -22,7 +22,15 @@ package Replace is
    type Variables_Access is access all Variables_Map;
 
    function Read_Variables_Map
-     (Vars_File : String; Results : Mold.Results_Access) return Variables_Map;
+   --!pp off
+   (
+      Vars_File : String;
+      Settings  : Mold.Settings_Access;
+      Results   : Mold.Results_Access
+   )
+   --!pp on
+
+return Variables_Map;
    --
    --  Read all variables definition of the given TOML Vars_File. Return a
    --  Variables_Map object.
