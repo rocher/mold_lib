@@ -45,6 +45,7 @@ package body File is
       return Natural
    is
       Errors      : Natural := 0;
+      Aborting    : Boolean := False;
       Line_Number : Natural := 0;
 
       ---------------
@@ -265,13 +266,18 @@ package body File is
                Line     : constant String := Src_File.Get_Line;
                New_Line : constant String := Replace_In_Line (Line);
             begin
+               if Errors > 0 and then Settings.Abort_On_Error then
+                  Aborting := True;
+                  goto Exit_Function;
+               end if;
                Dst_File.Put_Line (New_Line);
             end;
-         end loop;
+         <<Exit_Function>>
 
          Dst_File.Close;
          Src_File.Close;
-         if Settings.Delete_Source then
+
+         if Settings.Delete_Source and then not Aborting then
             Dir.Delete_File (Name);
          end if;
 

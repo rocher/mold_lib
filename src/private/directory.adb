@@ -63,9 +63,14 @@ package body Directory is
                elsif Extension = "mold" then
                   Errors := File.Replace (Name, Variables, Settings, Results);
                end if;
+               if Errors > 0 and then Settings.Abort_On_Error then
+                  goto Exit_Function;
+               end if;
             end if;
          end;
       end loop;
+
+      <<Exit_Function>>
 
       Dir.Set_Directory (CWD);
       return Errors;
