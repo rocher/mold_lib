@@ -324,8 +324,7 @@ package body File is
          Dst_File_Name : aliased String := Dir.Base_Name (Name);
 
          New_File_Name : String :=
-           (if Settings.Source_Template then
-              Replace_In_File_Name (Dst_File_Name)
+           (if Settings.Rename_Source then Replace_In_File_Name (Dst_File_Name)
             else Dst_File_Name);
 
          Full_File_Name  : constant String := Dir.Full_Name (New_File_Name);

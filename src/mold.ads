@@ -18,24 +18,24 @@ package Mold is
    Include_File_Extension        : constant String    := "molt";
 
    type Settings_Type is record
-      Source_Template : aliased Boolean;
-      Delete_Source   : aliased Boolean;
-      Overwrite       : aliased Boolean;
-      Action          : aliased Undef_Var_Action;
-      Alert           : aliased Undef_Var_Alert;
-      Abort_On_Error  : aliased Boolean;
+      Rename_Source  : aliased Boolean;
+      Delete_Source  : aliased Boolean;
+      Overwrite      : aliased Boolean;
+      Action         : aliased Undef_Var_Action;
+      Alert          : aliased Undef_Var_Alert;
+      Abort_On_Error : aliased Boolean;
    end record;
    type Settings_Access is access all Settings_Type;
 
    Default_Settings : aliased Settings_Type :=
    --!pp off
    (
-      Source_Template => True,
-      Delete_Source   => True,
-      Overwrite       => False,
-      Action          => Ignore,
-      Alert           => Warning,
-      Abort_On_Error  => True
+      Rename_Source  => True,
+      Delete_Source  => True,
+      Overwrite      => False,
+      Action         => Ignore,
+      Alert          => Warning,
+      Abort_On_Error => True
    );
    --!pp on
 
@@ -74,13 +74,13 @@ package Mold is
    --  Given Source, a file or directory, applies all variable substitution
    --  defined in Definitions file. If Source is a Directory, then
    --  substitution is applied recursively in all files in the subdirectories.
-   --  If Source_Template is True, then substitution is also applied to the
+   --  If Rename_Source is True, then substitution is also applied to the
    --  file name(s).
    --
    --  Source files must end with the extension "mold", for example
    --  "README.md.mold". Destination file name is the same as the Source, but
    --  removing the "mold" extension ("README.md" in the example). If
-   --  Source_Template is true, then the destination is obtained by variable
+   --  Rename_Source is true, then the destination is obtained by variable
    --  substitution in the Source file name. Variables in file names are
    --  written as "__variable__". For example, for the Source file name
    --  "README___title__.md.mold" with the definition 'title = "NOW"', the
@@ -122,7 +122,7 @@ package Mold is
    --  level value before calling this function. Info level is used to report
    --  number of substitutions in Source files, and number of files processed
    --  files in directories. It is used also to report the new file name
-   --  created when Source_Template is True. Set log level to Error to hide
+   --  created when Rename_Source is True. Set log level to Error to hide
    --  all Warning and Info logs. Debug level is used only for development.
    --
    --  If Abort_On_Error is True, then the variable substitution process is

@@ -54,8 +54,8 @@ package body Replace is
 
    begin
       case Key is
-         when "mold-source-template" =>
-            Set_Boolean (Settings.Source_Template'Access, Value);
+         when "mold-rename-source" =>
+            Set_Boolean (Settings.Rename_Source'Access, Value);
          when "mold-delete-source" =>
             Set_Boolean (Settings.Delete_Source'Access, Value);
          when "mold-overwrite" =>
