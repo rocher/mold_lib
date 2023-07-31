@@ -129,13 +129,12 @@ package body Replace is
                then
                   return Empty_Map;
                end if;
-            else
-               Vars.Include (Element.Key, Element.Value.As_Unbounded_String);
-               Log.Debug
-                 ("defined var " & To_String (Element.Key) & " = " &
-                  Element.Value.As_String);
-               Inc (Results, Mold.Defined);
             end if;
+            Vars.Include (Element.Key, Element.Value.As_Unbounded_String);
+            Log.Debug
+              ("defined var " & To_String (Element.Key) & " = " &
+               Element.Value.As_String);
+            Inc (Results, Mold.Defined);
          end loop;
       else
          Log.Debug ("Error reading definitions file");
