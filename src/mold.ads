@@ -19,24 +19,26 @@ package Mold is
    Include_File_Extension        : constant String    := "molt";
 
    type Settings_Type is record
-      Rename_Source  : aliased Boolean;
-      Delete_Source  : aliased Boolean;
-      Overwrite      : aliased Boolean;
-      Action         : aliased Undef_Var_Action;
-      Alert          : aliased Undef_Var_Alert;
-      Abort_On_Error : aliased Boolean;
+      Rename_Source    : aliased Boolean;
+      Delete_Source    : aliased Boolean;
+      Overwrite        : aliased Boolean;
+      Defined_Settings : aliased Boolean;
+      Action           : aliased Undef_Var_Action;
+      Alert            : aliased Undef_Var_Alert;
+      Abort_On_Error   : aliased Boolean;
    end record;
    type Settings_Access is access all Settings_Type;
 
    Default_Settings : aliased Settings_Type :=
    --!pp off
    (
-      Rename_Source  => True,
-      Delete_Source  => True,
-      Overwrite      => False,
-      Action         => Ignore,
-      Alert          => Warning,
-      Abort_On_Error => True
+      Rename_Source    => True,
+      Delete_Source    => True,
+      Overwrite        => False,
+      Defined_Settings => True,
+      Action           => Ignore,
+      Alert            => Warning,
+      Abort_On_Error   => True
    );
    --!pp on
 
@@ -103,9 +105,24 @@ package Mold is
    --  includes the curly braces and the spaces, so '{{foo}}', '{{ foo }}' and
    --  '{{  foo    }}' is always substituted with 'bar'.
    --
-   --  All variable substitution are Normal, meaning that if they haven't been
-   --  defined, they can be ignored or a warning can be issued, depending on
-   --  the Action and Alert specification. Substitutions of variable names
+   --  If Defined_Settings is True, then special meta-variables starting with
+   --  the prefix 'mold-' can be used to change the mold settings. In the
+   --  Settings_Type, you can use any of the elements of the record to change
+   --  the default setting in the definitions file. For example,
+   --  'molt-delete-source = "false"' is both a mold variable and a setting
+   --  changer. If Defined_Settings is False, then these meta variables are
+   --  read as normal variables but settings are not changed. The only
+   --  exception is for variable 'mold-defined-settings', whish is always set
+   --  and affects the possible settings in following lines.
+   --
+   --  To include external files in the current source file, you can use the
+   --  syntax '{{file:file.molt}}'. Please note that included files must have
+   --  the 'molt' extension. There is no limit on the number of files
+   --  included, but, of course, circular references result in an error.
+   --
+   --  All variable substitutions are Normal, meaning that if they haven't
+   --  been defined, they can be ignored or a warning can be issued, depending
+   --  on the Action and Alert specification. Substitutions of variable names
    --  starting with '?' are optional, meaning that no warning is issued if
    --  they haven't been defined and substitution is empty. Substitutions of
    --  variable names starting with the character '#' are mandatory, meaning
@@ -113,7 +130,7 @@ package Mold is
    --  substitution is made. The same variable can be used as optional or
    --  mandatory in different places, so '{{foo}}' and '{{#foo}}' are replaced
    --  with the same defined value (if any). The difference in both cases is
-   --  the treatment if 'foo' is undefined.
+   --  the error management when 'foo' is undefined.
 
    --  Undefined variables in Source files are always ignored, so for example
    --  "README___baz__.md.mold" with undefined variable 'baz' would generate
@@ -123,8 +140,8 @@ package Mold is
    --  level value before calling this function. Info level is used to report
    --  number of substitutions in Source files, and number of files processed
    --  files in directories. It is used also to report the new file name
-   --  created when Rename_Source is True. Set log level to Error to hide
-   --  all Warning and Info logs. Debug level is used only for development.
+   --  created when Rename_Source is True. Set log level to Error to hide all
+   --  Warning and Info logs. Debug level is used only for development.
    --
    --  If Abort_On_Error is True, then the variable substitution process is
    --  interrupted as soon as an error is found. Otherwise, the process
@@ -132,8 +149,8 @@ package Mold is
    --  Unrecoverable errors are always reported and interrupt the process
    --  (e.g., if Source file or directory does not exists).
    --
-   --  Results is a pointer to an object with a summary of the process
-   --  results that, when not null, holds this information:
+   --  Results is a pointer to an object with a summary of the process results
+   --  that, when not null, holds this information:
    --
    --     Files       : files processed
    --     Renamed     : template file names with variables replaced
