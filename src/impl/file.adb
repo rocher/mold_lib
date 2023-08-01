@@ -179,8 +179,8 @@ package body File is
                   if Is_Mandatory then
                      Inc (Global.Results, Mold.Ignored);
                      New_Line.Append (Var_Mold);
-                     Global.Errors := @ + 1;
                      Log.Error (Message);
+                     Global.Errors := @ + 1;
                   elsif Is_Optional then
                      Inc (Global.Results, Mold.Emptied);
                   else  --  Is Normal
@@ -378,9 +378,9 @@ package body File is
       exception
          --  file name with replaced variables yields an invalid file name
          when Dir.Name_Error =>
-            Global.Errors := @ + 1;
             Log.Error
               ("Invalid replacement in file name: '" & New_File_Name & "'");
+            Global.Errors := @ + 1;
             return Global.Errors;
       end;
    end Replace;
