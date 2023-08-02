@@ -299,16 +299,17 @@ package body File is
    -- Replace --
    -------------
 
-   function Replace
    --!pp off
+   function Replace
    (
       Name      : aliased  String;
       Variables : not null Standard.Replace.Variables_Access;
       Settings  : not null Mold.Settings_Access;
       Results   :          Mold.Results_Access := null
    )
-   --!pp on
    return Natural
+   --!pp on
+
    is
    begin
       --!pp off

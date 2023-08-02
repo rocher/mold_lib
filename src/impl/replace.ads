@@ -21,30 +21,30 @@ package Replace is
    subtype Variables_Map is Variables_Package.Map;
    type Variables_Access is access all Variables_Map;
 
-   function Read_Variables_Map
    --!pp off
+   function Read_Variables_Map
    (
       Vars_File :          String;
       Settings  : not null Mold.Settings_Access;
       Results   :          Mold.Results_Access := null
    )
-   --!pp on
    return Variables_Map;
+   --!pp on
    --
    --  Read all variables definition of the given TOML Vars_File. Return a
    --  Variables_Map object.
    --  ------------------------------------------------------------------------
 
-   function Apply
    --!pp off
+   function Apply
    (
       Source    :          String;
       Variables : not null Variables_Access;
       Settings  : not null Mold.Settings_Access;
       Results   :          Mold.Results_Access := null
    )
-   --!pp on
    return Natural;
+   --!pp on
    --
    --  Replace all occurrences of variables defined in Variables in all files
    --  with extension "mold" in the Source file or directory. For all

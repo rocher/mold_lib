@@ -11,16 +11,16 @@ with Replace;
 
 package File is
 
-   function Replace
    --!pp off
+   function Replace
    (
       Name      : aliased  String;
       Variables : not null Replace.Variables_Access;
       Settings  : not null Mold.Settings_Access;
       Results   :          Mold.Results_Access := null
    )
-   --!pp on
    return Natural;
+   --!pp on
    --
    --  Replace all occurrences of "{{variable}}" with the value defined in
    --  Variables in the given file Name, according to the Settings when an

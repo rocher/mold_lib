@@ -29,8 +29,8 @@ package Mold is
    end record;
    type Settings_Access is access all Settings_Type;
 
-   Default_Settings : aliased Settings_Type :=
    --!pp off
+   Default_Settings : aliased Settings_Type :=
    (
       Rename_Source    => True,
       Delete_Source    => True,
@@ -42,8 +42,8 @@ package Mold is
    );
    --!pp on
 
-   type Field_Type is
    --!pp off
+   type Field_Type is
    (
       Files,
       Renamed,
@@ -62,17 +62,16 @@ package Mold is
    type Results_Type is array (Field_Type) of Natural;
    type Results_Access is access all Results_Type;
 
-   function Apply
    --!pp off
+   function Apply
    (
       Source      : String          := ".";
       Definitions : String          := "mold.toml";
       Settings    : Settings_Access := null;
       Results     : Results_Access  := null
    )
+   return Natural;
    --!pp on
-
-      return Natural;
    --
    --  Given Source, a file or directory, applies all variable substitution
    --  defined in Definitions file. If Source is a Directory, then

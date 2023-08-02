@@ -25,17 +25,17 @@ package body Mold is
    -- Run --
    ---------
 
-   function Apply
    --!pp off
+   function Apply
    (
       Source      : String          := ".";
       Definitions : String          := "mold.toml";
       Settings    : Settings_Access := null;
       Results     : Results_Access  := null
    )
+   return Natural
    --!pp on
 
-      return Natural
    is
 
       Used_Settings : constant Settings_Access :=

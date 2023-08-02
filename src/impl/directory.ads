@@ -11,16 +11,16 @@ with Replace;
 
 package Directory is
 
-   function Replace
    --!pp off
+   function Replace
    (
       Name      : aliased  String;
       Variables : not null Replace.Variables_Access;
       Settings  : not null Mold.Settings_Access;
       Results   :          Mold.Results_Access := null
    )
-   --!pp on
    return Natural;
+   --!pp on
    --
    --  Recursively apply variable substitution to all files with extension
    --  "mold" in all sub-directories, starting at directory Name. Return the

@@ -22,16 +22,17 @@ package body Directory is
    -- Replace --
    -------------
 
-   function Replace
    --!pp off
+   function Replace
    (
       Name      : aliased  String;
       Variables : not null Standard.Replace.Variables_Access;
       Settings  : not null Mold.Settings_Access;
       Results   :          Mold.Results_Access := null
    )
+   return Natural
    --!pp on
-      return Natural
+
    is
       Errors  : Natural         := 0;
       CWD     : constant String := Dir.Current_Directory;

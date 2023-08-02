@@ -107,15 +107,16 @@ package body Replace is
    -- Read_Variables_Map --
    ------------------------
 
-   function Read_Variables_Map
    --!pp off
+   function Read_Variables_Map
    (
       Vars_File :          String;
       Settings  : not null Mold.Settings_Access;
       Results   :          Mold.Results_Access := null
    )
+   return Variables_Map
    --!pp on
-      return Variables_Map
+
    is
       use Variables_Package;
 
@@ -152,16 +153,17 @@ package body Replace is
    -- Apply --
    -----------
 
-   function Apply
    --!pp off
+   function Apply
    (
       Source    :          String;
       Variables : not null Variables_Access;
       Settings  : not null Mold.Settings_Access;
       Results   :          Mold.Results_Access := null
    )
+   return Natural
    --!pp on
-      return Natural
+
    is
       Name   : aliased constant String := Source;
       Errors : Natural                 := 0;
