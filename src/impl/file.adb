@@ -8,7 +8,6 @@
 
 with Ada.Containers.Doubly_Linked_Lists; use Ada.Containers;
 with Ada.Directories;
-with Ada.Strings.Unbounded;              use Ada.Strings.Unbounded;
 with Ada.Text_IO;
 with GNAT.Regpat;
 with Simple_Logging;
@@ -36,7 +35,7 @@ package body File is
    Include_Matcher : Reg.Pattern_Matcher (128);
 
    type Global_Arguments is record
-      Name           : String_Access;
+      Source         : String_Access;
       Variables      : Standard.Replace.Variables_Access;
       Settings       : Mold.Settings_Access;
       Results        : Mold.Results_Access;
@@ -173,7 +172,7 @@ package body File is
                   COL     : constant String := Matches (2).First'Image;
                   Message : constant String :=
                     "Undefined variable '" & Var_Name & "' in " &
-                    Global.Name.all & ":" & LIN (2 .. LIN'Last) & ":" &
+                    Global.Source.all & ":" & LIN (2 .. LIN'Last) & ":" &
                     COL (2 .. COL'Last);
                begin
                   if Is_Mandatory then
@@ -302,10 +301,11 @@ package body File is
    --!pp off
    function Replace
    (
-      Name      : aliased  String;
-      Variables : not null Standard.Replace.Variables_Access;
-      Settings  : not null Mold.Settings_Access;
-      Results   :          Mold.Results_Access := null
+      Source     : not null String_Access;
+      Output_Dir : not null String_Access;
+      Variables  : not null Standard.Replace.Variables_Access;
+      Settings   : not null Mold.Settings_Access;
+      Results    :          Mold.Results_Access := null
    )
    return Natural
    --!pp on
@@ -313,7 +313,7 @@ package body File is
    is
    begin
       --!pp off
-      Global := (Name           => Name'Unrestricted_Access,
+      Global := (Source         => Source,
                  Variables      => Variables,
                  Settings       => Settings,
                  Results        => Results,
@@ -322,14 +322,17 @@ package body File is
       --!pp on
 
       declare
-         Dst_File_Name : aliased String := Dir.Base_Name (Name);
+         Dst_File_Name : aliased String := Dir.Base_Name (Source.all);
 
-         New_File_Name : String :=
-           (if Settings.Rename_Source then Replace_In_File_Name (Dst_File_Name)
-            else Dst_File_Name);
+         New_File_Name : aliased String :=
+           Dir.Compose
+             (Output_Dir.all,
+              (if Settings.Rename_Source then
+                 Replace_In_File_Name (Dst_File_Name)
+               else Dst_File_Name));
 
          Full_File_Name  : constant String := Dir.Full_Name (New_File_Name);
-         Dst_File_Access : String_Access := Dst_File_Name'Unrestricted_Access;
+         Dst_File_Access : String_Access   := Dst_File_Name'Unchecked_Access;
 
          Src_File : IO.File_Type;
          Dst_File : IO.File_Type;
@@ -339,17 +342,17 @@ package body File is
          if Dst_File_Name /= New_File_Name then
             --  file name has variables successfully replaced
             Inc (Results, Mold.Renamed);
-            Dst_File_Access := New_File_Name'Unrestricted_Access;
+            Dst_File_Access := New_File_Name'Unchecked_Access;
          end if;
 
-         Log.Debug ("Src_File_Name  : " & Name);
+         Log.Debug ("Src_File_Name  : " & Source.all);
          Log.Debug ("Dst_File_Name  : " & Dst_File_Name);
          Log.Debug ("New_File_Name  : " & New_File_Name);
          Log.Debug ("Full_File_Name : " & Full_File_Name);
          Log.Debug ("Dst_File_Access: " & Dst_File_Access.all);
 
          --  open source file
-         Src_File.Open (IO.In_File, Name);
+         Src_File.Open (IO.In_File, Source.all);
 
          --  open destination file
          if Dir.Exists (Dst_File_Access.all) then
@@ -370,7 +373,7 @@ package body File is
 
          Dst_File.Close;
          if Settings.Delete_Source and then Global.Errors = 0 then
-            Dir.Delete_File (Name);
+            Dir.Delete_File (Source.all);
          end if;
 
          Global.Included_Files.Clear;

@@ -19,6 +19,7 @@ package body Mold is
    use all type Dir.File_Kind;
 
    Global_Variables : aliased Replace.Variables_Map;
+   Access_Variables : Replace.Variables_Access := Global_Variables'Access;
    Global_Errors    : Natural;
 
    ---------
@@ -28,8 +29,9 @@ package body Mold is
    --!pp off
    function Apply
    (
-      Source      : String          := ".";
-      Definitions : String          := "mold.toml";
+      Source      : aliased String  := ".";
+      Output_Dir  : aliased String  := ".";
+      Definitions : aliased String  := "mold.toml";
       Settings    : Settings_Access := null;
       Results     : Results_Access  := null
    )
@@ -50,7 +52,7 @@ package body Mold is
       if Source'Length = 0 or else not Dir.Exists (Source)
         or else Dir.Kind (Source) = Dir.Special_File
       then
-         Log.Error ("No such file or directory");
+         Log.Error ("No such file or directory '" & Source & "'");
          Global_Errors := 1;
          goto Finalize_Function;
       end if;
@@ -61,6 +63,22 @@ package body Mold is
          Log.Error ("Source file with Invalid extension");
          Global_Errors := 1;
          goto Finalize_Function;
+      end if;
+
+      if Dir.Kind (Source) = Dir.Ordinary_File then
+         if Output_Dir'Length = 0 or else not Dir.Exists (Output_Dir)
+           or else Dir.Kind (Output_Dir) /= Dir.Directory
+         then
+            Log.Error ("Invalid output directory '" & Output_Dir & "'");
+            Global_Errors := 1;
+            goto Finalize_Function;
+         end if;
+      else
+         if Output_Dir /= "." then
+            Log.Error ("Invalid output directory '" & Output_Dir & "'");
+            Global_Errors := 1;
+            goto Finalize_Function;
+         end if;
       end if;
 
       if Definitions'Length = 0 or else not Dir.Exists (Definitions)
@@ -81,7 +99,7 @@ package body Mold is
 
       Global_Errors :=
         Replace.Apply
-          (Source, Global_Variables'Access, Used_Settings, Results);
+          (Source, Output_Dir, Access_Variables, Used_Settings, Results);
       Global_Variables.Clear;
 
       <<Finalize_Function>>

@@ -38,10 +38,11 @@ package Replace is
    --!pp off
    function Apply
    (
-      Source    :          String;
-      Variables : not null Variables_Access;
-      Settings  : not null Mold.Settings_Access;
-      Results   :          Mold.Results_Access := null
+      Source     : aliased  String;
+      Output_Dir : aliased  String;
+      Variables  : not null Variables_Access;
+      Settings   : not null Mold.Settings_Access;
+      Results    :          Mold.Results_Access := null
    )
    return Natural;
    --!pp on

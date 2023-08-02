@@ -25,10 +25,11 @@ package body Directory is
    --!pp off
    function Replace
    (
-      Name      : aliased  String;
-      Variables : not null Standard.Replace.Variables_Access;
-      Settings  : not null Mold.Settings_Access;
-      Results   :          Mold.Results_Access := null
+      Source     : not null String_Access;
+      Output_Dir : not null String_Access;
+      Variables  : not null Standard.Replace.Variables_Access;
+      Settings   : not null Mold.Settings_Access;
+      Results    :          Mold.Results_Access := null
    )
    return Natural
    --!pp on
@@ -39,8 +40,8 @@ package body Directory is
       Result  : Dir.Search_Type;
       Element : Dir.Directory_Entry_Type;
    begin
-      Log.Debug ("entering directory " & Name);
-      Dir.Set_Directory (Name);
+      Log.Debug ("entering directory " & Source.all);
+      Dir.Set_Directory (Source.all);
 
       Dir.Start_Search
         (Result, ".", "*",
@@ -51,16 +52,22 @@ package body Directory is
          exit when not Result.More_Entries;
          Result.Get_Next_Entry (Element);
          declare
-            Name      : aliased constant String := Element.Simple_Name;
-            Extension : constant String         := Dir.Extension (Name);
+            Name      : aliased String  := Element.Simple_Name;
+            Extension : constant String := Dir.Extension (Name);
          begin
             if Name'Length > 0 and then Name /= "." and then Name /= ".."
               and then Name /= ".git"
             then
                if Element.Kind = Dir.Directory then
-                  Errors := Replace (Name, Variables, Settings, Results);
+                  Errors :=
+                    Replace
+                      (Output_Dir, Name'Unchecked_Access, Variables, Settings,
+                       Results);
                elsif Extension = "mold" then
-                  Errors := File.Replace (Name, Variables, Settings, Results);
+                  Errors :=
+                    File.Replace
+                      (Output_Dir, Name'Unchecked_Access, Variables, Settings,
+                       Results);
                end if;
                if Errors > 0 and then Settings.Abort_On_Error then
                   goto Exit_Function;

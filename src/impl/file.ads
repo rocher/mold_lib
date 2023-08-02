@@ -6,6 +6,8 @@
 --
 -------------------------------------------------------------------------------
 
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+
 with Mold;
 with Replace;
 
@@ -14,10 +16,11 @@ package File is
    --!pp off
    function Replace
    (
-      Name      : aliased  String;
-      Variables : not null Replace.Variables_Access;
-      Settings  : not null Mold.Settings_Access;
-      Results   :          Mold.Results_Access := null
+      Source     : not null String_Access;
+      Output_Dir : not null String_Access;
+      Variables  : not null Replace.Variables_Access;
+      Settings   : not null Mold.Settings_Access;
+      Results    :          Mold.Results_Access := null
    )
    return Natural;
    --!pp on
