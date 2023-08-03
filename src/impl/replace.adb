@@ -112,7 +112,8 @@ package body Replace is
    (
       Vars_File :          String;
       Settings  : not null Mold.Settings_Access;
-      Results   :          Mold.Results_Access := null
+      Results   :          Mold.Results_Access := null;
+      Success   : out      Boolean
    )
    return Variables_Map
    --!pp on
@@ -146,6 +147,7 @@ package body Replace is
          Log.Debug ("Error reading definitions file");
       end if;
 
+      Success := Read_Result.Success;
       return Vars;
    end Read_Variables_Map;
 

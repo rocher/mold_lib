@@ -26,7 +26,8 @@ package Replace is
    (
       Vars_File :          String;
       Settings  : not null Mold.Settings_Access;
-      Results   :          Mold.Results_Access := null
+      Results   :          Mold.Results_Access := null;
+      Success   : out      Boolean
    )
    return Variables_Map;
    --!pp on

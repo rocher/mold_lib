@@ -94,13 +94,18 @@ package body Mold is
          goto Finalize_Function;
       end if;
 
-      Global_Variables :=
-        Replace.Read_Variables_Map (Definitions, Used_Settings, Results);
-      if Global_Variables.Is_Empty then
-         Log.Error ("Could not load a valid set of variables");
-         Global_Errors := 1;
-         goto Finalize_Function;
-      end if;
+      declare
+         Success : Boolean;
+      begin
+         Global_Variables :=
+           Replace.Read_Variables_Map
+             (Definitions, Used_Settings, Results, Success);
+         if not Success then
+            Log.Error ("Could not load a valid set of variables");
+            Global_Errors := 1;
+            goto Finalize_Function;
+         end if;
+      end;
 
       Global_Errors :=
         Replace.Apply
