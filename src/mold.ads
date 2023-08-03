@@ -51,7 +51,7 @@ package Mold is
       Definitions,
       Variables,
       Undefined,
-      Substituted,
+      Replaced,
       Ignored,
       Emptied,
       Warnings,
@@ -103,7 +103,7 @@ package Mold is
    --  All variables in a Source mold file must be written as '{{variable}}'
    --  or '{{ variable }}', with any number of spaces. Variable substitution
    --  includes the curly braces and the spaces, so '{{foo}}', '{{ foo }}' and
-   --  '{{  foo    }}' is always substituted with 'bar'.
+   --  '{{  foo    }}' is always replaced with 'bar'.
    --
    --  If Defined_Settings is True, then special meta-variables starting with
    --  the prefix 'mold-' can be used to change the mold settings. In the

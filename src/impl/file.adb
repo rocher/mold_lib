@@ -197,7 +197,7 @@ package body File is
                   end if;
                end;
             else
-               Inc (Global.Results, Mold.Substituted);
+               Inc (Global.Results, Mold.Replaced);
                New_Line.Append (Var_Value);
             end if;
          end;
