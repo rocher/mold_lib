@@ -323,17 +323,34 @@ package body File is
       --!pp on
 
       declare
-         Dst_File_Name : aliased String := Dir.Base_Name (Source.all);
+         --  path to the source file
+         Dir_Name : constant String := Dir.Containing_Directory (Source.all);
 
-         New_File_Name : aliased String :=
-           Dir.Compose
-             (Output_Dir.all,
-              (if Settings.Rename_Source then
-                 Replace_In_File_Name (Dst_File_Name)
-               else Dst_File_Name));
+         --  base file name: no path & no mold extension
+         Base_File_Name : constant String := Dir.Base_Name (Source.all);
 
-         Full_File_Name  : constant String := Dir.Full_Name (New_File_Name);
-         Dst_File_Access : String_Access   := Dst_File_Name'Unchecked_Access;
+         --  "preparation" file name: source dir + base file name
+         Prep_File_Name : constant String :=
+           Dir.Compose (Dir_Name, Base_File_Name);
+
+         --  "replaced" file name: variable substitution in "preparation"
+         --  file name, if enabled
+         Repl_File_Name : constant String :=
+           (if Settings.Rename_Source then
+              Replace_In_File_Name (Prep_File_Name)
+            else Prep_File_Name);
+
+         --  real output directory: the Output_Dir, if different from "", or
+         --  the result directory after variable substitution, if enabled, in
+         --  the path of the source file name
+         Real_Out_Dir : constant String :=
+           (if Output_Dir.all'Length > 0 then Output_Dir.all
+            else Dir.Containing_Directory (Repl_File_Name));
+
+         --  destination file name: composition of the real output dir and the
+         --  source file name after variable substitution, if enabled
+         Dst_File_Name : constant String :=
+           Dir.Compose (Real_Out_Dir, Dir.Simple_Name (Repl_File_Name));
 
          Src_File : IO.File_Type;
          Dst_File : IO.File_Type;
@@ -346,35 +363,36 @@ package body File is
 
          Inc (Results, Mold.Files);
 
-         if Dst_File_Name /= New_File_Name then
+         if Base_File_Name /= Dir.Base_Name (Dst_File_Name) then
             --  file name has variables successfully replaced
             Inc (Results, Mold.Renamed);
-            Dst_File_Access := New_File_Name'Unchecked_Access;
          end if;
 
+         Log.Debug ("Dir_Name       : " & Dir_Name);
          Log.Debug ("Src_File_Name  : " & Source.all);
+         Log.Debug ("Base_File_Name : " & Base_File_Name);
+         Log.Debug ("Prep_File_Name : " & Prep_File_Name);
+         Log.Debug ("Repl_File_Name : " & Repl_File_Name);
+         Log.Debug ("Real_Out_Dir   : " & Real_Out_Dir);
          Log.Debug ("Dst_File_Name  : " & Dst_File_Name);
-         Log.Debug ("New_File_Name  : " & New_File_Name);
-         Log.Debug ("Full_File_Name : " & Full_File_Name);
-         Log.Debug ("Dst_File_Access: " & Dst_File_Access.all);
 
          --  open source file
          Src_File.Open (IO.In_File, Source.all);
 
          --  open destination file
-         if Dir.Exists (Dst_File_Access.all) then
+         if Dir.Exists (Dst_File_Name) then
             if Settings.Overwrite then
                Dir.Delete_File (Dst_File_Name);
-               Log.Debug ("Deleted file " & Dst_File_Access.all);
+               Log.Debug ("Deleted file " & Dst_File_Name);
                Inc (Results, Mold.Overwritten);
             else
-               Log.Error ("File " & Dst_File_Access.all & " already exists");
+               Log.Error ("File " & Dst_File_Name & " already exists");
                Global.Errors := @ + 1;
                return Global.Errors;
             end if;
          end if;
-         Dst_File.Create (Name => Dst_File_Access.all);
-         Log.Debug ("Created file " & Dst_File_Access.all);
+         Dst_File.Create (Name => Dst_File_Name);
+         Log.Debug ("Created file " & Dst_File_Name);
 
          Replace_In_Stream (Src_File, Dst_File);
 
@@ -390,7 +408,7 @@ package body File is
          --  file name with replaced variables yields an invalid file name
          when Dir.Name_Error =>
             Log.Error
-              ("Invalid replacement in file name: '" & New_File_Name & "'");
+              ("Invalid replacement in file name: '" & Dst_File_Name & "'");
             Global.Errors := @ + 1;
             return Global.Errors;
       end;

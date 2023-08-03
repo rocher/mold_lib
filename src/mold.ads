@@ -66,7 +66,7 @@ package Mold is
    function Apply
    (
       Source      : String          := ".";
-      Output_Dir  : String          := ".";
+      Output_Dir  : String          := "";
       Definitions : String          := "mold.toml";
       Settings    : Settings_Access := null;
       Results     : Results_Access  := null

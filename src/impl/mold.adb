@@ -30,7 +30,7 @@ package body Mold is
    function Apply
    (
       Source      : String          := ".";
-      Output_Dir  : String          := ".";
+      Output_Dir  : String          := "";
       Definitions : String          := "mold.toml";
       Settings    : Settings_Access := null;
       Results     : Results_Access  := null
@@ -69,8 +69,10 @@ package body Mold is
       end if;
 
       if Dir.Kind (Source) = Dir.Ordinary_File then
-         if Output_Dir'Length = 0 or else not Dir.Exists (Output_Dir)
-           or else Dir.Kind (Output_Dir) /= Dir.Directory
+         if Output_Dir'Length > 0
+           and then
+           (not Dir.Exists (Output_Dir)
+            or else Dir.Kind (Output_Dir) /= Dir.Directory)
          then
             Log.Error ("Invalid output directory '" & Output_Dir & "'");
             Global_Errors := 1;
