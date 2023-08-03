@@ -94,6 +94,7 @@ package body File is
 
             New_Name.Append (Pre_Name);
             if Is_Undefined then
+               Log.Error ("Undefined variable in file name substitution");
                Global.Errors := @ + 1;
                return Name;
             else
