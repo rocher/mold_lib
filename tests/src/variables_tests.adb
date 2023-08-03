@@ -42,43 +42,83 @@ package body Variables_Tests is
    begin
 
       --  source => no_vars.txt.mold, definitions => empty.toml
-      Errors   :=
-        Mold.Apply
-          (Source => "suite/mold/no_vars.txt.mold", Output_Dir => "suite/tmp/",
-           Settings => Global_Settings, Definitions => "suite/toml/empty.toml",
-           Results  => Results'Unchecked_Access);
-      Expected :=
-        [Files    => 1, Renamed => 0, Overwritten => 0, Definitions => 0,
-        Variables => 0, Undefined => 0, Substituted => 0, Ignored => 0,
-        Emptied   => 0, Warnings => 0, Mold.Errors => 0];
+      --!pp off
+      Errors := Mold.Apply (
+         Source      => "suite/mold/no_vars.txt.mold",
+         Output_Dir  => "suite/tmp/",
+         Settings    => Global_Settings,
+         Definitions => "suite/toml/empty.toml",
+         Results     => Results'Unchecked_Access
+      );
+      Expected := [
+         Files       => 1,
+         Renamed     => 0,
+         Overwritten => 0,
+         Definitions => 0,
+         Variables   => 0,
+         Undefined   => 0,
+         Substituted => 0,
+         Ignored     => 0,
+         Emptied     => 0,
+         Warnings    => 0,
+         Mold.Errors => 0
+      ];
+      --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       --  source => foo.txt.mold, definitions => empty.toml
-      Errors   :=
-        Mold.Apply
-          (Source   => "suite/mold/foo.txt.mold", Output_Dir => "suite/tmp/",
-           Settings => Global_Settings, Definitions => "suite/toml/empty.toml",
-           Results  => Results'Unchecked_Access);
-      Expected :=
-        [Files    => 1, Renamed => 0, Overwritten => 0, Definitions => 0,
-        Variables => 9, Undefined => 9, Substituted => 0, Ignored => 9,
-        Emptied   => 0, Warnings => 9, Mold.Errors => 0];
+      --!pp off
+      Errors := Mold.Apply (
+         Source      => "suite/mold/foo.txt.mold",
+         Output_Dir  => "suite/tmp/",
+         Settings    => Global_Settings,
+         Definitions => "suite/toml/empty.toml",
+         Results     => Results'Unchecked_Access
+      );
+      Expected := [
+         Files       => 1,
+         Renamed     => 0,
+         Overwritten => 0,
+         Definitions => 0,
+         Variables   => 9,
+         Undefined   => 9,
+         Substituted => 0,
+         Ignored     => 9,
+         Emptied     => 0,
+         Warnings    => 9,
+         Mold.Errors => 0
+      ];
+      --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       --  source => foo.txt.mold, definitions => bar.toml
-      Errors   :=
-        Mold.Apply
-          (Source   => "suite/mold/foo.txt.mold", Output_Dir => "suite/tmp/",
-           Settings => Global_Settings, Definitions => "suite/toml/bar.toml",
-           Results  => Results'Unchecked_Access);
-      Expected :=
-        [Files    => 1, Renamed => 0, Overwritten => 1, Definitions => 1,
-        Variables => 9, Undefined => 9, Substituted => 0, Ignored => 9,
-        Emptied   => 0, Warnings => 9, Mold.Errors => 0];
+      --!pp off
+      Errors := Mold.Apply (
+         Source      => "suite/mold/foo.txt.mold",
+         Output_Dir  => "suite/tmp/",
+         Settings    => Global_Settings,
+         Definitions => "suite/toml/bar.toml",
+         Results     => Results'Unchecked_Access
+      );
+      Expected := [
+         Files       => 1,
+         Renamed     => 0,
+         Overwritten => 1,
+         Definitions => 1,
+         Variables   => 9,
+         Undefined   => 9,
+         Substituted => 0,
+         Ignored     => 9,
+         Emptied     => 0,
+         Warnings    => 9,
+         Mold.Errors => 0
+      ];
+      --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+
    end Test_No_Substitution;
 
 end Variables_Tests;
