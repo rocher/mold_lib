@@ -338,6 +338,12 @@ package body File is
          Src_File : IO.File_Type;
          Dst_File : IO.File_Type;
       begin
+         if Global.Errors > 0 then
+            --  error detected during file name substitution, in the function
+            --  Replace_In_File_Name
+            return Global.Errors;
+         end if;
+
          Inc (Results, Mold.Files);
 
          if Dst_File_Name /= New_File_Name then
