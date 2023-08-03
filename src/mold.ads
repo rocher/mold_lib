@@ -65,9 +65,9 @@ package Mold is
    --!pp off
    function Apply
    (
-      Source      : aliased String  := ".";
-      Output_Dir  : aliased String  := ".";
-      Definitions : aliased String  := "mold.toml";
+      Source      : String          := ".";
+      Output_Dir  : String          := ".";
+      Definitions : String          := "mold.toml";
       Settings    : Settings_Access := null;
       Results     : Results_Access  := null
    )

@@ -29,9 +29,9 @@ package body Mold is
    --!pp off
    function Apply
    (
-      Source      : aliased String  := ".";
-      Output_Dir  : aliased String  := ".";
-      Definitions : aliased String  := "mold.toml";
+      Source      : String          := ".";
+      Output_Dir  : String          := ".";
+      Definitions : String          := "mold.toml";
       Settings    : Settings_Access := null;
       Results     : Results_Access  := null
    )
@@ -39,6 +39,9 @@ package body Mold is
    --!pp on
 
    is
+
+      Source_Alias     : aliased String := Source;
+      Output_Dir_Alias : aliased String := Output_Dir;
 
       Used_Settings : constant Settings_Access :=
         (if Settings = null then Default_Settings'Access else Settings);
@@ -99,7 +102,8 @@ package body Mold is
 
       Global_Errors :=
         Replace.Apply
-          (Source, Output_Dir, Access_Variables, Used_Settings, Results);
+          (Source_Alias, Output_Dir_Alias, Access_Variables, Used_Settings,
+           Results);
       Global_Variables.Clear;
 
       <<Finalize_Function>>
