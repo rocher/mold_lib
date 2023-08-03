@@ -364,9 +364,8 @@ package body File is
          --  open destination file
          if Dir.Exists (Dst_File_Access.all) then
             if Settings.Overwrite then
-               Log.Warning ("Overwriting file " & Dst_File_Access.all);
-               Inc (Results, Mold.Warnings);
                Dir.Delete_File (Dst_File_Name);
+               Log.Debug ("Deleted file " & Dst_File_Access.all);
                Inc (Results, Mold.Overwritten);
             else
                Log.Error ("File " & Dst_File_Access.all & " already exists");
@@ -375,6 +374,7 @@ package body File is
             end if;
          end if;
          Dst_File.Create (Name => Dst_File_Access.all);
+         Log.Debug ("Created file " & Dst_File_Access.all);
 
          Replace_In_Stream (Src_File, Dst_File);
 
