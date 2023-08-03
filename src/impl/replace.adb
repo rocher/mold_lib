@@ -140,7 +140,7 @@ package body Replace is
             Log.Debug
               ("defined var " & To_String (Element.Key) & " = " &
                Element.Value.As_String);
-            Inc (Results, Mold.Defined);
+            Inc (Results, Mold.Definitions);
          end loop;
       else
          Log.Debug ("Error reading definitions file");

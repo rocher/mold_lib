@@ -48,8 +48,8 @@ package Mold is
       Files,
       Renamed,
       Overwritten,
+      Definitions,
       Variables,
-      Defined,
       Undefined,
       Substituted,
       Ignored,
@@ -155,8 +155,8 @@ package Mold is
    --     Files       : files processed
    --     Renamed     : template file names with variables replaced
    --     Overwritten : existing destination files overwritten
+   --     Definitions : variables with a defined value in Definitions file
    --     Variables   : total number of variables found in all processed files
-   --     Defined     : variables with a defined value in Definitions file
    --     Undefined   : substitutions found with undefined value
    --     Replaced    : variables replaced with a defined value
    --     Ignored     : undefined variables ignored
