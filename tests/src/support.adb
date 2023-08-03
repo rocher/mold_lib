@@ -30,8 +30,16 @@ package body Support is
       return To_String (Text);
    end Pretty_Print;
 
-   procedure Check_Results (Actual, Expected : Mold.Results_Access) is
+   procedure Check_Results
+     (Errors : Natural; Actual, Expected : Mold.Results_Access)
+   is
    begin
+      Simple_Logging.Detail (Pretty_Print (Errors, Actual));
+
+      Assert
+        (Errors = 0 or else Actual (Mold.Errors) = 0,
+         "Incorrect Errors reported");
+
       for Field in Mold.Field_Type loop
          Assert
            (Actual.all (Field) = Expected.all (Field),

@@ -40,6 +40,8 @@ package body Variables_Tests is
       Results  : aliased Mold.Results_Type;
       Expected : aliased Mold.Results_Type;
    begin
+
+      --  source => no_vars.txt.mold, definitions => empty.toml
       Errors   :=
         Mold.Apply
           (Source => "suite/mold/no_vars.txt.mold", Output_Dir => "suite/tmp/",
@@ -49,13 +51,10 @@ package body Variables_Tests is
         [Files    => 1, Renamed => 0, Overwritten => 0, Definitions => 0,
         Variables => 0, Undefined => 0, Substituted => 0, Ignored => 0,
         Emptied   => 0, Warnings => 0, Mold.Errors => 0];
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
 
-      Simple_Logging.Detail (Pretty_Print (Errors, Results'Unchecked_Access));
-      Assert
-        (Errors = 0 or else Results (Mold.Errors) = 0,
-         "Incorrect error reported in test 01");
-      Check_Results (Results'Unchecked_Access, Expected'Unchecked_Access);
-
+      --  source => foo.txt.mold, definitions => empty.toml
       Errors   :=
         Mold.Apply
           (Source   => "suite/mold/foo.txt.mold", Output_Dir => "suite/tmp/",
@@ -65,13 +64,21 @@ package body Variables_Tests is
         [Files    => 1, Renamed => 0, Overwritten => 0, Definitions => 0,
         Variables => 9, Undefined => 9, Substituted => 0, Ignored => 9,
         Emptied   => 0, Warnings => 9, Mold.Errors => 0];
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
 
-      Simple_Logging.Detail (Pretty_Print (Errors, Results'Unchecked_Access));
-      Assert
-        (Errors = 0 or else Results (Mold.Errors) = 0,
-         "Incorrect error reported in test 01");
-      Check_Results (Results'Unchecked_Access, Expected'Unchecked_Access);
-
+      --  source => foo.txt.mold, definitions => bar.toml
+      Errors   :=
+        Mold.Apply
+          (Source   => "suite/mold/foo.txt.mold", Output_Dir => "suite/tmp/",
+           Settings => Global_Settings, Definitions => "suite/toml/bar.toml",
+           Results  => Results'Unchecked_Access);
+      Expected :=
+        [Files    => 1, Renamed => 0, Overwritten => 1, Definitions => 1,
+        Variables => 9, Undefined => 9, Substituted => 0, Ignored => 9,
+        Emptied   => 0, Warnings => 9, Mold.Errors => 0];
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
    end Test_No_Substitution;
 
 end Variables_Tests;

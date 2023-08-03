@@ -32,6 +32,7 @@ package Support is
    function Pretty_Print
      (Errors : Natural; Results : Mold.Results_Access) return String;
 
-   procedure Check_Results (Actual, Expected : Mold.Results_Access);
+   procedure Check_Results
+     (Errors : Natural; Actual, Expected : Mold.Results_Access);
 
 end Support;
