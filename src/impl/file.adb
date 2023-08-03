@@ -363,7 +363,7 @@ package body File is
 
          Inc (Results, Mold.Files);
 
-         if Base_File_Name /= Dir.Base_Name (Dst_File_Name) then
+         if Base_File_Name /= Dir.Simple_Name (Dst_File_Name) then
             --  file name has variables successfully replaced
             Inc (Results, Mold.Renamed);
          end if;
