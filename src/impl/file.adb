@@ -178,6 +178,7 @@ package body File is
                begin
                   if Is_Mandatory then
                      Inc (Global.Results, Mold.Ignored);
+                     Inc (Global.Results, Mold.Errors);
                      New_Line.Append (Var_Mold);
                      Log.Error (Message);
                      Global.Errors := @ + 1;
