@@ -1,0 +1,31 @@
+a = "arcu"          #    91  {{a}}
+b = "bibendum"      #    37  {{#b}}
+c = "commodo"       #    71  {{?c}}
+d = "dolor"         #    60  {{ d }}
+e = "elementum"     #    76  {{e}}
+eg = "egestas"      #   115  {{ ?eg }}
+f = "faucibus"      #    88  {{f}}
+g = "gravida"       #    53  {{ #g }}
+h = "habitant"      #    37  {{h}}
+i = "in"            #   188  {{i}}
+int = "integer"     #    56  {{int}}
+j = "justo"         #    35  {{#j }}
+l = "lorem"         #    44  {{l}}
+L = "Lorem"         #    14  {{L}}
+m = "massa"         #    99  {{m}}
+ni = "nibh"         #    70  {{ni}}
+n = "nulla"         #   106  {{n}}
+o = "orci"          #    71  {{o}}
+p = "proin"         #    47  {{p}}
+p2 = "pellentesque" #   145  {{ #p2 }}
+q = "quis"          #   118  {{q}}
+r = "risus"         #    86  {{r}}
+s = "scelerisque"   #    83  {{ s }}
+t = "tristique"     #    69  {{ t }}
+u = "ut"            #   154  {{u}}
+v = "viverra"       #   105  {{ ?v}}
+# ------------------------------------
+#              normal  1557
+#            optional   291
+#           mandatory   270
+#               TOTAL  2118
