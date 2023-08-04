@@ -33,7 +33,8 @@ package Support is
      (Errors : Natural; Results : Mold.Results_Access) return String;
 
    procedure Check_Results
-     (Errors : Natural; Actual, Expected : Mold.Results_Access);
+     (Errors          : Natural; Actual, Expected : Mold.Results_Access;
+      Expected_Errors : Natural := 0);
 
    procedure Check_MD5_Digest (File_Name, Digest : String);
 

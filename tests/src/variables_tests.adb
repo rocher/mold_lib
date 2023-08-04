@@ -329,6 +329,157 @@ package body Variables_Tests is
       Check_MD5_Digest
         ("suite/tmp/lorem-ipsum.txt", "1ed55361c952f1e572a156c07a3c2f3d");
 
+      --  ----- undefined variables ignored and no warning --------------------
+      Settings.Action := Mold.Ignore;
+      Settings.Alert  := Mold.None;
+      --!pp off
+      Errors := Mold.Apply (
+         Source      => "suite/mold/lorem-ipsum.txt.mold",
+         Output_Dir  => "suite/tmp/",
+         Settings    => Settings'Unchecked_Access,
+         Definitions => "suite/toml/lorem-ipsum_no-norm1.toml",
+         Results     => Results'Unchecked_Access
+      );
+      Expected := [
+         Files       =>    1,
+         Renamed     =>    0,
+         Overwritten =>    1,
+         Definitions =>   24,
+         Variables   => 2118,
+         Undefined   =>  294,
+         Replaced    => 1824,
+         Ignored     =>  294,
+         Emptied     =>    0,
+         Warnings    =>    0,
+         Mold.Errors =>    0
+      ];
+      --!pp on
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+      Check_MD5_Digest
+        ("suite/tmp/lorem-ipsum.txt", "239eacc9eb868d2d3559a8ee4b903bb1");
+
+      --  ----- undefined variables ignored, warning issued -------------------
+      Settings.Action := Mold.Ignore;
+      Settings.Alert  := Mold.Warning;
+      --!pp off
+      Errors := Mold.Apply (
+         Source      => "suite/mold/lorem-ipsum.txt.mold",
+         Output_Dir  => "suite/tmp/",
+         Settings    => Settings'Unchecked_Access,
+         Definitions => "suite/toml/lorem-ipsum_no-norm1.toml",
+         Results     => Results'Unchecked_Access
+      );
+      Expected := [
+         Files       =>    1,
+         Renamed     =>    0,
+         Overwritten =>    1,
+         Definitions =>   24,
+         Variables   => 2118,
+         Undefined   =>  294,
+         Replaced    => 1824,
+         Ignored     =>  294,
+         Emptied     =>    0,
+         Warnings    =>  294,
+         Mold.Errors =>    0
+      ];
+      --!pp on
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+      Check_MD5_Digest
+        ("suite/tmp/lorem-ipsum.txt", "239eacc9eb868d2d3559a8ee4b903bb1");
+
+      --  ----- undefined variables emptied and no warning --------------------
+      Settings.Action := Mold.Empty;
+      Settings.Alert  := Mold.None;
+      --!pp off
+      Errors := Mold.Apply (
+         Source      => "suite/mold/lorem-ipsum.txt.mold",
+         Output_Dir  => "suite/tmp/",
+         Settings    => Settings'Unchecked_Access,
+         Definitions => "suite/toml/lorem-ipsum_no-norm1.toml",
+         Results     => Results'Unchecked_Access
+      );
+      Expected := [
+         Files       =>    1,
+         Renamed     =>    0,
+         Overwritten =>    1,
+         Definitions =>   24,
+         Variables   => 2118,
+         Undefined   =>  294,
+         Replaced    => 1824,
+         Ignored     =>    0,
+         Emptied     =>  294,
+         Warnings    =>    0,
+         Mold.Errors =>    0
+      ];
+      --!pp on
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+      Check_MD5_Digest
+        ("suite/tmp/lorem-ipsum.txt", "a497437f9f4ebc6b42ec0f9aa33dba3d");
+
+      --  ----- undefined variables emptied, warning issued -------------------
+      Settings.Action := Mold.Empty;
+      Settings.Alert  := Mold.Warning;
+      --!pp off
+      Errors := Mold.Apply (
+         Source      => "suite/mold/lorem-ipsum.txt.mold",
+         Output_Dir  => "suite/tmp/",
+         Settings    => Settings'Unchecked_Access,
+         Definitions => "suite/toml/lorem-ipsum_no-norm1.toml",
+         Results     => Results'Unchecked_Access
+      );
+      Expected := [
+         Files       =>    1,
+         Renamed     =>    0,
+         Overwritten =>    1,
+         Definitions =>   24,
+         Variables   => 2118,
+         Undefined   =>  294,
+         Replaced    => 1824,
+         Ignored     =>    0,
+         Emptied     =>  294,
+         Warnings    =>  294,
+         Mold.Errors =>    0
+      ];
+      --!pp on
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+      Check_MD5_Digest
+        ("suite/tmp/lorem-ipsum.txt", "a497437f9f4ebc6b42ec0f9aa33dba3d");
+
+      --  ----- undefined mandatory variable, no abort on error ---------------
+      Settings.Action         := Mold.Ignore;
+      Settings.Alert          := Mold.Warning;
+      Settings.Abort_On_Error := False;
+      --!pp off
+      Errors := Mold.Apply (
+         Source      => "suite/mold/lorem-ipsum.txt.mold",
+         Output_Dir  => "suite/tmp/",
+         Settings    => Settings'Unchecked_Access,
+         Definitions => "suite/toml/lorem-ipsum_mix.toml",
+         Results     => Results'Unchecked_Access
+      );
+      Expected := [
+         Files       =>    1,
+         Renamed     =>    0,
+         Overwritten =>    1,
+         Definitions =>   18,
+         Variables   => 2118,
+         Undefined   =>  591,
+         Replaced    => 1527,
+         Ignored     =>  405,
+         Emptied     =>  186,
+         Warnings    =>  315,
+         Mold.Errors =>   90
+      ];
+      --!pp on
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 90);
+      Check_MD5_Digest
+        ("suite/tmp/lorem-ipsum.txt", "caa552768a9819fff5eb93f4096189c3");
+
    end Test_Modal_Substitution;
 
 end Variables_Tests;

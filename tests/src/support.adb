@@ -46,14 +46,16 @@ package body Support is
    -------------------
 
    procedure Check_Results
-     (Errors : Natural; Actual, Expected : Mold.Results_Access)
+     (Errors          : Natural; Actual, Expected : Mold.Results_Access;
+      Expected_Errors : Natural := 0)
    is
    begin
       Simple_Logging.Detail (Pretty_Print (Errors, Actual));
 
       Assert
-        (Errors = 0 or else Actual (Mold.Errors) = 0,
-         "Incorrect Errors reported");
+        (Errors = Expected_Errors,
+         "Incorrect Errors: reported" & Errors'Image & ", expected" &
+         Expected_Errors'Image);
 
       for Field in Mold.Field_Type loop
          Assert
@@ -108,6 +110,6 @@ package body Support is
 
 begin
 
-   Simple_Logging.Level := Simple_Logging.Error;
+   Simple_Logging.Level := Simple_Logging.Always;
 
 end Support;
