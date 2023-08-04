@@ -17,6 +17,9 @@ with Support; use Support;
 
 package body Variables_Tests is
 
+   package Dir renames Ada.Directories;
+   package Log renames Simple_Logging;
+
    ----------
    -- Name --
    ----------
@@ -72,6 +75,8 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+      Check_MD5_Digest
+        ("suite/tmp/no-vars.txt", "7ef8e151c0fde9d5fef738709a321300");
 
       --  source => foo.txt.mold, definitions => empty.toml
       --!pp off
@@ -98,6 +103,8 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+      Check_MD5_Digest
+        ("suite/tmp/foo.txt", "4c179dd0c4cc0c668539a25435286258");
 
       --  source => foo.txt.mold, definitions => bar.toml
       --!pp off
@@ -124,6 +131,8 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+      Check_MD5_Digest
+        ("suite/tmp/foo.txt", "4c179dd0c4cc0c668539a25435286258");
 
    end Test_No_Substitution;
 
@@ -162,6 +171,8 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+      Check_MD5_Digest
+        ("suite/tmp/foo.txt", "3d22c1e66750c3e7925e643cfbe9e327");
 
       --  source => foo-bar.txt.mold, definitions => foo.toml
       --!pp off
@@ -188,6 +199,8 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+      Check_MD5_Digest
+        ("suite/tmp/foo-bar.txt", "9fe90f7706a6c0de1155e8e340fafed7");
 
       --  source => foo-bar.txt.mold, definitions => foo-bar.toml
       --!pp off
@@ -214,6 +227,8 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+      Check_MD5_Digest
+        ("suite/tmp/foo-bar.txt", "5b6c9393c2233d09b1517bc8c3ca9de1");
 
    end Test_Basic_Substitution;
 

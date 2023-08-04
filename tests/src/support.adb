@@ -6,11 +6,22 @@
 --
 -------------------------------------------------------------------------------
 
+with Ada.Directories;
+with Ada.Streams;
+with Ada.Streams.Stream_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-with AUnit.Assertions;      use AUnit.Assertions;
+
+with AUnit.Assertions; use AUnit.Assertions;
+
+with GNAT.MD5;
+
 with Simple_Logging;
 
 package body Support is
+
+   ------------------
+   -- Pretty_Print --
+   ------------------
 
    function Pretty_Print
      (Errors : Natural; Results : Mold.Results_Access) return String
@@ -29,6 +40,10 @@ package body Support is
 
       return To_String (Text);
    end Pretty_Print;
+
+   -------------------
+   -- Check_Results --
+   -------------------
 
    procedure Check_Results
      (Errors : Natural; Actual, Expected : Mold.Results_Access)
@@ -49,8 +64,50 @@ package body Support is
       end loop;
    end Check_Results;
 
+   ----------------
+   -- MD5_Digest --
+   ----------------
+
+   function MD5_Digest (File_Name : String) return String is
+      use Ada.Streams;
+      use Ada.Streams.Stream_IO;
+      use GNAT.MD5;
+
+      subtype Buffer_Type is Stream_Element_Array (1 .. 512);
+
+      File : File_Type;
+      C    : Context := Initial_Context;
+
+      Buffer : Buffer_Type;
+      Last   : Stream_Element_Offset := 0;
+   begin
+      File.Open (In_File, File_Name);
+
+      loop
+         exit when File.End_Of_File;
+         File.Read (Buffer, Last);
+         C.Update (Buffer (1 .. Last));
+      end loop;
+
+      File.Close;
+      return Digest (C);
+   end MD5_Digest;
+
+   ----------------------
+   -- Check_MD5_Digest --
+   ----------------------
+
+   procedure Check_MD5_Digest (File_Name, Digest : String) is
+      use Ada.Directories;
+   begin
+      Assert (Exists (File_Name), "File not found: " & File_Name);
+      Assert
+        (MD5_Digest (File_Name) = Digest,
+         "Invalid MD5 digest of file " & File_Name);
+   end Check_MD5_Digest;
+
 begin
 
-   Simple_Logging.Level := Simple_Logging.Detail;
+   Simple_Logging.Level := Simple_Logging.Error;
 
 end Support;

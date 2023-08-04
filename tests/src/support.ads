@@ -35,4 +35,6 @@ package Support is
    procedure Check_Results
      (Errors : Natural; Actual, Expected : Mold.Results_Access);
 
+   procedure Check_MD5_Digest (File_Name, Digest : String);
+
 end Support;
