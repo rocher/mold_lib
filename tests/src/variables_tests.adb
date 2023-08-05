@@ -16,7 +16,7 @@ package body Variables_Tests is
    ----------
 
    overriding function Name (T : Variables_Test_Case) return Test_String is
-     (Format ("Variables Tests"));
+     (Format ("Variables Tests  "));
 
    --------------------
    -- Register_Tests --

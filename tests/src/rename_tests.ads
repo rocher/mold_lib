@@ -9,7 +9,7 @@
 with AUnit;            use AUnit;
 with AUnit.Test_Cases; use AUnit.Test_Cases;
 
-package Files_Tests is
+package Rename_Tests is
 
    type Files_Test_Case is new Test_Case with null record;
 
@@ -20,4 +20,4 @@ package Files_Tests is
    procedure Test_No_Renaming (T : in out Test_Case'Class);
    procedure Test_Basic_Renaming (T : in out Test_Case'Class);
 
-end Files_Tests;
+end Rename_Tests;

@@ -16,7 +16,7 @@ package body Inclusion_Tests is
    ----------
 
    overriding function Name (T : Inclusion_Test_Case) return Test_String is
-     (Format ("Inclusion Tests"));
+     (Format ("Inclusion Tests  "));
 
    --------------------
    -- Register_Tests --

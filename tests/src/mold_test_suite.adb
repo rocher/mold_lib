@@ -6,7 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
-with Files_Tests;     use Files_Tests;
+with Rename_Tests;    use Rename_Tests;
 with Variables_Tests; use Variables_Tests;
 with Inclusion_Tests; use Inclusion_Tests;
 

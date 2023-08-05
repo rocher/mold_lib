@@ -9,14 +9,14 @@
 with Mold;    use Mold;
 with Support; use Support;
 
-package body Files_Tests is
+package body Rename_Tests is
 
    ----------
    -- Name --
    ----------
 
    overriding function Name (T : Files_Test_Case) return Test_String is
-     (Format ("Files Tests    "));
+     (Format ("File Rename Tests"));
 
    --------------------
    -- Register_Tests --
@@ -259,4 +259,4 @@ package body Files_Tests is
 
    end Test_Basic_Renaming;
 
-end Files_Tests;
+end Rename_Tests;
