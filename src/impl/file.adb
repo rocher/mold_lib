@@ -468,12 +468,12 @@ begin
    --                                         '-----'
    --  Example:
    --
-   --              1
-   --     123456789012
-   --     << header >>
+   --              1         2
+   --     1234567890123456789012
+   --     {{ include:foo.molt }}
    --
-   --                     Matches (0) = ( 1, 12) = "<< header >>"
-   --     Var_Name     := Matches (1) = ( 4,  9) =    "header"
+   --                     Matches (0) = ( 1, 22) = "{{ include:foo.molt }}"
+   --     Var_Name     := Matches (1) = (12, 19) =            "foo.molt"
    --  ------------------------------------------------------------------------
 
 end File;
