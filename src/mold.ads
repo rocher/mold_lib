@@ -15,7 +15,7 @@ package Mold is
    Optional_Substitution_Prefix  : constant Character := '?';
    Mandatory_Substitution_Prefix : constant Character := '#';
    File_Extension                : constant String    := "mold";
-   Inclusion_File_Prefix         : constant String    := "file:";
+   Inclusion_File_Prefix         : constant String    := "include:";
    Include_File_Extension        : constant String    := "molt";
 
    type Settings_Type is record
