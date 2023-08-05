@@ -166,12 +166,12 @@ package body File is
 
             Is_Undefined : constant Boolean := (Var_Value = "");
          begin
-            Log.Debug ("Pre_Text: '" & Pre_Text & "'");
-            Log.Debug ("Var_Mold: '" & Var_Mold & "'");
-            Log.Debug
-              ("Var_All_Name: '" & Var_All_Name & "'" & " Fisrt=" &
-               Var_All_Name'First'Image);
-            Log.Debug ("Var_Name: '" & Var_Name & "'");
+
+            Log.Debug ("Pre_Text    : '" & Pre_Text & "'");
+            Log.Debug ("Var_Mold    : '" & Var_Mold & "'");
+            Log.Debug ("Var_All_Name: '" & Var_All_Name & "'");
+            Log.Debug ("Var_Name    : '" & Var_Name & "'");
+
             New_Line.Append (Pre_Text);
 
             if Is_Undefined then
@@ -438,11 +438,11 @@ begin
    --
    --                     Matches (0) = ( 1, 20) = "This is a {{ #foo }}"
    --     Pre_Text     := Matches (1) = ( 1, 10) = "This is a "
-   --     Var_Mold     := Matches (2) = (11, 20) =            "{{ #foo }}"
-   --     Var_All_Name := Matches (3) = (14, 17) =               "#foo"
-   --     Var_Name     := ( remove # if exists ) =                "foo"
+   --     Var_Mold     := Matches (2) = (11, 20) =           "{{ #foo }}"
+   --     Var_All_Name := Matches (3) = (14, 17) =              "#foo"
+   --     Var_Name     := ( remove # if exists ) =               "foo"
    --  ------------------------------------------------------------------------
-
+   --
    --
    --                             .------.
    --                             |   3  |
@@ -457,10 +457,10 @@ begin
    --
    --                     Matches (0) = ( 1, 18) = "README-__PURPOSE__"
    --     Pre_Text     := Matches (1) = ( 1,  7) = "README-"
-   --     Var_Mold     := Matches (2) = ( 8, 18) =         "__PURPOSE__"
-   --     Var_All_Name := Matches (3) = (10, 16) =           "PURPOSE"
+   --     Var_Mold     := Matches (2) = ( 8, 18) =        "__PURPOSE__"
+   --     Var_All_Name := Matches (3) = (10, 16) =          "PURPOSE"
    --  ------------------------------------------------------------------------
-
+   --
    --
    Include_Matcher.Compile
      ("^{{ *" & Mold.Inclusion_File_Prefix & "([^ ]+) *}}$");
