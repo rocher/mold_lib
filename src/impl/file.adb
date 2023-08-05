@@ -414,10 +414,11 @@ package body File is
          return Global.Errors;
 
       exception
-         --  file name with replaced variables yields an invalid file name
+         --  invalid output directory or file name with replaced variables
          when Dir.Name_Error =>
             Log.Error
-              ("Invalid replacement in file name: '" & Dst_File_Name & "'");
+              ("Invalid output directory or file name: '" & Dst_File_Name &
+               "'");
             Global.Errors := @ + 1;
             return Global.Errors;
       end;
