@@ -8,7 +8,9 @@
 
 with Ada.Containers.Doubly_Linked_Lists; use Ada.Containers;
 with Ada.Directories;
+with Ada.Unchecked_Deallocation;
 with Ada.Text_IO;
+
 with GNAT.Regpat;
 with Simple_Logging;
 
@@ -23,9 +25,10 @@ package body File is
 
    package Inclusion_Package is new Doubly_Linked_Lists
      (Unbounded_String, "=");
-   use all type Inclusion_Package.List;
    subtype Inclusion_List is Inclusion_Package.List;
 
+   use all type Dir.File_Kind;
+   use all type Inclusion_Package.List;
    use all type Mold.Undef_Var_Action;
    use all type Mold.Undef_Var_Alert;
    use all type Reg.Match_Location;
@@ -35,6 +38,7 @@ package body File is
    Include_Matcher : Reg.Pattern_Matcher (128);
 
    type Global_Arguments is record
+      Root_Directory : String_Access := null;
       Source         : String_Access;
       Variables      : Standard.Replace.Variables_Access;
       Settings       : Mold.Settings_Access;
@@ -44,6 +48,23 @@ package body File is
    end record;
 
    Global : Global_Arguments;
+
+   -----------------
+   -- Free_String --
+   -----------------
+
+   procedure Free_String is new Ada.Unchecked_Deallocation
+     (Object => String, Name => String_Access);
+
+   ------------------------
+   -- Set_Root_Directory --
+   ------------------------
+
+   procedure Set_Root_Directory (Name : String) is
+      Root_Directory : String_Access := new String'(Name);
+   begin
+      Global.Root_Directory := Root_Directory;
+   end Set_Root_Directory;
 
    ---------------
    -- Get_Value --
@@ -233,6 +254,9 @@ package body File is
    is
       Line_Number : Natural := 0;
       Matches     : Reg.Match_Array (0 .. 1);
+
+      Include_Access    : String_Access := null;
+      Include_From_Root : Boolean       := False;
    begin
       For_Each_Line :
       loop
@@ -259,10 +283,11 @@ package body File is
                declare
                   Inc_Name  : constant String :=
                     Line (Matches (1).First .. Matches (1).Last);
-                  Full_Name : constant String := Dir.Full_Name (Inc_Name);
+                  Full_Name : aliased String  := Dir.Full_Name (Inc_Name);
                   Extension : constant String := Dir.Extension (Inc_Name);
+
                begin
-                  Log.Debug ("Include file " & Full_Name);
+                  Log.Debug ("Include file " & Inc_Name);
 
                   if Extension /= Mold.Include_File_Extension then
                      Log.Error
@@ -271,18 +296,38 @@ package body File is
                      goto Exit_Procedure;
                   end if;
 
-                  if not Dir.Exists (Full_Name) then
-                     Log.Error ("Include file not found " & Full_Name);
-                     Global.Errors := @ + 1;
-                     goto Exit_Procedure;
+                  if Dir.Exists (Full_Name) then
+                     Include_Access := Full_Name'Unchecked_Access;
+                     Log.Debug ("Including from current directory");
+                  else
+                     if Global.Root_Directory /= null then
+                        Include_Access    :=
+                          new String'
+                            (Dir.Compose
+                               (Global.Root_Directory.all, Inc_Name));
+                        Include_From_Root := True;
+                        if Dir.Exists (Include_Access.all)
+                          and then Dir.Kind (Include_Access.all) =
+                            Dir.Ordinary_File
+                        then
+                           Log.Debug ("Including from running directory");
+                        else
+                           Log.Error ("Include file not found " & Inc_Name);
+                           Global.Errors := @ + 1;
+                           goto Exit_Procedure;
+                        end if;
+                     end if;
                   end if;
 
                   if Global.Included_Files.Contains
-                      (To_Unbounded_String (Full_Name))
+                      (To_Unbounded_String (Include_Access.all))
                   then
-                     Log.Error ("Circular inclusion of file " & Full_Name);
+                     Log.Error
+                       ("Circular inclusion of file " & Include_Access.all);
                      Global.Errors := @ + 1;
                      goto Exit_Procedure;
+                  else
+                     Log.Debug ("Including file " & Include_Access.all);
                   end if;
 
                   declare
@@ -301,6 +346,11 @@ package body File is
       end loop For_Each_Line;
 
       <<Exit_Procedure>>
+
+      if Include_From_Root then
+         Free_String (Include_Access);
+      end if;
+
       Src.Close;
    end Replace_In_Stream;
 
@@ -322,14 +372,13 @@ package body File is
 
    is
    begin
-      --!pp off
-      Global := (Source         => Source,
-                 Variables      => Variables,
-                 Settings       => Settings,
-                 Results        => Results,
-                 Errors         => 0,
-                 Included_Files => Inclusion_Package.Empty_List);
-      --!pp on
+
+      Global.Source         := Source;
+      Global.Variables      := Variables;
+      Global.Settings       := Settings;
+      Global.Results        := Results;
+      Global.Errors         := 0;
+      Global.Included_Files := Inclusion_Package.Empty_List;
 
       declare
          --  path to the source file
@@ -363,7 +412,9 @@ package body File is
 
          Src_File : IO.File_Type;
          Dst_File : IO.File_Type;
+
       begin
+
          if Global.Errors > 0 then
             --  error detected during file name substitution, in the function
             --  Replace_In_File_Name

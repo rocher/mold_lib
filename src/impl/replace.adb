@@ -176,6 +176,7 @@ package body Replace is
              (Source'Unrestricted_Access, Output_Dir'Unrestricted_Access,
               Variables, Settings, Results);
       else
+         File.Set_Root_Directory (Dir.Current_Directory);
          Errors :=
            Directory.Replace
              (Source'Unrestricted_Access, Output_Dir'Unrestricted_Access,
