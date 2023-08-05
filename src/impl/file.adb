@@ -72,6 +72,7 @@ package body File is
       Current     : Natural          := Name'First;
       Has_Matches : Boolean          := False;
    begin
+
       loop
          File_Matcher.Match (Name, Matches, Current);
          exit when Matches (0) = Reg.No_Match;
@@ -81,6 +82,9 @@ package body File is
             Pre_Name : constant String :=
               Name (Matches (1).First .. Matches (1).Last);
 
+            Var_Mold : constant String :=
+              Name (Matches (2).First .. Matches (2).Last);
+
             Var_Name : constant String :=
               Name (Matches (3).First .. Matches (3).Last);
 
@@ -89,14 +93,17 @@ package body File is
             Is_Undefined : constant Boolean := (Var_Value = "");
          begin
             Log.Debug ("Pre_Name : '" & Pre_Name & "'");
+            Log.Debug ("Var_Mold : '" & Var_Mold & "'");
             Log.Debug ("Var_Name : '" & Var_Name & "'");
             Log.Debug ("Var_Value: '" & Var_Value & "'");
 
             New_Name.Append (Pre_Name);
             if Is_Undefined then
-               Log.Error ("Undefined variable in file name substitution");
-               Global.Errors := @ + 1;
-               return Name;
+               New_Name.Append (Var_Mold);
+               Log.Warning
+                 ("Undefined variable " & Var_Name &
+                  " in file name substitution");
+               Inc (Global.Results, Mold.Warnings);
             else
                New_Name.Append (Var_Value);
             end if;
@@ -107,6 +114,7 @@ package body File is
 
       if Has_Matches then
          New_Name.Append (Name (Current .. Name'Last));
+         Log.Debug ("Renamed file " & Name & " to " & To_String (New_Name));
          return To_String (New_Name);
       else
          return Name;
