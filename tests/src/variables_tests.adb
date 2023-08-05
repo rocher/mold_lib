@@ -6,19 +6,10 @@
 --
 -------------------------------------------------------------------------------
 
-with Ada.Directories;
-
-with AUnit.Assertions; use AUnit.Assertions;
-
-with Simple_Logging;
-
 with Mold;    use Mold;
 with Support; use Support;
 
 package body Variables_Tests is
-
-   package Dir renames Ada.Directories;
-   package Log renames Simple_Logging;
 
    ----------
    -- Name --
