@@ -6,6 +6,8 @@
 --
 -------------------------------------------------------------------------------
 
+with GNAT.Source_Info;
+
 with Mold;
 
 package Support is
@@ -32,9 +34,16 @@ package Support is
    function Pretty_Print
      (Errors : Natural; Results : Mold.Results_Access) return String;
 
+   --!pp off
    procedure Check_Results
-     (Errors          : Natural; Actual, Expected : Mold.Results_Access;
-      Expected_Errors : Natural := 0);
+   (
+      Errors             : Natural;
+      Reported, Expected : Mold.Results_Access;
+      Expected_Errors    : Natural := 0;
+      Source             : String  := GNAT.Source_Info.File;
+      Line               : Natural := GNAT.Source_Info.Line
+   );
+   --!pp on
 
    procedure Check_MD5_Digest (File_Name, Digest : String);
 

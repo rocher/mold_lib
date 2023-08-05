@@ -45,24 +45,32 @@ package body Support is
    -- Check_Results --
    -------------------
 
+   --!pp off
    procedure Check_Results
-     (Errors          : Natural; Actual, Expected : Mold.Results_Access;
-      Expected_Errors : Natural := 0)
+     (Errors             : Natural;
+      Reported, Expected : Mold.Results_Access;
+      Expected_Errors    : Natural := 0;
+      Source             : String  := GNAT.Source_Info.File;
+      Line               : Natural := GNAT.Source_Info.Line)
+   --!pp on
+
    is
    begin
-      Simple_Logging.Detail (Pretty_Print (Errors, Actual));
+      Simple_Logging.Detail (Pretty_Print (Errors, Reported));
 
       Assert
         (Errors = Expected_Errors,
          "Incorrect Errors: reported" & Errors'Image & ", expected" &
-         Expected_Errors'Image);
+         Expected_Errors'Image,
+         Source, Line);
 
       for Field in Mold.Field_Type loop
          Assert
-           (Actual.all (Field) = Expected.all (Field),
+           (Reported.all (Field) = Expected.all (Field),
             "Wrong number of " & Field'Image & ": reported" &
-            Actual.all (Field)'Image & ", expected" &
-            Expected.all (Field)'Image);
+            Reported.all (Field)'Image & ", expected" &
+            Expected.all (Field)'Image,
+            Source, Line);
       end loop;
    end Check_Results;
 
