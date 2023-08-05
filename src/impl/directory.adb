@@ -60,11 +60,13 @@ package body Directory is
             then
                if Element.Kind = Dir.Directory then
                   Errors :=
+                    Errors +
                     Replace
                       (Output_Dir, Name'Unchecked_Access, Variables, Settings,
                        Results);
                elsif Extension = "mold" then
                   Errors :=
+                    Errors +
                     File.Replace
                       (Output_Dir, Name'Unchecked_Access, Variables, Settings,
                        Results);
