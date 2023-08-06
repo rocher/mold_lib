@@ -1,6 +1,5 @@
-mold-rename-source = "false"
-mold-delete-source = "true"
-mold-defined-settings = "true"
+mold-rename-source = "true"
+mold-delete-source = "false"
 mold-action = "ignore"
 mold-alert = "warning"
 mold-abort-on-error = "False"
