@@ -9,6 +9,7 @@
 with Rename_Tests;    use Rename_Tests;
 with Variables_Tests; use Variables_Tests;
 with Inclusion_Tests; use Inclusion_Tests;
+with Directory_Tests; use Directory_Tests;
 
 package body Mold_Test_Suite is
 
@@ -19,6 +20,7 @@ package body Mold_Test_Suite is
    Files_Test     : aliased Files_Test_Case;
    Variables_Test : aliased Variables_Test_Case;
    Inclusion_Test : aliased Inclusion_Test_Case;
+   Directory_Test : aliased Directory_Test_Case;
 
    -----------
    -- Suite --
@@ -30,6 +32,7 @@ package body Mold_Test_Suite is
       Add_Test (Result'Access, Variables_Test'Access);
       Add_Test (Result'Access, Files_Test'Access);
       Add_Test (Result'Access, Inclusion_Test'Access);
+      Add_Test (Result'Access, Directory_Test'Access);
 
       return Result'Access;
    end Suite;
