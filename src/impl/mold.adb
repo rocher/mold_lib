@@ -6,6 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
+
 with Ada.Directories;
 with Simple_Logging;
 
@@ -40,13 +41,21 @@ package body Mold is
 
    is
 
-      Source_Alias     : aliased String := Source;
-      Output_Dir_Alias : aliased String := Output_Dir;
+      Source_Alias : aliased String := Source;
+      Output_Path  : aliased String :=
+        (if Output_Dir'Length > 0 then Dir.Full_Name (Output_Dir)
+         else Dir.Containing_Directory (Source));
 
       Used_Settings : constant Settings_Access :=
         (if Settings = null then Default_Settings'Access else Settings);
 
    begin
+
+      Log.Debug ("MOLD Apply");
+      Log.Debug ("  Source      : " & Source);
+      Log.Debug ("  Output_Path : " & Output_Path);
+      Log.Debug ("  Definitions : " & Definitions);
+
       if Results /= null then
          Results.all := [others => 0];
       end if;
@@ -68,22 +77,26 @@ package body Mold is
          goto Finalize_Function;
       end if;
 
-      if Dir.Kind (Source) = Dir.Ordinary_File then
-         if Output_Dir'Length > 0
-           and then
-           (not Dir.Exists (Output_Dir)
-            or else Dir.Kind (Output_Dir) /= Dir.Directory)
-         then
-            Log.Error ("Invalid output directory '" & Output_Dir & "'");
-            Global_Errors := 1;
-            goto Finalize_Function;
-         end if;
-      else
-         if Output_Dir /= "." then
-            Log.Error ("Invalid output directory '" & Output_Dir & "'");
-            Global_Errors := 1;
-            goto Finalize_Function;
-         end if;
+      --  if Dir.Kind (Source) = Dir.Ordinary_File then
+      --     if Output_Dir'Length > 0
+      --       and then
+      --       (not Dir.Exists (Output_Dir)
+      --        or else Dir.Kind (Output_Dir) /= Dir.Directory)
+      --     then
+      --        Log.Error ("Invalid output directory '" & Output_Dir & "'");
+      --        Global_Errors := 1;
+      --        goto Finalize_Function;
+      --     end if;
+      --  else
+      --     if Output_Dir /= "." then
+      --        Log.Error ("Invalid output directory '" & Output_Dir & "'");
+      --        Global_Errors := 1;
+      --        goto Finalize_Function;
+      --     end if;
+      --  end if;
+
+      if not Dir.Exists (Output_Path) then
+         Dir.Create_Path (Output_Path);
       end if;
 
       if Definitions'Length = 0 or else not Dir.Exists (Definitions)
@@ -109,13 +122,26 @@ package body Mold is
 
       Global_Errors :=
         Replace.Apply
-          (Source_Alias, Output_Dir_Alias, Access_Variables, Used_Settings,
+          (Source_Alias, Output_Path, Access_Variables, Used_Settings,
            Results);
       Global_Variables.Clear;
 
       <<Finalize_Function>>
-
       return Global_Errors;
+
+   exception
+      when Dir.Name_Error =>
+         Log.Error
+           ("EXCEPTION caught: Invalid output directory " & Output_Path);
+         Global_Errors := 1;
+         return Global_Errors;
+
+      when Dir.Use_Error =>
+         Log.Error
+           ("EXCEPTION caught: Cannot create output directory " & Output_Path);
+         Global_Errors := 1;
+         return Global_Errors;
+
    end Apply;
 
 end Mold;

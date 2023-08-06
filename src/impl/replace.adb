@@ -138,9 +138,11 @@ package body Replace is
                end if;
             end if;
             Vars.Include (Element.Key, Element.Value.As_Unbounded_String);
-            Log.Debug
-              ("defined var " & To_String (Element.Key) & " = " &
-               Element.Value.As_String);
+
+            --  Log.Debug
+            --    ("defined var " & To_String (Element.Key) & " = " &
+            --     Element.Value.As_String);
+
             Inc (Results, Mold.Definitions);
          end loop;
       else
@@ -179,7 +181,7 @@ package body Replace is
          File.Set_Root_Directory (Dir.Current_Directory);
          Errors :=
            Directory.Replace
-             (Source'Unrestricted_Access, Output_Dir'Unrestricted_Access,
+             ("", Source'Unrestricted_Access, Output_Dir'Unrestricted_Access,
               Variables, Settings, Results);
       end if;
 

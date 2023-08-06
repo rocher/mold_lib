@@ -8,7 +8,9 @@
 
 with Ada.Directories;
 with Simple_Logging;
+with GNAT.Directory_Operations;
 
+with Dir_Ops; use Dir_Ops;
 with File;
 
 package body Directory is
@@ -25,6 +27,7 @@ package body Directory is
    --!pp off
    function Replace
    (
+      Sub_Dir    :          String;
       Source     : not null String_Access;
       Output_Dir : not null String_Access;
       Variables  : not null Standard.Replace.Variables_Access;
@@ -40,8 +43,15 @@ package body Directory is
       Result  : Dir.Search_Type;
       Element : Dir.Directory_Entry_Type;
    begin
-      Log.Debug ("entering directory " & Source.all);
+
+      Log.Debug ("REPLACE in directory");
+      Log.Debug ("  Sub_Dir     : " & Sub_Dir);
+      Log.Debug ("  Source      : " & Source.all);
+      Log.Debug ("  Output_Dir  : " & Output_Dir.all);
+      Log.Debug ("  CWD         : " & Dir.Current_Directory);
+      Log.Debug ("  entering    : " & Source.all);
       Dir.Set_Directory (Source.all);
+      Log.Debug ("  CWD         : " & Dir.Current_Directory);
 
       Dir.Start_Search
         (Result, ".", "*",
@@ -52,24 +62,38 @@ package body Directory is
          exit when not Result.More_Entries;
          Result.Get_Next_Entry (Element);
          declare
-            Name      : aliased String  := Element.Simple_Name;
-            Extension : constant String := Dir.Extension (Name);
+            Name : aliased String := Element.Simple_Name;
          begin
+
+            Log.Debug ("Dir Element : " & Name);
+
             if Name'Length > 0 and then Name /= "." and then Name /= ".."
               and then Name /= ".git"
             then
                if Element.Kind = Dir.Directory then
+                  Log.Debug ("Directory replace in element " & Name);
                   Errors :=
                     Errors +
                     Replace
-                      (Output_Dir, Name'Unchecked_Access, Variables, Settings,
-                       Results);
-               elsif Extension = "mold" then
-                  Errors :=
-                    Errors +
-                    File.Replace
-                      (Output_Dir, Name'Unchecked_Access, Variables, Settings,
-                       Results);
+                      (Dir.Compose (Sub_Dir, Name), Name'Unchecked_Access,
+                       Output_Dir, Variables, Settings, Results);
+               elsif Dir.Extension (Name) = "mold" then
+                  declare
+                     Out_Sub_dir : aliased String :=
+                       Path (Output_Dir.all, Sub_Dir);
+                     --    Dir.Compose
+                     --      (Dir.Compose
+                     --         (Output_Dir.all,
+                     --          Dir.Containing_Directory (Sub_Dir)),
+                     --       Dir.Simple_Name (Sub_Dir));
+                  begin
+                     Log.Debug ("File replace in element " & Name);
+                     Errors :=
+                       Errors +
+                       File.Replace
+                         (Name'Unchecked_Access, Out_Sub_dir'Unchecked_Access,
+                          Variables, Settings, Results);
+                  end;
                end if;
                if Errors > 0 and then Settings.Abort_On_Error then
                   goto Exit_Function;
@@ -82,6 +106,14 @@ package body Directory is
 
       Dir.Set_Directory (CWD);
       return Errors;
+
+   exception
+      when Dir.Name_Error =>
+         Log.Error ("EXCEPTION caught Name_Error");
+         Dir.Set_Directory (CWD);
+         Errors := @ + 1;
+         return Errors;
+
    end Replace;
 
 end Directory;

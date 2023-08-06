@@ -8,12 +8,11 @@
 
 with Ada.Containers.Doubly_Linked_Lists; use Ada.Containers;
 with Ada.Directories;
-with Ada.Unchecked_Deallocation;
 with Ada.Text_IO;
-
 with GNAT.Regpat;
 with Simple_Logging;
 
+with Dir_Ops; use Dir_Ops;
 with Results; use Results;
 
 package body File is
@@ -49,13 +48,6 @@ package body File is
 
    Global : Global_Arguments;
 
-   -----------------
-   -- Free_String --
-   -----------------
-
-   procedure Free_String is new Ada.Unchecked_Deallocation
-     (Object => String, Name => String_Access);
-
    ------------------------
    -- Set_Root_Directory --
    ------------------------
@@ -64,6 +56,7 @@ package body File is
       Root_Directory : String_Access := new String'(Name);
    begin
       Global.Root_Directory := Root_Directory;
+      Log.Debug ("Root_Directory : " & Global.Root_Directory.all);
    end Set_Root_Directory;
 
    ---------------
@@ -113,10 +106,11 @@ package body File is
 
             Is_Undefined : constant Boolean := (Var_Value = "");
          begin
-            Log.Debug ("Pre_Name : '" & Pre_Name & "'");
-            Log.Debug ("Var_Mold : '" & Var_Mold & "'");
-            Log.Debug ("Var_Name : '" & Var_Name & "'");
-            Log.Debug ("Var_Value: '" & Var_Value & "'");
+
+            --  Log.Debug ("Pre_Name : '" & Pre_Name & "'");
+            --  Log.Debug ("Var_Mold : '" & Var_Mold & "'");
+            --  Log.Debug ("Var_Name : '" & Var_Name & "'");
+            --  Log.Debug ("Var_Value: '" & Var_Value & "'");
 
             New_Name.Append (Pre_Name);
             if Is_Undefined then
@@ -188,10 +182,10 @@ package body File is
             Is_Undefined : constant Boolean := (Var_Value = "");
          begin
 
-            Log.Debug ("Pre_Text    : '" & Pre_Text & "'");
-            Log.Debug ("Var_Mold    : '" & Var_Mold & "'");
-            Log.Debug ("Var_All_Name: '" & Var_All_Name & "'");
-            Log.Debug ("Var_Name    : '" & Var_Name & "'");
+            --  Log.Debug ("Pre_Text    : '" & Pre_Text & "'");
+            --  Log.Debug ("Var_Mold    : '" & Var_Mold & "'");
+            --  Log.Debug ("Var_All_Name: '" & Var_All_Name & "'");
+            --  Log.Debug ("Var_Name    : '" & Var_Name & "'");
 
             New_Line.Append (Pre_Text);
 
@@ -257,6 +251,21 @@ package body File is
 
       Include_Access    : String_Access := null;
       Include_From_Root : Boolean       := False;
+
+      -------------------------
+      -- Free_Include_Access --
+      -------------------------
+
+      procedure Free_Include_Access is
+      begin
+         if Include_From_Root and then Include_Access /= null then
+            Log.Debug ("Freeing Include_Access " & Include_Access'Image);
+            Free (Include_Access);
+            Log.Debug ("Freeing Include_Access " & Include_Access'Image);
+            Include_Access := null;
+         end if;
+      end Free_Include_Access;
+
    begin
       For_Each_Line :
       loop
@@ -287,7 +296,11 @@ package body File is
                   Extension : constant String := Dir.Extension (Inc_Name);
 
                begin
-                  Log.Debug ("Include file " & Inc_Name);
+
+                  Log.Debug ("Include file");
+                  Log.Debug ("  Inc_Name  : " & Inc_Name);
+                  Log.Debug ("  Full_Name : " & Full_Name);
+                  Log.Debug ("  Extension : " & Extension);
 
                   if Extension /= Mold.Include_File_Extension then
                      Log.Error
@@ -297,15 +310,29 @@ package body File is
                   end if;
 
                   if Dir.Exists (Full_Name) then
-                     Include_Access := Full_Name'Unchecked_Access;
+                     Include_Access    := Full_Name'Unchecked_Access;
+                     Include_From_Root := False;
                      Log.Debug ("Including from current directory");
                   else
+                     Log.Debug ("Trying to include from running directory");
+                     Log.Debug
+                       ("  Global.Root_Directory : " &
+                        Global.Root_Directory.all);
+                     Log.Debug ("  Inc_Name              : " & Inc_Name);
+                     Log.Debug
+                       ("  Cont. Dir Inc_Name    : " &
+                        Dir.Containing_Directory (Inc_Name));
+                     Log.Debug
+                       ("  DC Glob Root + Cdir   : " &
+                        Path (Global.Root_Directory.all, Inc_Name));
                      if Global.Root_Directory /= null then
                         Include_Access    :=
                           new String'
-                            (Dir.Compose
-                               (Global.Root_Directory.all, Inc_Name));
+                            (Path (Global.Root_Directory.all, Inc_Name));
                         Include_From_Root := True;
+                        Log.Debug
+                          ("Include_Access'Image : " & Include_Access'Image);
+                        Log.Debug ("Include_Access : " & Include_Access.all);
                         if Dir.Exists (Include_Access.all)
                           and then Dir.Kind (Include_Access.all) =
                             Dir.Ordinary_File
@@ -335,10 +362,12 @@ package body File is
                      Inc : File_Type;
                   begin
                      Global.Included_Files.Append
-                       (To_Unbounded_String (Full_Name));
-                     Inc.Open (In_File, Full_Name);
+                       (To_Unbounded_String (Include_Access.all));
+                     Inc.Open (In_File, Include_access.all);
                      Replace_In_Stream (Inc, Dst);
                      Global.Included_Files.Delete_Last;
+                     Free_Include_Access;
+                     Log.Debug ("  file included");
                   end;
                end;
             end if;
@@ -347,10 +376,7 @@ package body File is
 
       <<Exit_Procedure>>
 
-      if Include_From_Root then
-         Free_String (Include_Access);
-      end if;
-
+      --  Free_Include_Access;
       Src.Close;
    end Replace_In_Stream;
 
@@ -428,18 +454,23 @@ package body File is
             Inc (Results, Mold.Renamed);
          end if;
 
-         Log.Debug ("Dir_Name       : " & Dir_Name);
-         Log.Debug ("Src_File_Name  : " & Source.all);
-         Log.Debug ("Base_File_Name : " & Base_File_Name);
-         Log.Debug ("Prep_File_Name : " & Prep_File_Name);
-         Log.Debug ("Repl_File_Name : " & Repl_File_Name);
-         Log.Debug ("Real_Out_Dir   : " & Real_Out_Dir);
-         Log.Debug ("Dst_File_Name  : " & Dst_File_Name);
+         Log.Debug ("REPLACE in File");
+         Log.Debug ("  Dir_Name       : " & Dir_Name);
+         Log.Debug ("  Src_File_Name  : " & Source.all);
+         Log.Debug ("  Base_File_Name : " & Base_File_Name);
+         Log.Debug ("  Prep_File_Name : " & Prep_File_Name);
+         Log.Debug ("  Repl_File_Name : " & Repl_File_Name);
+         Log.Debug ("  Real_Out_Dir   : " & Real_Out_Dir);
+         Log.Debug ("  Dst_File_Name  : " & Dst_File_Name);
 
          --  open source file
          Src_File.Open (IO.In_File, Source.all);
 
-         --  open destination file
+         --  open or create destination file and directory
+         if not Dir.Exists (Real_Out_Dir) then
+            Dir.Create_Path (Real_Out_Dir);
+            Log.Debug ("Created dir " & Real_Out_Dir);
+         end if;
          if Dir.Exists (Dst_File_Name) then
             if Settings.Overwrite then
                Dir.Delete_File (Dst_File_Name);
@@ -468,8 +499,8 @@ package body File is
          --  invalid output directory or file name with replaced variables
          when Dir.Name_Error =>
             Log.Error
-              ("Invalid output directory or file name: '" & Dst_File_Name &
-               "'");
+              ("EXCEPTION caught: Invalid output directory or file name: '" &
+               Dst_File_Name & "'");
             Global.Errors := @ + 1;
             return Global.Errors;
       end;

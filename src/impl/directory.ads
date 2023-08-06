@@ -16,6 +16,7 @@ package Directory is
    --!pp off
    function Replace
    (
+      Sub_Dir    :          String;
       Source     : not null String_Access;
       Output_Dir : not null String_Access;
       Variables  : not null Replace.Variables_Access;
