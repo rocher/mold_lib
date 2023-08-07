@@ -53,9 +53,8 @@ package body Replace is
       end Set_Boolean;
 
    begin
-      if Key = "mold-defined-settings" then
-         Set_Boolean (Settings.Defined_Settings'Access, Value);
-      elsif Settings.Defined_Settings then
+
+      if Settings.Defined_Settings then
          case Key is
             when "mold-rename-source" =>
                Set_Boolean (Settings.Rename_Source'Access, Value);
