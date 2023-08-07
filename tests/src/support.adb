@@ -119,10 +119,11 @@ package body Support is
 
 begin
 
-   Simple_Logging.Level := Simple_Logging.Always;
-
+   Simple_Logging.Level                         := Simple_Logging.Always;
    Simple_Logging.Decorators.Location_Decorator :=
      Simple_Logging.Decorators.No_Location_Decorator'Access;
+
+   --  Simple_Logging.Level                         := Simple_Logging.Debug;
    --  Simple_Logging.Decorators.Location_Decorator :=
    --    Simple_Logging.Decorators.Simple_Location_Decorator'Access;
 
