@@ -128,7 +128,7 @@ package body Replace is
       if Read_Result.Success then
          for Element of Read_Result.Value.Iterate_On_Table loop
             if Element.Key.Length >= 10
-              and then Element.Key.Slice (1, 5) = "mold-"
+              and then Element.Key.Slice (1, 5) = Mold.Variable_Setting_Prefix
             then
                if not Set_Mold_Setting
                    (To_String (Element.Key), Element.Value.As_String, Settings)
@@ -177,7 +177,7 @@ package body Replace is
              (Source'Unrestricted_Access, Output_Dir'Unrestricted_Access,
               Variables, Settings, Results);
       else
-         File.Set_Root_Directory (Dir.Current_Directory);
+         File.Set_Running_Directory (Dir.Current_Directory);
          Errors :=
            Directory.Replace
              ("", Source'Unrestricted_Access, Output_Dir'Unrestricted_Access,

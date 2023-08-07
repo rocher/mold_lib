@@ -13,10 +13,11 @@ with Replace;
 
 package File is
 
-   procedure Set_Root_Directory (Name : String);
+   procedure Set_Running_Directory (Name : String);
    --  Set the directory from which the process has been invoked when
    --  operating on directory trees. This directory is used to search include
-   --  files if not found in the current working (sub-)directory.
+   --  files if not found in the current working (sub-)directory of the mold
+   --  file being processed.
 
    --!pp off
    function Replace

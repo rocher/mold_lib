@@ -37,27 +37,27 @@ package body File is
    Include_Matcher : Reg.Pattern_Matcher (128);
 
    type Global_Arguments is record
-      Root_Directory : String_Access := null;
-      Source         : String_Access;
-      Variables      : Standard.Replace.Variables_Access;
-      Settings       : Mold.Settings_Access;
-      Results        : Mold.Results_Access;
-      Errors         : Natural;
-      Included_Files : Inclusion_List;
+      Running_Directory : String_Access := null;
+      Source            : String_Access;
+      Variables         : Standard.Replace.Variables_Access;
+      Settings          : Mold.Settings_Access;
+      Results           : Mold.Results_Access;
+      Errors            : Natural;
+      Included_Files    : Inclusion_List;
    end record;
 
    Global : Global_Arguments;
 
-   ------------------------
-   -- Set_Root_Directory --
-   ------------------------
+   ---------------------------
+   -- Set_Running_Directory --
+   ---------------------------
 
-   procedure Set_Root_Directory (Name : String) is
+   procedure Set_Running_Directory (Name : String) is
       Root_Directory : String_Access := new String'(Name);
    begin
-      Global.Root_Directory := Root_Directory;
-      Log.Debug ("Root_Directory : " & Global.Root_Directory.all);
-   end Set_Root_Directory;
+      Global.Running_Directory := Root_Directory;
+      Log.Debug ("Root_Directory : " & Global.Running_Directory.all);
+   end Set_Running_Directory;
 
    ---------------
    -- Get_Value --
@@ -317,18 +317,19 @@ package body File is
                      Log.Debug ("Trying to include from running directory");
                      Log.Debug
                        ("  Global.Root_Directory : " &
-                        Global.Root_Directory.all);
+                        Global.Running_Directory.all);
                      Log.Debug ("  Inc_Name              : " & Inc_Name);
                      Log.Debug
                        ("  Cont. Dir Inc_Name    : " &
                         Dir.Containing_Directory (Inc_Name));
                      Log.Debug
                        ("  DC Glob Root + Cdir   : " &
-                        Path (Global.Root_Directory.all, Inc_Name));
-                     if Global.Root_Directory /= null then
+                        Path (Global.Running_Directory.all, Inc_Name));
+
+                     if Global.Running_Directory /= null then
                         Include_Access    :=
                           new String'
-                            (Path (Global.Root_Directory.all, Inc_Name));
+                            (Path (Global.Running_Directory.all, Inc_Name));
                         Include_From_Root := True;
                         Log.Debug
                           ("Include_Access'Image : " & Include_Access'Image);
@@ -354,20 +355,24 @@ package body File is
                      Global.Errors := @ + 1;
                      goto Exit_Procedure;
                   else
-                     Log.Debug ("Including file " & Include_Access.all);
+                     Log.Debug
+                       ("Including file " & Include_Access.all & " ...");
                   end if;
 
                   declare
                      use Ada.Text_IO;
                      Inc : File_Type;
                   begin
+
                      Global.Included_Files.Append
                        (To_Unbounded_String (Include_Access.all));
+
                      Inc.Open (In_File, Include_access.all);
                      Replace_In_Stream (Inc, Dst);
+
                      Global.Included_Files.Delete_Last;
                      Free_Include_Access;
-                     Log.Debug ("  file included");
+                     Log.Debug ("...  file included");
                   end;
                end;
             end if;
@@ -376,8 +381,18 @@ package body File is
 
       <<Exit_Procedure>>
 
-      --  Free_Include_Access;
+      Free_Include_Access;
       Src.Close;
+
+   exception
+      when others =>
+         Log.Error
+           ("EXCEPTION caught in file.adb: " &
+            " Please run again with logging Debug enabled" &
+            " and report this error");
+         Free_Include_Access;
+         Global.Errors := @ + 1;
+
    end Replace_In_Stream;
 
    -------------

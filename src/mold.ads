@@ -17,6 +17,7 @@ package Mold is
    File_Extension                : constant String    := "mold";
    Inclusion_File_Prefix         : constant String    := "include:";
    Include_File_Extension        : constant String    := "molt";
+   Variable_Setting_Prefix       : constant String    := "mold-";
 
    type Settings_Type is record
       Rename_Source    : aliased Boolean;

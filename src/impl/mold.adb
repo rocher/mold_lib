@@ -6,10 +6,10 @@
 --
 -------------------------------------------------------------------------------
 
-
 with Ada.Directories;
 with Simple_Logging;
 
+with Dir_Ops; use Dir_Ops;
 with Replace;
 
 package body Mold is
@@ -19,13 +19,9 @@ package body Mold is
 
    use all type Dir.File_Kind;
 
-   Global_Variables : aliased Replace.Variables_Map;
-   Access_Variables : Replace.Variables_Access := Global_Variables'Access;
-   Global_Errors    : Natural;
-
-   ---------
-   -- Run --
-   ---------
+   -----------
+   -- Apply --
+   -----------
 
    --!pp off
    function Apply
@@ -40,107 +36,88 @@ package body Mold is
    --!pp on
 
    is
-
       Source_Alias : aliased String := Source;
-      Output_Path  : aliased String :=
-        (if Output_Dir'Length > 0 then Dir.Full_Name (Output_Dir)
-         else Dir.Containing_Directory (Source));
-
-      Used_Settings : constant Settings_Access :=
-        (if Settings = null then Default_Settings'Access else Settings);
-
    begin
 
-      Log.Debug ("MOLD Apply");
-      Log.Debug ("  Source      : " & Source);
-      Log.Debug ("  Output_Path : " & Output_Path);
-      Log.Debug ("  Definitions : " & Definitions);
-
-      if Results /= null then
-         Results.all := [others => 0];
-      end if;
-      Global_Errors := 0;
-
-      if Source'Length = 0 or else not Dir.Exists (Source)
-        or else Dir.Kind (Source) = Dir.Special_File
-      then
-         Log.Error ("No such file or directory '" & Source & "'");
-         Global_Errors := 1;
-         goto Finalize_Function;
-      end if;
-
-      if Dir.Kind (Source) = Dir.Ordinary_File
-        and then Dir.Extension (Source) /= File_Extension
-      then
-         Log.Error ("Source file with Invalid extension");
-         Global_Errors := 1;
-         goto Finalize_Function;
-      end if;
-
-      --  if Dir.Kind (Source) = Dir.Ordinary_File then
-      --     if Output_Dir'Length > 0
-      --       and then
-      --       (not Dir.Exists (Output_Dir)
-      --        or else Dir.Kind (Output_Dir) /= Dir.Directory)
-      --     then
-      --        Log.Error ("Invalid output directory '" & Output_Dir & "'");
-      --        Global_Errors := 1;
-      --        goto Finalize_Function;
-      --     end if;
-      --  else
-      --     if Output_Dir /= "." then
-      --        Log.Error ("Invalid output directory '" & Output_Dir & "'");
-      --        Global_Errors := 1;
-      --        goto Finalize_Function;
-      --     end if;
-      --  end if;
-
-      if not Dir.Exists (Output_Path) then
-         Dir.Create_Path (Output_Path);
-      end if;
-
-      if Definitions'Length = 0 or else not Dir.Exists (Definitions)
-        or else Dir.Kind (Definitions) /= Dir.Ordinary_File
-      then
-         Log.Error ("Definitions file not found");
-         Global_Errors := 1;
-         goto Finalize_Function;
-      end if;
-
       declare
-         Success : Boolean;
+         Output_Path : aliased String :=
+           Full_Path_Expanded
+             (if Output_Dir'Length > 0 then Output_Dir
+              else Dir.Containing_Directory (Source));
+
+         Used_Settings : constant Settings_Access :=
+           (if Settings = null then Default_Settings'Access else Settings);
       begin
-         Global_Variables :=
-           Replace.Read_Variables_Map
-             (Definitions, Used_Settings, Results, Success);
-         if not Success then
-            Log.Error ("Could not load a valid set of variables");
-            Global_Errors := 1;
-            goto Finalize_Function;
+
+         Log.Debug ("MOLD Apply");
+         Log.Debug ("  Source      : " & Source);
+         Log.Debug ("  Output_Path : " & Output_Path);
+         Log.Debug ("  Definitions : " & Definitions);
+
+         if Results /= null then
+            Results.all := [others => 0];
          end if;
+
+         if Source'Length = 0 or else not Dir.Exists (Source)
+           or else Dir.Kind (Source) = Dir.Special_File
+         then
+            Log.Error ("No such file or directory '" & Source & "'");
+            return 1;
+         end if;
+
+         if Dir.Kind (Source) = Dir.Ordinary_File
+           and then Dir.Extension (Source) /= File_Extension
+         then
+            Log.Error ("Source file with invalid extension '" & Source & "'");
+            return 1;
+         end if;
+
+         if not Dir.Exists (Output_Path) then
+            Dir.Create_Path (Output_Path);
+            Log.Debug ("Created output path " & Output_Path);
+         elsif Dir.Kind (Output_Path) /= Dir.Directory then
+            Log.Error ("Invalid output directory " & Output_Path);
+            return 1;
+         end if;
+
+         if Definitions'Length = 0 or else not Dir.Exists (Definitions)
+           or else Dir.Kind (Definitions) /= Dir.Ordinary_File
+         then
+            Log.Error ("Definitions file not found");
+            return 1;
+         end if;
+
+         declare
+            Variables : aliased Replace.Variables_Map;
+            Success   : Boolean;
+            Errors    : Natural;
+         begin
+
+            Variables :=
+              Replace.Read_Variables_Map
+                (Definitions, Used_Settings, Results, Success);
+
+            if not Success then
+               Log.Error ("Cannot load definitions file");
+               return 1;
+            end if;
+
+            Errors :=
+              Replace.Apply
+                (Source_Alias, Output_Path, Variables'Unchecked_Access,
+                 Used_Settings, Results);
+
+            return Errors;
+         end;
       end;
 
-      Global_Errors :=
-        Replace.Apply
-          (Source_Alias, Output_Path, Access_Variables, Used_Settings,
-           Results);
-      Global_Variables.Clear;
-
-      <<Finalize_Function>>
-      return Global_Errors;
-
    exception
-      when Dir.Name_Error =>
+      when others =>
          Log.Error
-           ("EXCEPTION caught: Invalid output directory " & Output_Path);
-         Global_Errors := 1;
-         return Global_Errors;
-
-      when Dir.Use_Error =>
-         Log.Error
-           ("EXCEPTION caught: Cannot create output directory " & Output_Path);
-         Global_Errors := 1;
-         return Global_Errors;
+           ("EXCEPTION caught in mold.abd:" &
+            " Please run again with logging Debug enabled" &
+            " and report this error");
+         return 1;
 
    end Apply;
 
