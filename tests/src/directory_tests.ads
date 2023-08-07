@@ -17,6 +17,7 @@ package Directory_Tests is
 
    overriding procedure Register_Tests (T : in out Directory_Test_Case);
 
-   procedure Test_All (T : in out Test_Case'Class);
+   procedure Test_In_Place (T : in out Test_Case'Class);
+   procedure Test_Destination (T : in out Test_Case'Class);
 
 end Directory_Tests;
