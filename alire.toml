@@ -19,5 +19,4 @@ ada_version = ["-gnat2022", "-gnatX"]
 
 [[depends-on]]
 ada_toml = "~0.3.0"
-gnat = ">=2021 | (>=12 & <2000)"
-simple_logging = "^1.2.0"
+gnat = "=12.2.1"
