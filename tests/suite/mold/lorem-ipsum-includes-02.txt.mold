@@ -1,3 +1,0 @@
-{{ include:suite/molt/lorem-ipsum-from-00-to-49.molt }}
-
-{{ include:suite/molt/lorem-ipsum-from-50-to-99.molt }}

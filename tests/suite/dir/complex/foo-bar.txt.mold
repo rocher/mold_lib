@@ -1,5 +1,0 @@
-FOO is {{foo}} BAR is {{bar}}
-foo="{{     foo  }}" and bar="{{   bar     }}"
-
-{ foo } is not replaced
-{ bar } is not replaced
