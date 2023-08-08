@@ -56,7 +56,6 @@ package body File is
       Root_Directory : constant String_Access := new String'(Name);
    begin
       Global.Running_Directory := Root_Directory;
-      Log.Debug ("Root_Directory : " & Global.Running_Directory.all);
    end Set_Running_Directory;
 
    ---------------
@@ -69,7 +68,6 @@ package body File is
         Global.Variables.Find (To_Unbounded_String (Var_Name));
    begin
       if Ref = No_Element then
-         Log.Debug ("Unmapped variable " & Var_Name);
          return "";
       else
          return To_String (Element (Ref));
@@ -115,9 +113,6 @@ package body File is
             New_Name.Append (Pre_Name);
             if Is_Undefined then
                New_Name.Append (Var_Mold);
-               Log.Warning
-                 ("Undefined variable " & Var_Name &
-                  " in file name substitution");
                Inc (Global.Results, Mold.Warnings);
             else
                New_Name.Append (Var_Value);
@@ -129,7 +124,6 @@ package body File is
 
       if Has_Matches then
          New_Name.Append (Name (Current .. Name'Last));
-         Log.Debug ("Renamed file " & Name & " to " & To_String (New_Name));
          return To_String (New_Name);
       else
          return Name;
@@ -297,14 +291,7 @@ package body File is
 
                begin
 
-                  Log.Debug ("Include file");
-                  Log.Debug ("  Inc_Name  : " & Inc_Name);
-                  Log.Debug ("  Full_Name : " & Full_Name);
-                  Log.Debug ("  Extension : " & Extension);
-
                   if Extension /= Mold.Include_File_Extension then
-                     Log.Error
-                       ("Invalid extension of include file " & Inc_Name);
                      Global.Errors := @ + 1;
                      goto Exit_Procedure;
                   end if;
@@ -312,26 +299,20 @@ package body File is
                   if Dir.Exists (Full_Name) then
                      Include_Access    := Full_Name'Unchecked_Access;
                      Include_From_Root := False;
-                     Log.Debug ("Including from current directory");
                   else
-                     Log.Debug ("Trying to include from running directory");
 
                      if Global.Running_Directory /= null then
                         Include_Access    :=
                           new String'
                             (Path (Global.Running_Directory.all, Inc_Name));
                         Include_From_Root := True;
-                        Log.Debug
-                          ("Include_Access'Image : " & Include_Access'Image);
-                        Log.Debug ("Include_Access : " & Include_Access.all);
 
                         if Dir.Exists (Include_Access.all)
                           and then Dir.Kind (Include_Access.all) =
                             Dir.Ordinary_File
                         then
-                           Log.Debug ("Including from running directory");
+                           null;
                         else
-                           Log.Error ("Include file not found " & Inc_Name);
                            Global.Errors := @ + 1;
                            goto Exit_Procedure;
                         end if;
@@ -341,13 +322,8 @@ package body File is
                   if Global.Included_Files.Contains
                       (To_Unbounded_String (Include_Access.all))
                   then
-                     Log.Error
-                       ("Circular inclusion of file " & Include_Access.all);
                      Global.Errors := @ + 1;
                      goto Exit_Procedure;
-                  else
-                     Log.Debug
-                       ("Including file " & Include_Access.all & " ...");
                   end if;
 
                   declare
@@ -363,7 +339,6 @@ package body File is
 
                      Global.Included_Files.Delete_Last;
                      Free_Include_Access;
-                     Log.Debug ("...  file included");
                   end;
                end;
             end if;
@@ -377,10 +352,6 @@ package body File is
 
    exception
       when others =>
-         Log.Error
-           ("EXCEPTION caught in file.adb: " &
-            " Please run again with logging Debug enabled" &
-            " and report this error");
          Free_Include_Access;
          Global.Errors := @ + 1;
 
@@ -461,36 +432,23 @@ package body File is
             Inc (Results, Mold.Renamed);
          end if;
 
-         Log.Debug ("REPLACE in File");
-         Log.Debug ("  Dir_Name       : " & Dir_Name);
-         Log.Debug ("  Src_File_Name  : " & Source.all);
-         Log.Debug ("  Base_File_Name : " & Base_File_Name);
-         Log.Debug ("  Prep_File_Name : " & Prep_File_Name);
-         Log.Debug ("  Repl_File_Name : " & Repl_File_Name);
-         Log.Debug ("  Real_Out_Dir   : " & Real_Out_Dir);
-         Log.Debug ("  Dst_File_Name  : " & Dst_File_Name);
-
          --  open source file
          Src_File.Open (IO.In_File, Source.all);
 
          --  open or create destination file and directory
          if not Dir.Exists (Real_Out_Dir) then
             Dir.Create_Path (Real_Out_Dir);
-            Log.Debug ("Created dir " & Real_Out_Dir);
          end if;
          if Dir.Exists (Dst_File_Name) then
             if Settings.Overwrite then
                Dir.Delete_File (Dst_File_Name);
-               Log.Debug ("Deleted file " & Dst_File_Name);
                Inc (Results, Mold.Overwritten);
             else
-               Log.Error ("File " & Dst_File_Name & " already exists");
                Global.Errors := @ + 1;
                return Global.Errors;
             end if;
          end if;
          Dst_File.Create (Name => Dst_File_Name);
-         Log.Debug ("Created file " & Dst_File_Name);
 
          Replace_In_Stream (Src_File, Dst_File);
 
@@ -505,9 +463,6 @@ package body File is
       exception
          --  invalid output directory or file name with replaced variables
          when Dir.Name_Error =>
-            Log.Error
-              ("EXCEPTION caught: Invalid output directory or file name: '" &
-               Dst_File_Name & "'");
             Global.Errors := @ + 1;
             return Global.Errors;
       end;

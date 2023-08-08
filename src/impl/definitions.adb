@@ -8,13 +8,10 @@
 
 with TOML;
 with TOML.File_IO;
-with Simple_Logging;
 
 with Results; use Results;
 
 package body Definitions is
-
-   package Log renames Simple_Logging;
 
    use all type Mold.Results_Access;
 
@@ -42,7 +39,6 @@ package body Definitions is
             when "FALSE" | "False" | "false" =>
                Variable.all := False;
             when others =>
-               Log.Error ("Invalid setting value in " & Key & " = " & Value);
                Success := False;
          end case;
       end Set_Boolean;
@@ -79,19 +75,12 @@ package body Definitions is
                   when "WARNING" | "Warning" | "warning" =>
                      Settings.Alert := Mold.Warning;
                   when others =>
-                     Log.Error
-                       ("Invalid setting value in " & Key & " = " & Value);
                      Success := False;
                end case;
 
             when others =>
-               Log.Error ("Invalid setting key in " & Key & " = " & Value);
                Success := False;
          end case;
-      end if;
-
-      if Success then
-         Log.Info ("Setting applied " & Key & " = " & Value);
       end if;
 
       return Success;
@@ -133,14 +122,8 @@ package body Definitions is
             end if;
             Vars.Include (Element.Key, Element.Value.As_Unbounded_String);
 
-            --  Log.Debug
-            --    ("defined var " & To_String (Element.Key) & " = " &
-            --     Element.Value.As_String);
-
             Inc (Results, Mold.Definitions);
          end loop;
-      else
-         Log.Debug ("Error reading definitions file");
       end if;
 
       Success := Read_Result.Success;

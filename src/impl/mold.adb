@@ -7,7 +7,6 @@
 -------------------------------------------------------------------------------
 
 with Ada.Directories;
-with Simple_Logging;
 
 with Definitions;
 with Directory;
@@ -50,11 +49,6 @@ package body Mold is
            (if Settings = null then Default_Settings'Access else Settings);
       begin
 
-         Log.Debug ("MOLD Apply");
-         Log.Debug ("  Source      : " & Source);
-         Log.Debug ("  Output_Path : " & Output_Path);
-         Log.Debug ("  Definitions : " & Definitions);
-
          if Results /= null then
             Results.all := [others => 0];
          end if;
@@ -62,29 +56,24 @@ package body Mold is
          if Source'Length = 0 or else not Dir.Exists (Source)
            or else Dir.Kind (Source) = Dir.Special_File
          then
-            Log.Error ("No such file or directory '" & Source & "'");
             return 1;
          end if;
 
          if Dir.Kind (Source) = Dir.Ordinary_File
            and then Dir.Extension (Source) /= File_Extension
          then
-            Log.Error ("Source file with invalid extension '" & Source & "'");
             return 1;
          end if;
 
          if not Dir.Exists (Output_Path) then
             Dir.Create_Path (Output_Path);
-            Log.Debug ("Created output path " & Output_Path);
          elsif Dir.Kind (Output_Path) /= Dir.Directory then
-            Log.Error ("Invalid output directory " & Output_Path);
             return 1;
          end if;
 
          if Definitions'Length = 0 or else not Dir.Exists (Definitions)
            or else Dir.Kind (Definitions) /= Dir.Ordinary_File
          then
-            Log.Error ("Definitions file not found");
             return 1;
          end if;
 
@@ -99,7 +88,6 @@ package body Mold is
                 (Definitions, Used_Settings, Results, Success);
 
             if not Success then
-               Log.Error ("Cannot load definitions file");
                return 1;
             end if;
 
@@ -124,10 +112,6 @@ package body Mold is
 
    exception
       when others =>
-         Log.Error
-           ("EXCEPTION caught in mold.abd:" &
-            " Please run again with logging Debug enabled" &
-            " and report this error");
          return 1;
 
    end Apply;
