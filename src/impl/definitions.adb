@@ -11,8 +11,6 @@ with TOML;
 with TOML.File_IO;
 with Simple_Logging;
 
-with Directory;
-with File;
 with Results; use Results;
 
 package body Definitions is
@@ -20,7 +18,6 @@ package body Definitions is
    package Dir renames Ada.Directories;
    package Log renames Simple_Logging;
 
-   use all type Dir.File_Kind;
    use all type Mold.Results_Access;
 
    ----------------------

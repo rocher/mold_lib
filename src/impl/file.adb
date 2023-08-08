@@ -53,7 +53,7 @@ package body File is
    ---------------------------
 
    procedure Set_Running_Directory (Name : String) is
-      Root_Directory : String_Access := new String'(Name);
+      Root_Directory : constant String_Access := new String'(Name);
    begin
       Global.Running_Directory := Root_Directory;
       Log.Debug ("Root_Directory : " & Global.Running_Directory.all);
@@ -369,7 +369,7 @@ package body File is
                      Global.Included_Files.Append
                        (To_Unbounded_String (Include_Access.all));
 
-                     Inc.Open (In_File, Include_access.all);
+                     Inc.Open (In_File, Include_Access.all);
                      Replace_In_Stream (Inc, Dst);
 
                      Global.Included_Files.Delete_Last;

@@ -8,7 +8,6 @@
 
 with Ada.Directories;
 with Simple_Logging;
-with GNAT.Directory_Operations;
 
 with Dir_Ops; use Dir_Ops;
 with File;
