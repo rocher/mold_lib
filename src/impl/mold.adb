@@ -9,10 +9,10 @@
 with Ada.Directories;
 with Simple_Logging;
 
+with Definitions;
 with Directory;
 with Dir_Ops; use Dir_Ops;
 with File;
-with Replace;
 
 package body Mold is
 
@@ -89,24 +89,19 @@ package body Mold is
          end if;
 
          declare
-            Variables : aliased Replace.Variables_Map;
+            Variables : aliased Standard.Definitions.Variables_Map;
             Success   : Boolean;
             Errors    : Natural;
          begin
 
             Variables :=
-              Replace.Read_Variables_Map
+              Standard.Definitions.Read_Variables
                 (Definitions, Used_Settings, Results, Success);
 
             if not Success then
                Log.Error ("Cannot load definitions file");
                return 1;
             end if;
-
-            --  Errors :=
-            --    Replace.Apply
-            --      (Source_Alias, Output_Path, Variables'Unchecked_Access,
-            --       Used_Settings, Results);
 
             if Dir.Kind (Source) = Dir.Ordinary_File then
                Errors :=

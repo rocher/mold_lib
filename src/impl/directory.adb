@@ -20,9 +20,9 @@ package body Directory is
 
    use all type Dir.File_Kind;
 
-   -------------
-   -- Replace --
-   -------------
+   ---------------
+   -- Variables --
+   ---------------
 
    --!pp off
    function Replace
@@ -30,7 +30,7 @@ package body Directory is
       Sub_Dir    :          String;
       Source     : not null String_Access;
       Output_Dir : not null String_Access;
-      Variables  : not null Standard.Replace.Variables_Access;
+      Variables  : not null Definitions.Variables_Access;
       Settings   : not null Mold.Settings_Access;
       Results    :          Mold.Results_Access := null
    )

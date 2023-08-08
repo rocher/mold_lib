@@ -12,7 +12,7 @@ with Ada.Strings.Unbounded.Hash;
 
 with Mold;
 
-package Replace is
+package Definitions is
 
    package Variables_Package is new Hashed_Maps
      (Key_Type => Unbounded_String, Element_Type => Unbounded_String,
@@ -22,7 +22,7 @@ package Replace is
    type Variables_Access is access all Variables_Map;
 
    --!pp off
-   function Read_Variables_Map
+   function Read_Variables
    (
       Vars_File :          String;
       Settings  : not null Mold.Settings_Access;
@@ -32,28 +32,8 @@ package Replace is
    return Variables_Map;
    --!pp on
    --
-   --  Read all variables definition of the given TOML Vars_File. Return a
+   --  Read all Definitions definition of the given TOML Vars_File. Return a
    --  Variables_Map object.
    --  ------------------------------------------------------------------------
 
-   --!pp off
-   function Apply
-   (
-      Source     : aliased  String;
-      Output_Dir : aliased  String;
-      Variables  : not null Variables_Access;
-      Settings   : not null Mold.Settings_Access;
-      Results    :          Mold.Results_Access := null
-   )
-   return Natural;
-   --!pp on
-   --
-   --  Replace all occurrences of variables defined in Variables in all files
-   --  with extension "mold" in the Source file or directory. For all
-   --  directories found, apply the same operation except for ".", ".." and
-   --  ".git" directories.
-   --
-   --  Return the number of errors detected.
-   --  ------------------------------------------------------------------------
-
-end Replace;
+end Definitions;

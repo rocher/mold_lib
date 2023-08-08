@@ -9,7 +9,7 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with Mold;
-with Replace;
+with Definitions;
 
 package Directory is
 
@@ -19,7 +19,7 @@ package Directory is
       Sub_Dir    :          String;
       Source     : not null String_Access;
       Output_Dir : not null String_Access;
-      Variables  : not null Replace.Variables_Access;
+      Variables  : not null Definitions.Variables_Access;
       Settings   : not null Mold.Settings_Access;
       Results    :          Mold.Results_Access := null
    )

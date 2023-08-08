@@ -39,7 +39,7 @@ package body File is
    type Global_Arguments is record
       Running_Directory : String_Access := null;
       Source            : String_Access;
-      Variables         : Standard.Replace.Variables_Access;
+      Variables         : Standard.Definitions.Variables_Access;
       Settings          : Mold.Settings_Access;
       Results           : Mold.Results_Access;
       Errors            : Natural;
@@ -64,7 +64,7 @@ package body File is
    ---------------
 
    function Get_Value (Var_Name : String) return String is
-      use Standard.Replace.Variables_Package;
+      use Standard.Definitions.Variables_Package;
       Ref : constant Cursor :=
         Global.Variables.Find (To_Unbounded_String (Var_Name));
    begin
@@ -395,16 +395,16 @@ package body File is
 
    end Replace_In_Stream;
 
-   -------------
-   -- Replace --
-   -------------
+   ---------------
+   -- Variables --
+   ---------------
 
    --!pp off
    function Replace
    (
       Source     : not null String_Access;
       Output_Dir : not null String_Access;
-      Variables  : not null Standard.Replace.Variables_Access;
+      Variables  : not null Definitions.Variables_Access;
       Settings   : not null Mold.Settings_Access;
       Results    :          Mold.Results_Access := null
    )

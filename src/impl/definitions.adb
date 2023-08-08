@@ -15,7 +15,7 @@ with Directory;
 with File;
 with Results; use Results;
 
-package body Replace is
+package body Definitions is
 
    package Dir renames Ada.Directories;
    package Log renames Simple_Logging;
@@ -107,7 +107,7 @@ package body Replace is
    ------------------------
 
    --!pp off
-   function Read_Variables_Map
+   function Read_Variables
    (
       Vars_File :          String;
       Settings  : not null Mold.Settings_Access;
@@ -150,41 +150,6 @@ package body Replace is
 
       Success := Read_Result.Success;
       return Vars;
-   end Read_Variables_Map;
+   end Read_Variables;
 
-   -----------
-   -- Apply --
-   -----------
-
-   --!pp off
-   function Apply
-   (
-      Source     : aliased  String;
-      Output_Dir : aliased  String;
-      Variables  : not null Variables_Access;
-      Settings   : not null Mold.Settings_Access;
-      Results    :          Mold.Results_Access := null
-   )
-   return Natural
-   --!pp on
-
-   is
-      Errors : Natural := 0;
-   begin
-      if Dir.Kind (Source) = Dir.Ordinary_File then
-         Errors :=
-           File.Replace
-             (Source'Unrestricted_Access, Output_Dir'Unrestricted_Access,
-              Variables, Settings, Results);
-      else
-         File.Set_Running_Directory (Dir.Current_Directory);
-         Errors :=
-           Directory.Replace
-             ("", Source'Unrestricted_Access, Output_Dir'Unrestricted_Access,
-              Variables, Settings, Results);
-      end if;
-
-      return Errors;
-   end Apply;
-
-end Replace;
+end Definitions;
