@@ -18,5 +18,4 @@ licenses = "MIT"
 ada_version = ["-gnat2022", "-gnatX"]
 
 [[depends-on]]
-ada_toml = "~0.3.0"
 gnat = "=12.2.1"
