@@ -9,14 +9,13 @@
 with Ada.Directories;
 
 with Definitions;
-with Directory;
+--  with Directory;
 with Dir_Ops; use Dir_Ops;
-with File;
+--  with File;
 
 package body Mold is
 
    package Dir renames Ada.Directories;
-   package Log renames Simple_Logging;
 
    use all type Dir.File_Kind;
 
@@ -91,20 +90,20 @@ package body Mold is
                return 1;
             end if;
 
-            if Dir.Kind (Source) = Dir.Ordinary_File then
-               Errors :=
-                 File.Replace
-                   (Source_Alias'Unrestricted_Access,
-                    Output_Path'Unrestricted_Access,
-                    Variables'Unchecked_Access, Settings, Results);
-            else
-               File.Set_Running_Directory (Dir.Current_Directory);
-               Errors :=
-                 Directory.Replace
-                   ("", Source_Alias'Unrestricted_Access,
-                    Output_Path'Unrestricted_Access,
-                    Variables'Unchecked_Access, Settings, Results);
-            end if;
+            --  if Dir.Kind (Source) = Dir.Ordinary_File then
+            --     Errors :=
+            --       File.Replace
+            --         (Source_Alias'Unrestricted_Access,
+            --          Output_Path'Unrestricted_Access,
+            --          Variables'Unchecked_Access, Settings, Results);
+            --  else
+            --     File.Set_Running_Directory (Dir.Current_Directory);
+            --     Errors :=
+            --       Directory.Replace
+            --         ("", Source_Alias'Unrestricted_Access,
+            --          Output_Path'Unrestricted_Access,
+            --          Variables'Unchecked_Access, Settings, Results);
+            --  end if;
 
             return Errors;
          end;

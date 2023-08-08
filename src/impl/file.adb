@@ -10,7 +10,6 @@ with Ada.Containers.Doubly_Linked_Lists; use Ada.Containers;
 with Ada.Directories;
 with Ada.Text_IO;
 with GNAT.Regpat;
-with Simple_Logging;
 
 with Dir_Ops; use Dir_Ops;
 with Results; use Results;
@@ -19,7 +18,6 @@ package body File is
 
    package Dir renames Ada.Directories;
    package IO renames Ada.Text_IO;
-   package Log renames Simple_Logging;
    package Reg renames GNAT.Regpat;
 
    package Inclusion_Package is new Doubly_Linked_Lists
@@ -27,7 +25,6 @@ package body File is
    subtype Inclusion_List is Inclusion_Package.List;
 
    use all type Dir.File_Kind;
-   use all type Inclusion_Package.List;
    use all type Mold.Undef_Var_Action;
    use all type Mold.Undef_Var_Alert;
    use all type Reg.Match_Location;
@@ -113,7 +110,6 @@ package body File is
             New_Name.Append (Pre_Name);
             if Is_Undefined then
                New_Name.Append (Var_Mold);
-               Inc (Global.Results, Mold.Warnings);
             else
                New_Name.Append (Var_Value);
             end if;
@@ -146,7 +142,6 @@ package body File is
          exit when Matches (0) = Reg.No_Match;
 
          Has_Matches := True;
-         Inc (Global.Results, Mold.Variables);
 
          declare
             Pre_Text : constant String :=
@@ -184,38 +179,20 @@ package body File is
             New_Line.Append (Pre_Text);
 
             if Is_Undefined then
-               Inc (Global.Results, Mold.Undefined);
                declare
-                  LIN     : constant String := Number'Image;
-                  COL     : constant String := Matches (2).First'Image;
-                  Message : constant String :=
-                    "Undefined variable '" & Var_Name & "' in " &
-                    Global.Source.all & ":" & LIN (2 .. LIN'Last) & ":" &
-                    COL (2 .. COL'Last);
+                  LIN : constant String := Number'Image;
+                  COL : constant String := Matches (2).First'Image;
                begin
                   if Is_Mandatory then
-                     Inc (Global.Results, Mold.Ignored);
-                     Inc (Global.Results, Mold.Errors);
                      New_Line.Append (Var_Mold);
-                     Log.Error (Message);
                      Global.Errors := @ + 1;
-                  elsif Is_Optional then
-                     Inc (Global.Results, Mold.Emptied);
                   else  --  Is Normal
-                     if Global.Settings.Alert = Mold.Warning then
-                        Inc (Global.Results, Mold.Warnings);
-                        Log.Warning (Message);
-                     end if;
                      if Global.Settings.Action = Mold.Ignore then
-                        Inc (Global.Results, Mold.Ignored);
                         New_Line.Append (Var_Mold);
-                     else
-                        Inc (Global.Results, Mold.Emptied);
                      end if;
                   end if;
                end;
             else
-               Inc (Global.Results, Mold.Replaced);
                New_Line.Append (Var_Value);
             end if;
          end;
@@ -253,9 +230,7 @@ package body File is
       procedure Free_Include_Access is
       begin
          if Include_From_Root and then Include_Access /= null then
-            Log.Debug ("Freeing Include_Access " & Include_Access'Image);
             Free (Include_Access);
-            Log.Debug ("Freeing Include_Access " & Include_Access'Image);
             Include_Access := null;
          end if;
       end Free_Include_Access;
@@ -328,14 +303,14 @@ package body File is
 
                   declare
                      use Ada.Text_IO;
-                     Inc : File_Type;
+                     Inc_File : File_Type;
                   begin
 
                      Global.Included_Files.Append
                        (To_Unbounded_String (Include_Access.all));
 
-                     Inc.Open (In_File, Include_Access.all);
-                     Replace_In_Stream (Inc, Dst);
+                     Inc_File.Open (In_File, Include_Access.all);
+                     Replace_In_Stream (Inc_File, Dst);
 
                      Global.Included_Files.Delete_Last;
                      Free_Include_Access;
@@ -425,13 +400,6 @@ package body File is
             return Global.Errors;
          end if;
 
-         Inc (Results, Mold.Files);
-
-         if Base_File_Name /= Dir.Simple_Name (Dst_File_Name) then
-            --  file name has variables successfully replaced
-            Inc (Results, Mold.Renamed);
-         end if;
-
          --  open source file
          Src_File.Open (IO.In_File, Source.all);
 
@@ -442,7 +410,6 @@ package body File is
          if Dir.Exists (Dst_File_Name) then
             if Settings.Overwrite then
                Dir.Delete_File (Dst_File_Name);
-               Inc (Results, Mold.Overwritten);
             else
                Global.Errors := @ + 1;
                return Global.Errors;

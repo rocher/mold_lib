@@ -6,11 +6,6 @@
 --
 -------------------------------------------------------------------------------
 
-with TOML;
-with TOML.File_IO;
-
-with Results; use Results;
-
 package body Definitions is
 
    use all type Mold.Results_Access;
@@ -104,29 +99,15 @@ package body Definitions is
    is
       use Variables_Package;
 
-      Vars        : Variables_Map := Empty_Map;
-      Read_Result : TOML.Read_Result;
+      Vars : Variables_Map := Empty_Map;
+
    begin
-      Read_Result := TOML.File_IO.Load_File (Vars_File);
-
-      if Read_Result.Success then
-         for Element of Read_Result.Value.Iterate_On_Table loop
-            if Element.Key.Length >= 10
-              and then Element.Key.Slice (1, 5) = Mold.Variable_Setting_Prefix
-            then
-               if not Set_Mold_Setting
-                   (To_String (Element.Key), Element.Value.As_String, Settings)
-               then
-                  return Empty_Map;
-               end if;
-            end if;
-            Vars.Include (Element.Key, Element.Value.As_Unbounded_String);
-
-            Inc (Results, Mold.Definitions);
-         end loop;
+      if not Set_Mold_Setting
+          ("To_String (Element.Key)", "Element.Value.As_String", Settings)
+      then
+         return Empty_Map;
       end if;
 
-      Success := Read_Result.Success;
       return Vars;
    end Read_Variables;
 
