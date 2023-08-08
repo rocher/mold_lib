@@ -75,7 +75,7 @@ package body Directory_Tests is
       Expected := [
          Files       =>    7,
          Renamed     =>    2,
-         Overwritten =>    7,
+         Overwritten =>    0,
          Definitions =>    5 + 26 + 100,
          Variables   =>  100 +  4 +   9 + 2118 + 1950 + 1736,
          Undefined   =>    0 +  4 +   9 +    0 +    0 +    0,
