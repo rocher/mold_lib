@@ -9,9 +9,6 @@
 with Ada.Directories;
 
 with Definitions;
---  with Directory;
-with Dir_Ops; use Dir_Ops;
---  with File;
 
 package body Mold is
 
@@ -36,13 +33,10 @@ package body Mold is
    --!pp on
 
    is
-      Source_Alias : aliased String := Source;
    begin
 
       declare
-         Output_Path : aliased String :=
-           Full_Path_Expanded
-             (if Output_Dir'Length > 0 then Output_Dir else Source);
+         Output_Path : aliased constant String := Output_Dir;
 
          Used_Settings : constant Settings_Access :=
            (if Settings = null then Default_Settings'Access else Settings);
@@ -79,7 +73,7 @@ package body Mold is
          declare
             Variables : aliased Standard.Definitions.Variables_Map;
             Success   : Boolean;
-            Errors    : Natural;
+            Errors    : constant Natural := 0;
          begin
 
             Variables :=
@@ -89,21 +83,6 @@ package body Mold is
             if not Success then
                return 1;
             end if;
-
-            --  if Dir.Kind (Source) = Dir.Ordinary_File then
-            --     Errors :=
-            --       File.Replace
-            --         (Source_Alias'Unrestricted_Access,
-            --          Output_Path'Unrestricted_Access,
-            --          Variables'Unchecked_Access, Settings, Results);
-            --  else
-            --     File.Set_Running_Directory (Dir.Current_Directory);
-            --     Errors :=
-            --       Directory.Replace
-            --         ("", Source_Alias'Unrestricted_Access,
-            --          Output_Path'Unrestricted_Access,
-            --          Variables'Unchecked_Access, Settings, Results);
-            --  end if;
 
             return Errors;
          end;
