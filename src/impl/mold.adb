@@ -12,19 +12,7 @@ package body Mold is
    -- Apply --
    -----------
 
-   --!pp off
-   function Apply
-   (
-      Source      : String          := ".";
-      Output_Dir  : String          := "";
-      Definitions : String          := "mold.toml";
-      Settings    : Settings_Access := null;
-      Results     : Results_Access  := null
-   )
-   return Natural
-   --!pp on
-
-   is
+   function Apply return Natural is
    begin
       return 1;
    end Apply;

@@ -6,6 +6,8 @@
 --
 -------------------------------------------------------------------------------
 
+with Mold;
+
 package body Definitions is
 
    ----------------------
@@ -26,14 +28,7 @@ package body Definitions is
         (Variable : not null access Boolean; Value : String)
       is
       begin
-         case Value is
-            when "TRUE" | "True" | "true" =>
-               Variable.all := True;
-            when "FALSE" | "False" | "false" =>
-               Variable.all := False;
-            when others =>
-               Success := False;
-         end case;
+         null;
       end Set_Boolean;
 
    begin
@@ -83,18 +78,7 @@ package body Definitions is
    -- Read_Variables_Map --
    ------------------------
 
-   --!pp off
-   function Read_Variables
-   (
-      Vars_File :          String;
-      Settings  : not null Mold.Settings_Access;
-      Results   :          Mold.Results_Access := null;
-      Success   : out      Boolean
-   )
-   return Variables_Map
-   --!pp on
-
-   is
+   function Read_Variables return Variables_Map is
    begin
       return Empty_Map;
    end Read_Variables;
