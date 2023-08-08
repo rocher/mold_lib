@@ -315,16 +315,17 @@ package body File is
                      Log.Debug ("Including from current directory");
                   else
                      Log.Debug ("Trying to include from running directory");
-                     Log.Debug
-                       ("  Global.Root_Directory : " &
-                        Global.Running_Directory.all);
-                     Log.Debug ("  Inc_Name              : " & Inc_Name);
-                     Log.Debug
-                       ("  Cont. Dir Inc_Name    : " &
-                        Dir.Containing_Directory (Inc_Name));
-                     Log.Debug
-                       ("  DC Glob Root + Cdir   : " &
-                        Path (Global.Running_Directory.all, Inc_Name));
+
+                     --  Log.Debug
+                     --    ("  Global.Root_Directory : " &
+                     --     Global.Running_Directory.all);
+                     --  Log.Debug ("  Inc_Name              : " & Inc_Name);
+                     --  Log.Debug
+                     --    ("  Cont. Dir Inc_Name    : " &
+                     --     Dir.Containing_Directory (Inc_Name));
+                     --  Log.Debug
+                     --    ("  DC Glob Root + Cdir   : " &
+                     --     Path (Global.Running_Directory.all, Inc_Name));
 
                      if Global.Running_Directory /= null then
                         Include_Access    :=
@@ -334,6 +335,7 @@ package body File is
                         Log.Debug
                           ("Include_Access'Image : " & Include_Access'Image);
                         Log.Debug ("Include_Access : " & Include_Access.all);
+
                         if Dir.Exists (Include_Access.all)
                           and then Dir.Kind (Include_Access.all) =
                             Dir.Ordinary_File
@@ -395,11 +397,12 @@ package body File is
 
    end Replace_In_Stream;
 
-   ---------------
-   -- Variables --
-   ---------------
+   -------------
+   -- Replace --
+   -------------
 
    --!pp off
+
    function Replace
    (
       Source     : not null String_Access;
