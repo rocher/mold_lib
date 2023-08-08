@@ -316,17 +316,6 @@ package body File is
                   else
                      Log.Debug ("Trying to include from running directory");
 
-                     --  Log.Debug
-                     --    ("  Global.Root_Directory : " &
-                     --     Global.Running_Directory.all);
-                     --  Log.Debug ("  Inc_Name              : " & Inc_Name);
-                     --  Log.Debug
-                     --    ("  Cont. Dir Inc_Name    : " &
-                     --     Dir.Containing_Directory (Inc_Name));
-                     --  Log.Debug
-                     --    ("  DC Glob Root + Cdir   : " &
-                     --     Path (Global.Running_Directory.all, Inc_Name));
-
                      if Global.Running_Directory /= null then
                         Include_Access    :=
                           new String'
