@@ -8,8 +8,6 @@
 
 package body Definitions is
 
-   use all type Mold.Results_Access;
-
    ----------------------
    -- Set_Mold_Setting --
    ----------------------
@@ -97,18 +95,8 @@ package body Definitions is
    --!pp on
 
    is
-      use Variables_Package;
-
-      Vars : Variables_Map := Empty_Map;
-
    begin
-      if not Set_Mold_Setting
-          ("To_String (Element.Key)", "Element.Value.As_String", Settings)
-      then
-         return Empty_Map;
-      end if;
-
-      return Vars;
+      return Empty_Map;
    end Read_Variables;
 
 end Definitions;
