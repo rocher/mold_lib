@@ -17,6 +17,7 @@ package Inclusion_Tests is
 
    overriding procedure Register_Tests (T : in out Inclusion_Test_Case);
 
+   procedure Test_Recursive_Inclusion (T : in out Test_Case'Class);
    procedure Test_Inclusion (T : in out Test_Case'Class);
 
 end Inclusion_Tests;

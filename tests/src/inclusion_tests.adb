@@ -25,8 +25,47 @@ package body Inclusion_Tests is
    overriding procedure Register_Tests (T : in out Inclusion_Test_Case) is
       use AUnit.Test_Cases.Registration;
    begin
+      Register_Routine
+        (T, Test_Recursive_Inclusion'Access,
+         "Prevent Recursive  Inclusion of Templates");
       Register_Routine (T, Test_Inclusion'Access, "Inclusion of Templates");
    end Register_Tests;
+
+   ------------------------------
+   -- Test_Recursive_Inclusion --
+   ------------------------------
+
+   procedure Test_Recursive_Inclusion (T : in out Test_Case'Class) is
+      Errors   : Natural;
+      Results  : aliased Mold.Results_Type;
+      Expected : aliased Mold.Results_Type;
+   begin
+      --  ----- inclusion of recursive templates ------------------------------
+      --!pp off
+      Errors := Mold.Apply (
+         Source      => "suite/mold/recursion.txt.mold",
+         Output_Dir  => "suite/tmp/",
+         Settings    => Global_Settings,
+         Definitions => "suite/toml/foo.toml",
+         Results     => Results'Unchecked_Access
+      );
+      Expected := [
+         Files       => 1,
+         Renamed     => 0,
+         Overwritten => 0,
+         Definitions => 1,
+         Variables   => 0,
+         Undefined   => 0,
+         Replaced    => 0,
+         Ignored     => 0,
+         Emptied     => 0,
+         Warnings    => 0,
+         Mold.Errors => 0
+      ];
+      --!pp on
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+   end Test_Recursive_Inclusion;
 
    --------------------
    -- Test_Inclusion --
