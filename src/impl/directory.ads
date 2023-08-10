@@ -8,8 +8,8 @@
 
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
-with Mold;
 with Definitions;
+with Mold;
 
 package Directory is
 

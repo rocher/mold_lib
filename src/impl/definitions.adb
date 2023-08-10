@@ -6,9 +6,9 @@
 --
 -------------------------------------------------------------------------------
 
+with Simple_Logging;
 with TOML;
 with TOML.File_IO;
-with Simple_Logging;
 
 with Results; use Results;
 
@@ -50,44 +50,41 @@ package body Definitions is
    begin
 
       if Settings.Defined_Settings then
-         case Key is
-            when "mold-rename-source" =>
-               Set_Boolean (Settings.Rename_Source'Access, Value);
-            when "mold-delete-source" =>
-               Set_Boolean (Settings.Delete_Source'Access, Value);
-            when "mold-overwrite" =>
-               Set_Boolean (Settings.Overwrite'Access, Value);
-            when "mold-abort-on-error" =>
-               Set_Boolean (Settings.Abort_On_Error'Access, Value);
+         if Key = "mold-rename-source" then
+            Set_Boolean (Settings.Rename_Source'Access, Value);
+         elsif Key = "mold-delete-source" then
+            Set_Boolean (Settings.Delete_Source'Access, Value);
+         elsif Key = "mold-overwrite" then
+            Set_Boolean (Settings.Overwrite'Access, Value);
+         elsif Key = "mold-abort-on-error" then
+            Set_Boolean (Settings.Abort_On_Error'Access, Value);
+         elsif Key = "mold-action" then
+            case Value is
+               when "IGNORE" | "Ignore" | "ignore" =>
+                  Settings.Action := Mold.Ignore;
+               when "EMPTY" | "Empty" | "empty" =>
+                  Settings.Action := Mold.Empty;
+               when others =>
+                  Log.Error
+                    ("Invalid setting value in " & Key & " = " & Value);
+                  Success := False;
+            end case;
 
-            when "mold-action" =>
-               case Value is
-                  when "IGNORE" | "Ignore" | "ignore" =>
-                     Settings.Action := Mold.Ignore;
-                  when "EMPTY" | "Empty" | "empty" =>
-                     Settings.Action := Mold.Empty;
-                  when others =>
-                     Log.Error
-                       ("Invalid setting value in " & Key & " = " & Value);
-                     Success := False;
-               end case;
-
-            when "mold-alert" =>
-               case Value is
-                  when "NONE" | "None" | "none" =>
-                     Settings.Alert := Mold.None;
-                  when "WARNING" | "Warning" | "warning" =>
-                     Settings.Alert := Mold.Warning;
-                  when others =>
-                     Log.Error
-                       ("Invalid setting value in " & Key & " = " & Value);
-                     Success := False;
-               end case;
-
-            when others =>
-               Log.Error ("Invalid setting key in " & Key & " = " & Value);
-               Success := False;
-         end case;
+         elsif Key = "mold-alert" then
+            case Value is
+               when "NONE" | "None" | "none" =>
+                  Settings.Alert := Mold.None;
+               when "WARNING" | "Warning" | "warning" =>
+                  Settings.Alert := Mold.Warning;
+               when others =>
+                  Log.Error
+                    ("Invalid setting value in " & Key & " = " & Value);
+                  Success := False;
+            end case;
+         else
+            Log.Error ("Invalid setting key in " & Key & " = " & Value);
+            Success := False;
+         end if;
       end if;
 
       if Success then

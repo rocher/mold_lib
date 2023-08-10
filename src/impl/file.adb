@@ -27,7 +27,6 @@ package body File is
    subtype Inclusion_List is Inclusion_Package.List;
 
    use all type Dir.File_Kind;
-   use all type Inclusion_Package.List;
    use all type Mold.Undef_Var_Action;
    use all type Mold.Undef_Var_Alert;
    use all type Reg.Match_Location;

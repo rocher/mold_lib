@@ -14,8 +14,8 @@ with AUnit.Run;
 with AUnit.Reporter.Text;
 with AUnit.Test_Results;
 
+with Libmold_Tests_Config;
 with Mold_Test_Suite;
-with Libmold_Tests_Config; use Libmold_Tests_Config;
 with Mold;
 
 procedure Mold_Tests is
@@ -25,12 +25,14 @@ procedure Mold_Tests is
    Reporter : AUnit.Reporter.Text.Text_Reporter;
    Results  : AUnit.Test_Results.Result;
 
+   use Libmold_Tests_Config;
 begin
-   --  Ada.Text_IO.Put_Line
-   --    ("   " & Euler_Tools.Library_Name & " = " & Euler_Tools.Library_Version);
+   Ada.Text_IO.Put_Line
+     ("Tests for " & Mold.Name & " version " & Mold.Version);
 
    pragma Warnings (Off);
-   Reporter.Set_Use_ANSI_Colors (Build_Profile = development);
+   Reporter.Set_Use_ANSI_Colors
+     (Libmold_Tests_Config.Build_Profile = Libmold_Tests_Config.development);
    pragma Warnings (On);
 
    Run (Reporter, Results);
