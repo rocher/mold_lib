@@ -6,6 +6,8 @@
 --
 -------------------------------------------------------------------------------
 
+with Libmold_Config;
+
 package Mold is
 
    type Substitution_Kind is (Normal, Optional, Mandatory);
@@ -62,6 +64,12 @@ package Mold is
 
    type Results_Type is array (Field_Type) of Natural;
    type Results_Access is access all Results_Type;
+
+   function Name return String is (Libmold_Config.Crate_Name);
+   --  Return create name.
+
+   function Version return String is (Libmold_Config.Crate_Version);
+   --  Return crate version.
 
    --!pp off
    function Apply
