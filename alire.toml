@@ -5,7 +5,7 @@ tags = ["template", "repository"]
 description = "Meta-variable Operations for Lean Development (lib)"
 long-description = '''
 MOLD : Meta-variable Operations for Lean Development (lib)
-——————————————————————————————————————————————————————————
+----------------------------------------------------------
 
 Mold is a Template Processor, or Template Engine, to work with repository
 templates. The main motivation of Mold is to have repositories in GitHub used as
