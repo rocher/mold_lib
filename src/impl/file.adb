@@ -236,6 +236,54 @@ package body File is
       end if;
    end Replace_In_Line;
 
+   ------------------
+   -- Include_Path --
+   ------------------
+
+   function Include_Path
+     (Inc_Name : String; Success : out Boolean) return String
+   is
+      Full_Name : constant String := Dir.Full_Name (Inc_Name);
+      Extension : constant String := Dir.Extension (Inc_Name);
+   begin
+      Log.Debug ("Include file");
+      Log.Debug ("  Inc_Name  : " & Inc_Name);
+      Log.Debug ("  Full_Name : " & Full_Name);
+      Log.Debug ("  Extension : " & Extension);
+
+      if Extension /= Mold.Include_File_Extension then
+         Log.Error ("Invalid extension of include file " & Inc_Name);
+         Success := False;
+         return "";
+      end if;
+
+      if Dir.Exists (Full_Name) then
+         Log.Debug ("Including from current directory");
+         Success := True;
+         return Full_Name;
+      else
+         Log.Debug ("Trying to include from running directory");
+         declare
+            Inc_Full_Path : constant String :=
+              Path (Global.Running_Directory.all, Inc_Name);
+         begin
+            Log.Debug ("Inc_Full_Path : " & Inc_Full_Path);
+
+            if Dir.Exists (Inc_Full_Path)
+              and then Dir.Kind (Inc_Full_Path) = Dir.Ordinary_File
+            then
+               Log.Debug ("Including from running directory");
+               Success := True;
+               return Inc_Full_Path;
+            else
+               Log.Error ("Include file not found " & Inc_Name);
+               Success := False;
+               return "";
+            end if;
+         end;
+      end if;
+   end Include_Path;
+
    -----------------------
    -- Replace_In_Stream --
    -----------------------
@@ -247,25 +295,8 @@ package body File is
    is
       Line_Number : Natural := 0;
       Matches     : Reg.Match_Array (0 .. 1);
-
-      Include_Access    : String_Access := null;
-      Include_From_Root : Boolean       := False;
-
-      -------------------------
-      -- Free_Include_Access --
-      -------------------------
-
-      procedure Free_Include_Access is
-      begin
-         if Include_From_Root and then Include_Access /= null then
-            Log.Debug ("Freeing Include_Access " & Include_Access'Image);
-            Free (Include_Access);
-            Log.Debug ("Freeing Include_Access " & Include_Access'Image);
-            Include_Access := null;
-         end if;
-      end Free_Include_Access;
-
    begin
+
       For_Each_Line :
       loop
          exit For_Each_Line when Src.End_Of_File;
@@ -289,89 +320,47 @@ package body File is
             else
                --  file inclusion
                declare
-                  Inc_Name  : constant String :=
-                    Line (Matches (1).First .. Matches (1).Last);
-                  Full_Name : aliased String  := Dir.Full_Name (Inc_Name);
-                  Extension : constant String := Dir.Extension (Inc_Name);
+                  use Ada.Text_IO;
 
+                  Inc_Name : constant String :=
+                    Line (Matches (1).First .. Matches (1).Last);
+
+                  Is_Valid : Boolean;
+                  Inc_Path : constant String :=
+                    Include_Path (Inc_Name, Is_Valid);
+                  Inc_File : File_Type;
                begin
 
-                  Log.Debug ("Include file");
-                  Log.Debug ("  Inc_Name  : " & Inc_Name);
-                  Log.Debug ("  Full_Name : " & Full_Name);
-                  Log.Debug ("  Extension : " & Extension);
-
-                  if Extension /= Mold.Include_File_Extension then
-                     Log.Error
-                       ("Invalid extension of include file " & Inc_Name);
+                  if not Is_Valid then
+                     Log.Error ("Cannot find include file '" & Inc_Name & "'");
                      Global.Errors := @ + 1;
                      goto Exit_Procedure;
-                  end if;
-
-                  if Dir.Exists (Full_Name) then
-                     Include_Access    := Full_Name'Unchecked_Access;
-                     Include_From_Root := False;
-                     Log.Debug ("Including from current directory");
-                  else
-                     Log.Debug ("Trying to include from running directory");
-
-                     if Global.Running_Directory /= null then
-                        Include_Access    :=
-                          new String'
-                            (Path (Global.Running_Directory.all, Inc_Name));
-                        Include_From_Root := True;
-                        Log.Debug
-                          ("Include_Access'Image : " & Include_Access'Image);
-                        Log.Debug ("Include_Access : " & Include_Access.all);
-
-                        if Dir.Exists (Include_Access.all)
-                          and then Dir.Kind (Include_Access.all) =
-                            Dir.Ordinary_File
-                        then
-                           Log.Debug ("Including from running directory");
-                        else
-                           Log.Error ("Include file not found " & Inc_Name);
-                           Global.Errors := @ + 1;
-                           goto Exit_Procedure;
-                        end if;
-                     end if;
                   end if;
 
                   if Global.Included_Files.Contains
-                      (To_Unbounded_String (Include_Access.all))
+                      (To_Unbounded_String (Inc_Path))
                   then
-                     Log.Error
-                       ("Circular inclusion of file " & Include_Access.all);
+                     Log.Error ("Circular inclusion of file " & Inc_Path);
                      Global.Errors := @ + 1;
                      goto Exit_Procedure;
                   else
-                     Log.Debug
-                       ("Including file " & Include_Access.all & " ...");
+                     Log.Debug ("Including file " & Inc_Path & " ...");
                   end if;
 
-                  declare
-                     use Ada.Text_IO;
-                     Inc : File_Type;
-                  begin
+                  Global.Included_Files.Append
+                    (To_Unbounded_String (Inc_Path));
 
-                     Global.Included_Files.Append
-                       (To_Unbounded_String (Include_Access.all));
+                  Inc_File.Open (In_File, Inc_Path);
+                  Replace_In_Stream (Inc_File, Dst);
 
-                     Inc.Open (In_File, Include_Access.all);
-                     Replace_In_Stream (Inc, Dst);
-
-                     Global.Included_Files.Delete_Last;
-                     Free_Include_Access;
-                     Log.Debug ("...  file included");
-                  end;
+                  Global.Included_Files.Delete_Last;
+                  Log.Debug ("...  file included");
                end;
             end if;
          end;
       end loop For_Each_Line;
 
       <<Exit_Procedure>>
-
-      Free_Include_Access;
       Src.Close;
 
    exception
@@ -380,7 +369,6 @@ package body File is
            ("EXCEPTION caught in file.adb: " &
             " Please run again with logging Debug enabled" &
             " and report this error");
-         Free_Include_Access;
          Global.Errors := @ + 1;
 
    end Replace_In_Stream;
