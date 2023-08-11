@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 --
---  Mold - Meta-variable Operations for Lean Development (lib)
+--  Lib_Mold - Meta-variable Operations for Lean Development
 --  Copyright (c) 2023 Francesc Rocher <francesc.rocher@gmail.com>
 --  SPDX-License-Identifier: MIT
 --
@@ -9,9 +9,11 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with Definitions;
-with Mold;
+with Lib_Mold;
 
 package Directory is
+
+   package Mold renames Lib_Mold;
 
    --!pp off
    function Replace

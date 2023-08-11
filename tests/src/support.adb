@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 --
---  Mold - Meta-variable Operations for Lean Development (lib) TESTS
+--  Mold - Meta-variable Operations for Lean Development TESTS
 --  Copyright (c) 2023 Francesc Rocher <francesc.rocher@gmail.com>
 --  SPDX-License-Identifier: MIT
 --
@@ -33,7 +33,7 @@ package body Support is
       Text.Append (ASCII.LF & "    Errors:" & Errors'Image);
       Text.Append (ASCII.LF & "    Results:" & ASCII.LF);
 
-      for Field in Mold.Field_Type loop
+      for Field in Mold.Results_Field_Type loop
          Text.Append ("       " & Field'Image);
          Text.Append (Fill (Field'Image'Length .. Fill'Last));
          Text.Append ("=> " & Results.all (Field)'Image & ASCII.LF);
@@ -65,7 +65,7 @@ package body Support is
          Expected_Errors'Image,
          Source, Line);
 
-      for Field in Mold.Field_Type loop
+      for Field in Mold.Results_Field_Type loop
          Assert
            (Reported.all (Field) = Expected.all (Field),
             "Wrong number of " & Field'Image & ": reported" &

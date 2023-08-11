@@ -1,15 +1,17 @@
 -------------------------------------------------------------------------------
 --
---  Mold - Meta-variable Operations for Lean Development (lib) TESTS
+--  Mold - Meta-variable Operations for Lean Development TESTS
 --  Copyright (c) 2023 Francesc Rocher <francesc.rocher@gmail.com>
 --  SPDX-License-Identifier: MIT
 --
 -------------------------------------------------------------------------------
 
-with Mold;    use Mold;
+with Lib_Mold;    use Lib_Mold;
 with Support; use Support;
 
 package body Inclusion_Tests is
+
+   package Mold renames Lib_Mold;
 
    ----------
    -- Name --

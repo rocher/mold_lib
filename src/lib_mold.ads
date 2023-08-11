@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 --
---  Mold - Meta-variable Operations for Lean Development (lib)
+--  Lib_Mold - Meta-variable Operations for Lean Development
 --  Copyright (c) 2023 Francesc Rocher <francesc.rocher@gmail.com>
 --  SPDX-License-Identifier: MIT
 --
@@ -8,7 +8,7 @@
 
 with Libmold_Config;
 
-package Mold is
+package Lib_Mold is
 
    type Substitution_Kind is (Normal, Optional, Mandatory);
    type Undef_Var_Action is (Ignore, Empty);
@@ -46,7 +46,7 @@ package Mold is
    --!pp on
 
    --!pp off
-   type Field_Type is
+   type Results_Field_Type is
    (
       Files,
       Renamed,
@@ -62,7 +62,7 @@ package Mold is
    );
    --!pp on
 
-   type Results_Type is array (Field_Type) of Natural;
+   type Results_Type is array (Results_Field_Type) of Natural;
    type Results_Access is access all Results_Type;
 
    function Name return String is (Libmold_Config.Crate_Name);
@@ -215,4 +215,4 @@ package Mold is
    --  NOTE: This function is not thread-safe; use a single call each time or
    --  protect function execution when using tasks.
 
-end Mold;
+end Lib_Mold;

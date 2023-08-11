@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 --
---  Mold - Meta-variable Operations for Lean Development (lib) TESTS
+--  Mold - Meta-variable Operations for Lean Development TESTS
 --  Copyright (c) 2023 Francesc Rocher <francesc.rocher@gmail.com>
 --  SPDX-License-Identifier: MIT
 --
@@ -16,9 +16,15 @@ with AUnit.Test_Results;
 
 with Libmold_Tests_Config;
 with Mold_Test_Suite;
-with Mold;
+with Lib_Mold;
+
+----------------
+-- Mold_Tests --
+----------------
 
 procedure Mold_Tests is
+
+   package Mold renames Lib_Mold;
 
    procedure Run is new AUnit.Run.Test_Runner_With_Results
      (Mold_Test_Suite.Suite);
