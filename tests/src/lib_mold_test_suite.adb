@@ -11,7 +11,7 @@ with Variables_Tests; use Variables_Tests;
 with Inclusion_Tests; use Inclusion_Tests;
 with Directory_Tests; use Directory_Tests;
 
-package body Mold_Test_Suite is
+package body Lib_Mold_Test_Suite is
 
    use AUnit.Test_Suites;
 
@@ -37,4 +37,4 @@ package body Mold_Test_Suite is
       return Result'Access;
    end Suite;
 
-end Mold_Test_Suite;
+end Lib_Mold_Test_Suite;

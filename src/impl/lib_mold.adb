@@ -67,7 +67,7 @@ package body Lib_Mold is
          end if;
 
          if Dir.Kind (Source) = Dir.Ordinary_File
-           and then Dir.Extension (Source) /= File_Extension
+           and then Dir.Extension (Source) /= Mold_File_Extension
          then
             Log.Error ("Source file with invalid extension '" & Source & "'");
             return 1;

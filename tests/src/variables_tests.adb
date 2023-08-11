@@ -6,8 +6,8 @@
 --
 -------------------------------------------------------------------------------
 
-with Lib_Mold;    use Lib_Mold;
-with Support; use Support;
+with Lib_Mold; use Lib_Mold;
+with Support;  use Support;
 
 package body Variables_Tests is
 
@@ -54,17 +54,17 @@ package body Variables_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       => 1,
-         Renamed     => 0,
-         Overwritten => 0,
-         Definitions => 0,
-         Variables   => 0,
-         Undefined   => 0,
-         Replaced    => 0,
-         Ignored     => 0,
-         Emptied     => 0,
-         Warnings    => 0,
-         Mold.Errors => 0
+         Files_Processed      => 1,
+         Files_Renamed        => 0,
+         Files_Overwritten    => 0,
+         Variables_Defined    => 0,
+         Variables_Found      => 0,
+         Variables_Undefined  => 0,
+         Variables_Replaced   => 0,
+         Variables_Ignored    => 0,
+         Variables_Emptied    => 0,
+         Replacement_Warnings => 0,
+         Replacement_Errors   => 0
       ];
       --!pp on
       Check_Results
@@ -82,17 +82,17 @@ package body Variables_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       => 1,
-         Renamed     => 0,
-         Overwritten => 0,
-         Definitions => 0,
-         Variables   => 9,
-         Undefined   => 9,
-         Replaced    => 0,
-         Ignored     => 9,
-         Emptied     => 0,
-         Warnings    => 9,
-         Mold.Errors => 0
+         Files_Processed      => 1,
+         Files_Renamed        => 0,
+         Files_Overwritten    => 0,
+         Variables_Defined    => 0,
+         Variables_Found      => 9,
+         Variables_Undefined  => 9,
+         Variables_Replaced   => 0,
+         Variables_Ignored    => 9,
+         Variables_Emptied    => 0,
+         Replacement_Warnings => 9,
+         Replacement_Errors   => 0
       ];
       --!pp on
       Check_Results
@@ -110,17 +110,17 @@ package body Variables_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       => 1,
-         Renamed     => 0,
-         Overwritten => 1,
-         Definitions => 1,
-         Variables   => 9,
-         Undefined   => 9,
-         Replaced    => 0,
-         Ignored     => 9,
-         Emptied     => 0,
-         Warnings    => 9,
-         Mold.Errors => 0
+         Files_Processed      => 1,
+         Files_Renamed        => 0,
+         Files_Overwritten    => 1,
+         Variables_Defined    => 1,
+         Variables_Found      => 9,
+         Variables_Undefined  => 9,
+         Variables_Replaced   => 0,
+         Variables_Ignored    => 9,
+         Variables_Emptied    => 0,
+         Replacement_Warnings => 9,
+         Replacement_Errors   => 0
       ];
       --!pp on
       Check_Results
@@ -150,17 +150,17 @@ package body Variables_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       => 1,
-         Renamed     => 0,
-         Overwritten => 1,
-         Definitions => 1,
-         Variables   => 9,
-         Undefined   => 0,
-         Replaced    => 9,
-         Ignored     => 0,
-         Emptied     => 0,
-         Warnings    => 0,
-         Mold.Errors => 0
+         Files_Processed      => 1,
+         Files_Renamed        => 0,
+         Files_Overwritten    => 1,
+         Variables_Defined    => 1,
+         Variables_Found      => 9,
+         Variables_Undefined  => 0,
+         Variables_Replaced   => 9,
+         Variables_Ignored    => 0,
+         Variables_Emptied    => 0,
+         Replacement_Warnings => 0,
+         Replacement_Errors   => 0
       ];
       --!pp on
       Check_Results
@@ -178,17 +178,17 @@ package body Variables_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       => 1,
-         Renamed     => 0,
-         Overwritten => 0,
-         Definitions => 1,
-         Variables   => 4,
-         Undefined   => 2,
-         Replaced    => 2,
-         Ignored     => 2,
-         Emptied     => 0,
-         Warnings    => 2,
-         Mold.Errors => 0
+         Files_Processed      => 1,
+         Files_Renamed        => 0,
+         Files_Overwritten    => 0,
+         Variables_Defined    => 1,
+         Variables_Found      => 4,
+         Variables_Undefined  => 2,
+         Variables_Replaced   => 2,
+         Variables_Ignored    => 2,
+         Variables_Emptied    => 0,
+         Replacement_Warnings => 2,
+         Replacement_Errors   => 0
       ];
       --!pp on
       Check_Results
@@ -206,17 +206,17 @@ package body Variables_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       => 1,
-         Renamed     => 0,
-         Overwritten => 1,
-         Definitions => 2,
-         Variables   => 4,
-         Undefined   => 0,
-         Replaced    => 4,
-         Ignored     => 0,
-         Emptied     => 0,
-         Warnings    => 0,
-         Mold.Errors => 0
+         Files_Processed      => 1,
+         Files_Renamed        => 0,
+         Files_Overwritten    => 1,
+         Variables_Defined    => 2,
+         Variables_Found      => 4,
+         Variables_Undefined  => 0,
+         Variables_Replaced   => 4,
+         Variables_Ignored    => 0,
+         Variables_Emptied    => 0,
+         Replacement_Warnings => 0,
+         Replacement_Errors   => 0
       ];
       --!pp on
       Check_Results
@@ -247,17 +247,17 @@ package body Variables_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       =>    1,
-         Renamed     =>    0,
-         Overwritten =>    0,
-         Definitions =>   26,
-         Variables   => 2118,
-         Undefined   =>    0,
-         Replaced    => 2118,
-         Ignored     =>    0,
-         Emptied     =>    0,
-         Warnings    =>    0,
-         Mold.Errors =>    0
+         Files_Processed      =>    1,
+         Files_Renamed        =>    0,
+         Files_Overwritten    =>    0,
+         Variables_Defined    =>   26,
+         Variables_Found      => 2118,
+         Variables_Undefined  =>    0,
+         Variables_Replaced   => 2118,
+         Variables_Ignored    =>    0,
+         Variables_Emptied    =>    0,
+         Replacement_Warnings =>    0,
+         Replacement_Errors   =>    0
       ];
       --!pp on
       Check_Results
@@ -275,17 +275,17 @@ package body Variables_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       =>    1,
-         Renamed     =>    0,
-         Overwritten =>    1,
-         Definitions =>   23,
-         Variables   => 2118,
-         Undefined   =>  291,
-         Replaced    => 1827,
-         Ignored     =>    0,
-         Emptied     =>  291,
-         Warnings    =>    0,
-         Mold.Errors =>    0
+         Files_Processed      =>    1,
+         Files_Renamed        =>    0,
+         Files_Overwritten    =>    1,
+         Variables_Defined    =>   23,
+         Variables_Found      => 2118,
+         Variables_Undefined  =>  291,
+         Variables_Replaced   => 1827,
+         Variables_Ignored    =>    0,
+         Variables_Emptied    =>  291,
+         Replacement_Warnings =>    0,
+         Replacement_Errors   =>    0
       ];
       --!pp on
       Check_Results
@@ -303,17 +303,17 @@ package body Variables_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       =>    1,
-         Renamed     =>    0,
-         Overwritten =>    1,
-         Definitions =>   24,
-         Variables   => 2118,
-         Undefined   =>  176,
-         Replaced    => 1942,
-         Ignored     =>    0,
-         Emptied     =>  176,
-         Warnings    =>    0,
-         Mold.Errors =>    0
+         Files_Processed      =>    1,
+         Files_Renamed        =>    0,
+         Files_Overwritten    =>    1,
+         Variables_Defined    =>   24,
+         Variables_Found      => 2118,
+         Variables_Undefined  =>  176,
+         Variables_Replaced   => 1942,
+         Variables_Ignored    =>    0,
+         Variables_Emptied    =>  176,
+         Replacement_Warnings =>    0,
+         Replacement_Errors   =>    0
       ];
       --!pp on
       Check_Results
@@ -322,8 +322,8 @@ package body Variables_Tests is
         ("suite/tmp/lorem-ipsum.txt", "1ed55361c952f1e572a156c07a3c2f3d");
 
       --  ----- undefined variables ignored and no warning --------------------
-      Settings.Action := Mold.Ignore;
-      Settings.Alert  := Mold.None;
+      Settings.Undef_Var_Action := Mold.Ignore;
+      Settings.Undef_Var_Alert  := Mold.None;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
@@ -333,17 +333,17 @@ package body Variables_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       =>    1,
-         Renamed     =>    0,
-         Overwritten =>    1,
-         Definitions =>   24,
-         Variables   => 2118,
-         Undefined   =>  294,
-         Replaced    => 1824,
-         Ignored     =>  294,
-         Emptied     =>    0,
-         Warnings    =>    0,
-         Mold.Errors =>    0
+         Files_Processed      =>    1,
+         Files_Renamed        =>    0,
+         Files_Overwritten    =>    1,
+         Variables_Defined    =>   24,
+         Variables_Found      => 2118,
+         Variables_Undefined  =>  294,
+         Variables_Replaced   => 1824,
+         Variables_Ignored    =>  294,
+         Variables_Emptied    =>    0,
+         Replacement_Warnings =>    0,
+         Replacement_Errors   =>    0
       ];
       --!pp on
       Check_Results
@@ -352,8 +352,8 @@ package body Variables_Tests is
         ("suite/tmp/lorem-ipsum.txt", "239eacc9eb868d2d3559a8ee4b903bb1");
 
       --  ----- undefined variables ignored, warning issued -------------------
-      Settings.Action := Mold.Ignore;
-      Settings.Alert  := Mold.Warning;
+      Settings.Undef_Var_Action := Mold.Ignore;
+      Settings.Undef_Var_Alert  := Mold.Warning;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
@@ -363,17 +363,17 @@ package body Variables_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       =>    1,
-         Renamed     =>    0,
-         Overwritten =>    1,
-         Definitions =>   24,
-         Variables   => 2118,
-         Undefined   =>  294,
-         Replaced    => 1824,
-         Ignored     =>  294,
-         Emptied     =>    0,
-         Warnings    =>  294,
-         Mold.Errors =>    0
+         Files_Processed      =>    1,
+         Files_Renamed        =>    0,
+         Files_Overwritten    =>    1,
+         Variables_Defined    =>   24,
+         Variables_Found      => 2118,
+         Variables_Undefined  =>  294,
+         Variables_Replaced   => 1824,
+         Variables_Ignored    =>  294,
+         Variables_Emptied    =>    0,
+         Replacement_Warnings =>  294,
+         Replacement_Errors   =>    0
       ];
       --!pp on
       Check_Results
@@ -382,8 +382,8 @@ package body Variables_Tests is
         ("suite/tmp/lorem-ipsum.txt", "239eacc9eb868d2d3559a8ee4b903bb1");
 
       --  ----- undefined variables emptied and no warning --------------------
-      Settings.Action := Mold.Empty;
-      Settings.Alert  := Mold.None;
+      Settings.Undef_Var_Action := Mold.Empty;
+      Settings.Undef_Var_Alert  := Mold.None;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
@@ -393,17 +393,17 @@ package body Variables_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       =>    1,
-         Renamed     =>    0,
-         Overwritten =>    1,
-         Definitions =>   24,
-         Variables   => 2118,
-         Undefined   =>  294,
-         Replaced    => 1824,
-         Ignored     =>    0,
-         Emptied     =>  294,
-         Warnings    =>    0,
-         Mold.Errors =>    0
+         Files_Processed      =>    1,
+         Files_Renamed        =>    0,
+         Files_Overwritten    =>    1,
+         Variables_Defined    =>   24,
+         Variables_Found      => 2118,
+         Variables_Undefined  =>  294,
+         Variables_Replaced   => 1824,
+         Variables_Ignored    =>    0,
+         Variables_Emptied    =>  294,
+         Replacement_Warnings =>    0,
+         Replacement_Errors   =>    0
       ];
       --!pp on
       Check_Results
@@ -412,8 +412,8 @@ package body Variables_Tests is
         ("suite/tmp/lorem-ipsum.txt", "a497437f9f4ebc6b42ec0f9aa33dba3d");
 
       --  ----- undefined variables emptied, warning issued -------------------
-      Settings.Action := Mold.Empty;
-      Settings.Alert  := Mold.Warning;
+      Settings.Undef_Var_Action := Mold.Empty;
+      Settings.Undef_Var_Alert  := Mold.Warning;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
@@ -423,17 +423,17 @@ package body Variables_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       =>    1,
-         Renamed     =>    0,
-         Overwritten =>    1,
-         Definitions =>   24,
-         Variables   => 2118,
-         Undefined   =>  294,
-         Replaced    => 1824,
-         Ignored     =>    0,
-         Emptied     =>  294,
-         Warnings    =>  294,
-         Mold.Errors =>    0
+         Files_Processed      =>    1,
+         Files_Renamed        =>    0,
+         Files_Overwritten    =>    1,
+         Variables_Defined    =>   24,
+         Variables_Found      => 2118,
+         Variables_Undefined  =>  294,
+         Variables_Replaced   => 1824,
+         Variables_Ignored    =>    0,
+         Variables_Emptied    =>  294,
+         Replacement_Warnings =>  294,
+         Replacement_Errors   =>    0
       ];
       --!pp on
       Check_Results
@@ -442,9 +442,9 @@ package body Variables_Tests is
         ("suite/tmp/lorem-ipsum.txt", "a497437f9f4ebc6b42ec0f9aa33dba3d");
 
       --  ----- undefined mandatory variable, no abort on error ---------------
-      Settings.Action         := Mold.Ignore;
-      Settings.Alert          := Mold.Warning;
-      Settings.Abort_On_Error := False;
+      Settings.Undef_Var_Action := Mold.Ignore;
+      Settings.Undef_Var_Alert  := Mold.Warning;
+      Settings.Abort_On_Error   := False;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
@@ -454,17 +454,17 @@ package body Variables_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       =>    1,
-         Renamed     =>    0,
-         Overwritten =>    1,
-         Definitions =>   18,
-         Variables   => 2118,
-         Undefined   =>  591,
-         Replaced    => 1527,
-         Ignored     =>  405,
-         Emptied     =>  186,
-         Warnings    =>  315,
-         Mold.Errors =>   90
+         Files_Processed      =>    1,
+         Files_Renamed        =>    0,
+         Files_Overwritten    =>    1,
+         Variables_Defined    =>   18,
+         Variables_Found      => 2118,
+         Variables_Undefined  =>  591,
+         Variables_Replaced   => 1527,
+         Variables_Ignored    =>  405,
+         Variables_Emptied    =>  186,
+         Replacement_Warnings =>  315,
+         Replacement_Errors   =>   90
       ];
       --!pp on
       Check_Results
@@ -493,17 +493,17 @@ package body Variables_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       => 1,
-         Renamed     => 0,
-         Overwritten => 0,
-         Definitions => 4,
-         Variables   => 4,
-         Undefined   => 0,
-         Replaced    => 4,
-         Ignored     => 0,
-         Emptied     => 0,
-         Warnings    => 0,
-         Mold.Errors => 0
+         Files_Processed      => 1,
+         Files_Renamed        => 0,
+         Files_Overwritten    => 0,
+         Variables_Defined    => 4,
+         Variables_Found      => 4,
+         Variables_Undefined  => 0,
+         Variables_Replaced   => 4,
+         Variables_Ignored    => 0,
+         Variables_Emptied    => 0,
+         Replacement_Warnings => 0,
+         Replacement_Errors   => 0
       ];
       --!pp on
       Check_Results

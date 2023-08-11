@@ -7,7 +7,7 @@
 -------------------------------------------------------------------------------
 
 with Lib_Mold;
-with Support;  use Support;
+with Support; use Support;
 
 package body Directory_Tests is
 
@@ -47,13 +47,13 @@ package body Directory_Tests is
    begin
 
       --  ----- all variables replaced ----------------------------------------
-      Settings.Rename_Source    := False;      --  changed in def file
-      Settings.Delete_Source    := True;       --  changed in def file
-      Settings.Overwrite        := True;
-      Settings.Defined_Settings := True;
-      Settings.Action           := Mold.Empty; --  changed in def file
-      Settings.Alert            := Mold.None;  --  changed in def file
-      Settings.Abort_On_Error   := True;       --  changed in def file
+      Settings.Replace_In_Source_File := False;      --  changed in def file
+      Settings.Delete_Source_File     := True;       --  changed in def file
+      Settings.Overwrite_Destination  := True;
+      Settings.Allow_Defined_Settings := True;
+      Settings.Undef_Var_Action       := Mold.Empty; --  changed in def file
+      Settings.Undef_Var_Alert        := Mold.None;  --  changed in def file
+      Settings.Abort_On_Error         := True;       --  changed in def file
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/dir",
@@ -76,17 +76,17 @@ package body Directory_Tests is
       --    __a__-__b__-__c__.txt.mold  1736  arcu-bibendum-commodo.txt
 
       Expected := [
-         Files       =>    7,
-         Renamed     =>    2,
-         Overwritten =>    0,
-         Definitions =>    5 + 26 + 100,
-         Variables   =>  100 +  4 +   9 + 2118 + 1950 + 1736,
-         Undefined   =>    0 +  4 +   9 +    0 +    0 +    0,
-         Replaced    =>  100 +  0 +   0 + 2118 + 1950 + 1736,
-         Ignored     =>    0 +  4 +   9 +    0 +    0 +    0,
-         Emptied     =>    0 +  0 +   0 +    0 +    0 +    0,
-         Warnings    =>    0 +  4 +   9 +    0 +    0 +    0,
-         Mold.Errors =>    0
+         Files_Processed      =>    7,
+         Files_Renamed        =>    2,
+         Files_Overwritten    =>    0,
+         Variables_Defined    =>    5 + 26 + 100,
+         Variables_Found      =>  100 +  4 +   9 + 2118 + 1950 + 1736,
+         Variables_Undefined  =>    0 +  4 +   9 +    0 +    0 +    0,
+         Variables_Replaced   =>  100 +  0 +   0 + 2118 + 1950 + 1736,
+         Variables_Ignored    =>    0 +  4 +   9 +    0 +    0 +    0,
+         Variables_Emptied    =>    0 +  0 +   0 +    0 +    0 +    0,
+         Replacement_Warnings =>    0 +  4 +   9 +    0 +    0 +    0,
+         Replacement_Errors   =>    0
       ];
       --!pp on
       Check_Results
@@ -124,13 +124,13 @@ package body Directory_Tests is
    begin
 
       --  ----- all variables replaced ----------------------------------------
-      Settings.Rename_Source    := False;      --  changed in def file
-      Settings.Delete_Source    := True;       --  changed in def file
-      Settings.Overwrite        := True;
-      Settings.Defined_Settings := True;
-      Settings.Action           := Mold.Empty; --  changed in def file
-      Settings.Alert            := Mold.None;  --  changed in def file
-      Settings.Abort_On_Error   := True;       --  changed in def file
+      Settings.Replace_In_Source_File := False;      --  changed in def file
+      Settings.Delete_Source_File     := True;       --  changed in def file
+      Settings.Overwrite_Destination  := True;
+      Settings.Allow_Defined_Settings := True;
+      Settings.Undef_Var_Action       := Mold.Empty; --  changed in def file
+      Settings.Undef_Var_Alert        := Mold.None;  --  changed in def file
+      Settings.Abort_On_Error         := True;       --  changed in def file
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/dir",
@@ -154,17 +154,17 @@ package body Directory_Tests is
       --    __a__-__b__-__c__.txt.mold  1736  arcu-bibendum-commodo.txt
 
       Expected := [
-         Files       =>    7,
-         Renamed     =>    2,
-         Overwritten =>    0,
-         Definitions =>    5 + 26 + 100,
-         Variables   =>  100 +  4 +   9 + 2118 + 1950 + 1736,
-         Undefined   =>    0 +  4 +   9 +    0 +    0 +    0,
-         Replaced    =>  100 +  0 +   0 + 2118 + 1950 + 1736,
-         Ignored     =>    0 +  4 +   9 +    0 +    0 +    0,
-         Emptied     =>    0 +  0 +   0 +    0 +    0 +    0,
-         Warnings    =>    0 +  4 +   9 +    0 +    0 +    0,
-         Mold.Errors =>    0
+         Files_Processed      =>    7,
+         Files_Renamed        =>    2,
+         Files_Overwritten    =>    0,
+         Variables_Defined    =>    5 + 26 + 100,
+         Variables_Found      =>  100 +  4 +   9 + 2118 + 1950 + 1736,
+         Variables_Undefined  =>    0 +  4 +   9 +    0 +    0 +    0,
+         Variables_Replaced   =>  100 +  0 +   0 + 2118 + 1950 + 1736,
+         Variables_Ignored    =>    0 +  4 +   9 +    0 +    0 +    0,
+         Variables_Emptied    =>    0 +  0 +   0 +    0 +    0 +    0,
+         Replacement_Warnings =>    0 +  4 +   9 +    0 +    0 +    0,
+         Replacement_Errors   =>    0
       ];
       --!pp on
       Check_Results

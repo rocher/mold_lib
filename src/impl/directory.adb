@@ -76,7 +76,7 @@ package body Directory is
                     Replace
                       (Dir.Compose (Sub_Dir, Name), Name'Unchecked_Access,
                        Output_Dir, Variables, Settings, Results);
-               elsif Dir.Extension (Name) = Mold.File_Extension then
+               elsif Dir.Extension (Name) = Mold.Mold_File_Extension then
                   declare
                      Out_Sub_dir : aliased String :=
                        Path (Output_Dir.all, Sub_Dir);

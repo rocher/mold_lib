@@ -49,21 +49,21 @@ package body Definitions is
 
    begin
 
-      if Settings.Defined_Settings then
+      if Settings.Allow_Defined_Settings then
          if Key = "mold-rename-source" then
-            Set_Boolean (Settings.Rename_Source'Access, Value);
+            Set_Boolean (Settings.Replace_In_Source_File'Access, Value);
          elsif Key = "mold-delete-source" then
-            Set_Boolean (Settings.Delete_Source'Access, Value);
+            Set_Boolean (Settings.Delete_Source_File'Access, Value);
          elsif Key = "mold-overwrite" then
-            Set_Boolean (Settings.Overwrite'Access, Value);
+            Set_Boolean (Settings.Overwrite_Destination'Access, Value);
          elsif Key = "mold-abort-on-error" then
             Set_Boolean (Settings.Abort_On_Error'Access, Value);
          elsif Key = "mold-action" then
             case Value is
                when "IGNORE" | "Ignore" | "ignore" =>
-                  Settings.Action := Mold.Ignore;
+                  Settings.Undef_Var_Action := Mold.Ignore;
                when "EMPTY" | "Empty" | "empty" =>
-                  Settings.Action := Mold.Empty;
+                  Settings.Undef_Var_Action := Mold.Empty;
                when others =>
                   Log.Error
                     ("Invalid setting value in " & Key & " = " & Value);
@@ -73,9 +73,9 @@ package body Definitions is
          elsif Key = "mold-alert" then
             case Value is
                when "NONE" | "None" | "none" =>
-                  Settings.Alert := Mold.None;
+                  Settings.Undef_Var_Alert := Mold.None;
                when "WARNING" | "Warning" | "warning" =>
-                  Settings.Alert := Mold.Warning;
+                  Settings.Undef_Var_Alert := Mold.Warning;
                when others =>
                   Log.Error
                     ("Invalid setting value in " & Key & " = " & Value);
@@ -120,7 +120,7 @@ package body Definitions is
       if Read_Result.Success then
          for Element of Read_Result.Value.Iterate_On_Table loop
             if Element.Key.Length >= 10
-              and then Element.Key.Slice (1, 5) = Mold.Variable_Setting_Prefix
+              and then Element.Key.Slice (1, 5) = Mold.Defined_Setting_Prefix
             then
                if not Set_Mold_Setting
                    (To_String (Element.Key), Element.Value.As_String, Settings)
@@ -134,7 +134,7 @@ package body Definitions is
             --    ("defined var " & To_String (Element.Key) & " = " &
             --     Element.Value.As_String);
 
-            Inc (Results, Mold.Definitions);
+            Inc (Results, Mold.Variables_Defined);
          end loop;
       else
          Log.Debug ("Error reading definitions file");

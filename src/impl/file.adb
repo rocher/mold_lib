@@ -27,8 +27,8 @@ package body File is
    subtype Inclusion_List is Inclusion_Package.List;
 
    use all type Dir.File_Kind;
-   use all type Mold.Undef_Var_Action;
-   use all type Mold.Undef_Var_Alert;
+   use all type Mold.Undefined_Variable_Actions;
+   use all type Mold.Undefined_Variable_Alerts;
    use all type Reg.Match_Location;
 
    Var_Matcher     : Reg.Pattern_Matcher (256);
@@ -117,7 +117,7 @@ package body File is
                Log.Warning
                  ("Undefined variable " & Var_Name &
                   " in file name substitution");
-               Inc (Global.Results, Mold.Warnings);
+               Inc (Global.Results, Mold.Replacement_Warnings);
             else
                New_Name.Append (Var_Value);
             end if;
@@ -151,7 +151,7 @@ package body File is
          exit when Matches (0) = Reg.No_Match;
 
          Has_Matches := True;
-         Inc (Global.Results, Mold.Variables);
+         Inc (Global.Results, Mold.Variables_Found);
 
          declare
             Pre_Text : constant String :=
@@ -165,11 +165,11 @@ package body File is
 
             Is_Mandatory : constant Boolean :=
               (Var_All_Name (Var_All_Name'First) =
-               Mold.Mandatory_Substitution_Prefix);
+               Mold.Mandatory_Replacement_Prefix);
 
             Is_Optional : constant Boolean :=
               (Var_All_Name (Var_All_Name'First) =
-               Mold.Optional_Substitution_Prefix);
+               Mold.Optional_Replacement_Prefix);
 
             Var_Name : constant String :=
               (if Is_Mandatory or Is_Optional then
@@ -189,7 +189,7 @@ package body File is
             New_Line.Append (Pre_Text);
 
             if Is_Undefined then
-               Inc (Global.Results, Mold.Undefined);
+               Inc (Global.Results, Mold.Variables_Undefined);
                declare
                   LIN     : constant String := Number'Image;
                   COL     : constant String := Matches (2).First'Image;
@@ -199,28 +199,28 @@ package body File is
                     COL (2 .. COL'Last);
                begin
                   if Is_Mandatory then
-                     Inc (Global.Results, Mold.Ignored);
-                     Inc (Global.Results, Mold.Errors);
+                     Inc (Global.Results, Mold.Variables_Ignored);
+                     Inc (Global.Results, Mold.Replacement_Errors);
                      New_Line.Append (Var_Mold);
                      Log.Error (Message);
                      Global.Errors := @ + 1;
                   elsif Is_Optional then
-                     Inc (Global.Results, Mold.Emptied);
+                     Inc (Global.Results, Mold.Variables_Emptied);
                   else  --  Is Normal
-                     if Global.Settings.Alert = Mold.Warning then
-                        Inc (Global.Results, Mold.Warnings);
+                     if Global.Settings.Undef_Var_Alert = Mold.Warning then
+                        Inc (Global.Results, Mold.Replacement_Warnings);
                         Log.Warning (Message);
                      end if;
-                     if Global.Settings.Action = Mold.Ignore then
-                        Inc (Global.Results, Mold.Ignored);
+                     if Global.Settings.Undef_Var_Action = Mold.Ignore then
+                        Inc (Global.Results, Mold.Variables_Ignored);
                         New_Line.Append (Var_Mold);
                      else
-                        Inc (Global.Results, Mold.Emptied);
+                        Inc (Global.Results, Mold.Variables_Emptied);
                      end if;
                   end if;
                end;
             else
-               Inc (Global.Results, Mold.Replaced);
+               Inc (Global.Results, Mold.Variables_Replaced);
                New_Line.Append (Var_Value);
             end if;
          end;
@@ -411,10 +411,10 @@ package body File is
          Prep_File_Name : constant String :=
            Dir.Compose (Dir_Name, Base_File_Name);
 
-         --  "replaced" file name: variable substitution in "preparation"
+         --  "Variables_Replaced" file name: variable substitution in "preparation"
          --  file name, if enabled
          Repl_File_Name : constant String :=
-           (if Settings.Rename_Source then
+           (if Settings.Replace_In_Source_File then
               Replace_In_File_Name (Prep_File_Name)
             else Prep_File_Name);
 
@@ -441,11 +441,11 @@ package body File is
             return Global.Errors;
          end if;
 
-         Inc (Results, Mold.Files);
+         Inc (Results, Mold.Files_Processed);
 
          if Base_File_Name /= Dir.Simple_Name (Dst_File_Name) then
-            --  file name has variables successfully replaced
-            Inc (Results, Mold.Renamed);
+            --  file name has Variables_Found successfully Variables_Replaced
+            Inc (Results, Mold.Files_Renamed);
          end if;
 
          Log.Debug ("REPLACE in File");
@@ -466,10 +466,10 @@ package body File is
             Log.Debug ("Created dir " & Real_Out_Dir);
          end if;
          if Dir.Exists (Dst_File_Name) then
-            if Settings.Overwrite then
+            if Settings.Overwrite_Destination then
                Dir.Delete_File (Dst_File_Name);
                Log.Debug ("Deleted file " & Dst_File_Name);
-               Inc (Results, Mold.Overwritten);
+               Inc (Results, Mold.Files_Overwritten);
             else
                Log.Error ("File " & Dst_File_Name & " already exists");
                Global.Errors := @ + 1;
@@ -482,7 +482,7 @@ package body File is
          Replace_In_Stream (Src_File, Dst_File);
 
          Dst_File.Close;
-         if Settings.Delete_Source and then Global.Errors = 0 then
+         if Settings.Delete_Source_File and then Global.Errors = 0 then
             Dir.Delete_File (Source.all);
          end if;
 
@@ -490,7 +490,7 @@ package body File is
          return Global.Errors;
 
       exception
-         --  invalid output directory or file name with replaced variables
+         --  invalid output directory or file name with Variables_Replaced Variables_Found
          when Dir.Name_Error =>
             Log.Error
               ("EXCEPTION caught: Invalid output directory or file name: '" &
@@ -539,8 +539,7 @@ begin
    --  ------------------------------------------------------------------------
    --
    --
-   Include_Matcher.Compile
-     ("^{{ *" & Mold.Inclusion_File_Prefix & "([^ ]+) *}}$");
+   Include_Matcher.Compile ("^{{ *" & Mold.Inclusion_Prefix & "([^ ]+) *}}$");
    --                                         |  1  |
    --                                         '-----'
    --  Example:

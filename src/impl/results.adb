@@ -14,8 +14,7 @@ package body Results is
    -- Inc --
    ---------
 
-   procedure Inc
-     (Results : Mold.Results_Access; Field : Mold.Results_Field_Type)
+   procedure Inc (Results : Mold.Results_Access; Field : Mold.Results_Fields)
    is
    begin
       if Results /= null then

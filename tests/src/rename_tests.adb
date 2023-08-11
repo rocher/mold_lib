@@ -6,8 +6,8 @@
 --
 -------------------------------------------------------------------------------
 
-with Lib_Mold;    use Lib_Mold;
-with Support; use Support;
+with Lib_Mold; use Lib_Mold;
+with Support;  use Support;
 
 package body Rename_Tests is
 
@@ -40,7 +40,7 @@ package body Rename_Tests is
       Settings : aliased Mold.Settings_Type := Global_Settings.all;
    begin
       --  ----- file renaming disabled ----------------------------------------
-      Settings.Rename_Source := False;
+      Settings.Replace_In_Source_File := False;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/no-vars-__foo__.txt.mold",
@@ -50,17 +50,17 @@ package body Rename_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       => 1,
-         Renamed     => 0,
-         Overwritten => 0,
-         Definitions => 1,
-         Variables   => 0,
-         Undefined   => 0,
-         Replaced    => 0,
-         Ignored     => 0,
-         Emptied     => 0,
-         Warnings    => 0,
-         Mold.Errors => 0
+         Files_Processed      => 1,
+         Files_Renamed        => 0,
+         Files_Overwritten    => 0,
+         Variables_Defined    => 1,
+         Variables_Found      => 0,
+         Variables_Undefined  => 0,
+         Variables_Replaced   => 0,
+         Variables_Ignored    => 0,
+         Variables_Emptied    => 0,
+         Replacement_Warnings => 0,
+         Replacement_Errors   => 0
       ];
       --!pp on
       Check_Results
@@ -69,7 +69,7 @@ package body Rename_Tests is
         ("suite/tmp/no-vars-__foo__.txt", "7ef8e151c0fde9d5fef738709a321300");
 
       --  ----- file renaming disabled ----------------------------------------
-      Settings.Rename_Source := False;
+      Settings.Replace_In_Source_File := False;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
@@ -79,17 +79,17 @@ package body Rename_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       => 1,
-         Renamed     => 0,
-         Overwritten => 0,
-         Definitions => 2,
-         Variables   => 0,
-         Undefined   => 0,
-         Replaced    => 0,
-         Ignored     => 0,
-         Emptied     => 0,
-         Warnings    => 0,
-         Mold.Errors => 0
+         Files_Processed      => 1,
+         Files_Renamed        => 0,
+         Files_Overwritten    => 0,
+         Variables_Defined    => 2,
+         Variables_Found      => 0,
+         Variables_Undefined  => 0,
+         Variables_Replaced   => 0,
+         Variables_Ignored    => 0,
+         Variables_Emptied    => 0,
+         Replacement_Warnings => 0,
+         Replacement_Errors   => 0
       ];
       --!pp on
       Check_Results
@@ -99,7 +99,7 @@ package body Rename_Tests is
          "7ef8e151c0fde9d5fef738709a321300");
 
       --  ----- variable in source file name is undefined ---------------------
-      Settings.Rename_Source := True;
+      Settings.Replace_In_Source_File := True;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/no-vars-__foo__.txt.mold",
@@ -109,17 +109,17 @@ package body Rename_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       => 1,
-         Renamed     => 0,
-         Overwritten => 1,
-         Definitions => 1,
-         Variables   => 0,
-         Undefined   => 0,
-         Replaced    => 0,
-         Ignored     => 0,
-         Emptied     => 0,
-         Warnings    => 1,
-         Mold.Errors => 0
+         Files_Processed      => 1,
+         Files_Renamed        => 0,
+         Files_Overwritten    => 1,
+         Variables_Defined    => 1,
+         Variables_Found      => 0,
+         Variables_Undefined  => 0,
+         Variables_Replaced   => 0,
+         Variables_Ignored    => 0,
+         Variables_Emptied    => 0,
+         Replacement_Warnings => 1,
+         Replacement_Errors   => 0
       ];
       --!pp on
       Check_Results
@@ -128,7 +128,7 @@ package body Rename_Tests is
         ("suite/tmp/no-vars-__foo__.txt", "7ef8e151c0fde9d5fef738709a321300");
 
       --  ----- variable in source file name is undefined ---------------------
-      Settings.Rename_Source := True;
+      Settings.Replace_In_Source_File := True;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
@@ -138,17 +138,17 @@ package body Rename_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       =>  1,
-         Renamed     =>  0,
-         Overwritten =>  1,
-         Definitions => 26,
-         Variables   =>  0,
-         Undefined   =>  0,
-         Replaced    =>  0,
-         Ignored     =>  0,
-         Emptied     =>  0,
-         Warnings    =>  2,
-         Mold.Errors =>  0
+         Files_Processed      =>  1,
+         Files_Renamed        =>  0,
+         Files_Overwritten    =>  1,
+         Variables_Defined    => 26,
+         Variables_Found      =>  0,
+         Variables_Undefined  =>  0,
+         Variables_Replaced   =>  0,
+         Variables_Ignored    =>  0,
+         Variables_Emptied    =>  0,
+         Replacement_Warnings =>  2,
+         Replacement_Errors   =>  0
       ];
       --!pp on
       Check_Results
@@ -169,7 +169,7 @@ package body Rename_Tests is
       Settings : aliased Mold.Settings_Type := Global_Settings.all;
    begin
 
-      Settings.Rename_Source := True;
+      Settings.Replace_In_Source_File := True;
 
       --  ----- one variable replaced -----------------------------------------
       --!pp off
@@ -181,17 +181,17 @@ package body Rename_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       => 1,
-         Renamed     => 1,
-         Overwritten => 0,
-         Definitions => 1,
-         Variables   => 0,
-         Undefined   => 0,
-         Replaced    => 0,
-         Ignored     => 0,
-         Emptied     => 0,
-         Warnings    => 1,
-         Mold.Errors => 0
+         Files_Processed      => 1,
+         Files_Renamed        => 1,
+         Files_Overwritten    => 0,
+         Variables_Defined    => 1,
+         Variables_Found      => 0,
+         Variables_Undefined  => 0,
+         Variables_Replaced   => 0,
+         Variables_Ignored    => 0,
+         Variables_Emptied    => 0,
+         Replacement_Warnings => 1,
+         Replacement_Errors   => 0
       ];
       --!pp on
       Check_Results
@@ -210,17 +210,17 @@ package body Rename_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       => 1,
-         Renamed     => 1,
-         Overwritten => 0,
-         Definitions => 1,
-         Variables   => 0,
-         Undefined   => 0,
-         Replaced    => 0,
-         Ignored     => 0,
-         Emptied     => 0,
-         Warnings    => 1,
-         Mold.Errors => 0
+         Files_Processed      => 1,
+         Files_Renamed        => 1,
+         Files_Overwritten    => 0,
+         Variables_Defined    => 1,
+         Variables_Found      => 0,
+         Variables_Undefined  => 0,
+         Variables_Replaced   => 0,
+         Variables_Ignored    => 0,
+         Variables_Emptied    => 0,
+         Replacement_Warnings => 1,
+         Replacement_Errors   => 0
       ];
       --!pp on
       Check_Results
@@ -239,17 +239,17 @@ package body Rename_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       => 1,
-         Renamed     => 1,
-         Overwritten => 0,
-         Definitions => 2,
-         Variables   => 0,
-         Undefined   => 0,
-         Replaced    => 0,
-         Ignored     => 0,
-         Emptied     => 0,
-         Warnings    => 0,
-         Mold.Errors => 0
+         Files_Processed      => 1,
+         Files_Renamed        => 1,
+         Files_Overwritten    => 0,
+         Variables_Defined    => 2,
+         Variables_Found      => 0,
+         Variables_Undefined  => 0,
+         Variables_Replaced   => 0,
+         Variables_Ignored    => 0,
+         Variables_Emptied    => 0,
+         Replacement_Warnings => 0,
+         Replacement_Errors   => 0
       ];
       --!pp on
       Check_Results

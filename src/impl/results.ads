@@ -12,8 +12,7 @@ package Results is
 
    package Mold renames Lib_Mold;
 
-   procedure Inc
-     (Results : Mold.Results_Access; Field : Mold.Results_Field_Type);
+   procedure Inc (Results : Mold.Results_Access; Field : Mold.Results_Fields);
    --  Increment results' field.
 
 end Results;

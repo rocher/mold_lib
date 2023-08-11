@@ -15,7 +15,7 @@ with AUnit.Reporter.Text;
 with AUnit.Test_Results;
 
 with Libmold_Tests_Config;
-with Mold_Test_Suite;
+with Lib_Mold_Test_Suite;
 with Lib_Mold;
 
 ----------------
@@ -27,7 +27,7 @@ procedure Mold_Tests is
    package Mold renames Lib_Mold;
 
    procedure Run is new AUnit.Run.Test_Runner_With_Results
-     (Mold_Test_Suite.Suite);
+     (Lib_Mold_Test_Suite.Suite);
    Reporter : AUnit.Reporter.Text.Text_Reporter;
    Results  : AUnit.Test_Results.Result;
 

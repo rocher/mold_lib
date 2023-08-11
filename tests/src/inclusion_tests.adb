@@ -52,17 +52,17 @@ package body Inclusion_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       => 1,
-         Renamed     => 0,
-         Overwritten => 0,
-         Definitions => 1,
-         Variables   => 0,
-         Undefined   => 0,
-         Replaced    => 0,
-         Ignored     => 0,
-         Emptied     => 0,
-         Warnings    => 0,
-         Mold.Errors => 0
+         Files_Processed      => 1,
+         Files_Renamed        => 0,
+         Files_Overwritten    => 0,
+         Variables_Defined    => 1,
+         Variables_Found      => 0,
+         Variables_Undefined  => 0,
+         Variables_Replaced   => 0,
+         Variables_Ignored    => 0,
+         Variables_Emptied    => 0,
+         Replacement_Warnings => 0,
+         Replacement_Errors   => 0
       ];
       --!pp on
       Check_Results
@@ -89,17 +89,17 @@ package body Inclusion_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       =>    1,
-         Renamed     =>    0,
-         Overwritten =>    0,
-         Definitions =>   26,
-         Variables   => 2118,
-         Undefined   =>    0,
-         Replaced    => 2118,
-         Ignored     =>    0,
-         Emptied     =>    0,
-         Warnings    =>    0,
-         Mold.Errors =>    0
+         Files_Processed      =>    1,
+         Files_Renamed        =>    0,
+         Files_Overwritten    =>    0,
+         Variables_Defined    =>   26,
+         Variables_Found      => 2118,
+         Variables_Undefined  =>    0,
+         Variables_Replaced   => 2118,
+         Variables_Ignored    =>    0,
+         Variables_Emptied    =>    0,
+         Replacement_Warnings =>    0,
+         Replacement_Errors   =>    0
       ];
       --!pp on
       Check_Results
@@ -118,17 +118,17 @@ package body Inclusion_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       =>    1,
-         Renamed     =>    0,
-         Overwritten =>    0,
-         Definitions =>   26,
-         Variables   => 2118,
-         Undefined   =>    0,
-         Replaced    => 2118,
-         Ignored     =>    0,
-         Emptied     =>    0,
-         Warnings    =>    0,
-         Mold.Errors =>    0
+         Files_Processed      =>    1,
+         Files_Renamed        =>    0,
+         Files_Overwritten    =>    0,
+         Variables_Defined    =>   26,
+         Variables_Found      => 2118,
+         Variables_Undefined  =>    0,
+         Variables_Replaced   => 2118,
+         Variables_Ignored    =>    0,
+         Variables_Emptied    =>    0,
+         Replacement_Warnings =>    0,
+         Replacement_Errors   =>    0
       ];
       --!pp on
       Check_Results
@@ -147,17 +147,17 @@ package body Inclusion_Tests is
          Results     => Results'Unchecked_Access
       );
       Expected := [
-         Files       =>    1,
-         Renamed     =>    0,
-         Overwritten =>    0,
-         Definitions =>   26,
-         Variables   => 2118,
-         Undefined   =>    0,
-         Replaced    => 2118,
-         Ignored     =>    0,
-         Emptied     =>    0,
-         Warnings    =>    0,
-         Mold.Errors =>    0
+         Files_Processed      =>    1,
+         Files_Renamed        =>    0,
+         Files_Overwritten    =>    0,
+         Variables_Defined    =>   26,
+         Variables_Found      => 2118,
+         Variables_Undefined  =>    0,
+         Variables_Replaced   => 2118,
+         Variables_Ignored    =>    0,
+         Variables_Emptied    =>    0,
+         Replacement_Warnings =>    0,
+         Replacement_Errors   =>    0
       ];
       --!pp on
       Check_Results
