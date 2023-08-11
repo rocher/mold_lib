@@ -3,7 +3,31 @@ version = "0.1.0-dev"
 tags = ["template", "repository"]
 
 description = "Meta-variable Operations for Lean Development (lib)"
-long-description = "\nMOLD : Meta-variable Operations for Lean Development (lib)\n==========================================================\n\nMold is a library to work with repository templates. For example, you can\nhave a repository in GitHub that is used as a template to create new,\ncustomized repositories for other users.\nAll template files end with the extension '.mold', for example 'README.md.mold'.\nTemplate variables are written as '{{variable}}'.\n\nMold replaces all variables in all template files with the corresponsding value.\nVariable values are defined in a simple TOML file (no arrays allowed) with a\n'variable = value' definition per line.\n\nMold applies the variable substitution in all template files, recursively in\nall directories. Newly created files don't have the '.mold'\nextension. If a file is specified, then the operaton is applied only to that file."
+long-description = '''
+MOLD : Meta-variable Operations for Lean Development (lib)
+——————————————————————————————————————————————————————————
+
+Mold is a Template Processor, or Template Engine, to work with repository
+templates. The main motivation of Mold is to have repositories in GitHub used as
+template repositories to create new, customized repositories for other users.
+
+Main features supported in Mold include variable replacement in files (*.mold)
+or, recursively for all subdirectories, in all files (*.mold) of a given
+directory; variable replacement in file names; inclusion of other templates;
+definition of varaibles with a TOML file.
+
+Variable replacement can be specified as 'normal', 'optional' or 'mandatory'.
+For example, the variable 'foo = "bar"' can be with specified '{{foo}}',
+'{{?foo}}' (optional) or '{{#foo}}' (mandatory). The difference is the handling
+of errors when an undefined variable is encountered.
+
+All template files must end with the extension '.mold', for example
+'README.md.mold'. Destination files (with variables replaced) have the same name
+without the 'mold' extensino: 'README.md'. This simplifies the work done in
+large subdirectories with few templates.
+
+For a complete reference of Mold, please visit https://rocher.github.io/rocher.
+'''
 
 authors = ["Francesc Rocher"]
 maintainers = ["Francesc Rocher <francesc.rocher@gmail.com>"]
