@@ -207,11 +207,13 @@ package body File is
                   elsif Is_Optional then
                      Inc (Global.Results, Mold.Variables_Emptied);
                   else  --  Is Normal
-                     if Global.Settings.Undef_Var_Alert = Mold.Warning then
+                     if Global.Settings.Undefined_Variable_Alert = Mold.Warning
+                     then
                         Inc (Global.Results, Mold.Replacement_Warnings);
                         Log.Warning (Message);
                      end if;
-                     if Global.Settings.Undef_Var_Action = Mold.Ignore then
+                     if Global.Settings.Undefined_Variable_Action = Mold.Ignore
+                     then
                         Inc (Global.Results, Mold.Variables_Ignored);
                         New_Line.Append (Var_Mold);
                      else
@@ -411,10 +413,10 @@ package body File is
          Prep_File_Name : constant String :=
            Dir.Compose (Dir_Name, Base_File_Name);
 
-         --  "Variables_Replaced" file name: variable substitution in "preparation"
-         --  file name, if enabled
+         --  "Replaced" file name: variable substitution in "preparation" file
+         --  name, if enabled
          Repl_File_Name : constant String :=
-           (if Settings.Replace_In_Source_File then
+           (if Settings.Replacement_In_File_Names then
               Replace_In_File_Name (Prep_File_Name)
             else Prep_File_Name);
 
@@ -466,7 +468,7 @@ package body File is
             Log.Debug ("Created dir " & Real_Out_Dir);
          end if;
          if Dir.Exists (Dst_File_Name) then
-            if Settings.Overwrite_Destination then
+            if Settings.Overwrite_Destination_Files then
                Dir.Delete_File (Dst_File_Name);
                Log.Debug ("Deleted file " & Dst_File_Name);
                Inc (Results, Mold.Files_Overwritten);
@@ -482,7 +484,7 @@ package body File is
          Replace_In_Stream (Src_File, Dst_File);
 
          Dst_File.Close;
-         if Settings.Delete_Source_File and then Global.Errors = 0 then
+         if Settings.Delete_Source_Files and then Global.Errors = 0 then
             Dir.Delete_File (Source.all);
          end if;
 
@@ -490,7 +492,7 @@ package body File is
          return Global.Errors;
 
       exception
-         --  invalid output directory or file name with Variables_Replaced Variables_Found
+         --  invalid output directory or file name
          when Dir.Name_Error =>
             Log.Error
               ("EXCEPTION caught: Invalid output directory or file name: '" &
@@ -540,8 +542,8 @@ begin
    --
    --
    Include_Matcher.Compile ("^{{ *" & Mold.Inclusion_Prefix & "([^ ]+) *}}$");
-   --                                         |  1  |
-   --                                         '-----'
+   --                                                          |  1  |
+   --                                                          '-----'
    --  Example:
    --
    --              1         2

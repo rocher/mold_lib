@@ -49,21 +49,21 @@ package body Definitions is
 
    begin
 
-      if Settings.Allow_Defined_Settings then
+      if Settings.Enable_Defined_Settings then
          if Key = "mold-rename-source" then
-            Set_Boolean (Settings.Replace_In_Source_File'Access, Value);
+            Set_Boolean (Settings.Replacement_In_File_Names'Access, Value);
          elsif Key = "mold-delete-source" then
-            Set_Boolean (Settings.Delete_Source_File'Access, Value);
+            Set_Boolean (Settings.Delete_Source_Files'Access, Value);
          elsif Key = "mold-overwrite" then
-            Set_Boolean (Settings.Overwrite_Destination'Access, Value);
+            Set_Boolean (Settings.Overwrite_Destination_Files'Access, Value);
          elsif Key = "mold-abort-on-error" then
             Set_Boolean (Settings.Abort_On_Error'Access, Value);
          elsif Key = "mold-action" then
             case Value is
                when "IGNORE" | "Ignore" | "ignore" =>
-                  Settings.Undef_Var_Action := Mold.Ignore;
+                  Settings.Undefined_Variable_Action := Mold.Ignore;
                when "EMPTY" | "Empty" | "empty" =>
-                  Settings.Undef_Var_Action := Mold.Empty;
+                  Settings.Undefined_Variable_Action := Mold.Empty;
                when others =>
                   Log.Error
                     ("Invalid setting value in " & Key & " = " & Value);
@@ -73,9 +73,9 @@ package body Definitions is
          elsif Key = "mold-alert" then
             case Value is
                when "NONE" | "None" | "none" =>
-                  Settings.Undef_Var_Alert := Mold.None;
+                  Settings.Undefined_Variable_Alert := Mold.None;
                when "WARNING" | "Warning" | "warning" =>
-                  Settings.Undef_Var_Alert := Mold.Warning;
+                  Settings.Undefined_Variable_Alert := Mold.Warning;
                when others =>
                   Log.Error
                     ("Invalid setting value in " & Key & " = " & Value);

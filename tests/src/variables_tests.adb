@@ -322,8 +322,8 @@ package body Variables_Tests is
         ("suite/tmp/lorem-ipsum.txt", "1ed55361c952f1e572a156c07a3c2f3d");
 
       --  ----- undefined variables ignored and no warning --------------------
-      Settings.Undef_Var_Action := Mold.Ignore;
-      Settings.Undef_Var_Alert  := Mold.None;
+      Settings.Undefined_Variable_Action := Mold.Ignore;
+      Settings.Undefined_Variable_Alert  := Mold.None;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
@@ -352,8 +352,8 @@ package body Variables_Tests is
         ("suite/tmp/lorem-ipsum.txt", "239eacc9eb868d2d3559a8ee4b903bb1");
 
       --  ----- undefined variables ignored, warning issued -------------------
-      Settings.Undef_Var_Action := Mold.Ignore;
-      Settings.Undef_Var_Alert  := Mold.Warning;
+      Settings.Undefined_Variable_Action := Mold.Ignore;
+      Settings.Undefined_Variable_Alert  := Mold.Warning;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
@@ -382,8 +382,8 @@ package body Variables_Tests is
         ("suite/tmp/lorem-ipsum.txt", "239eacc9eb868d2d3559a8ee4b903bb1");
 
       --  ----- undefined variables emptied and no warning --------------------
-      Settings.Undef_Var_Action := Mold.Empty;
-      Settings.Undef_Var_Alert  := Mold.None;
+      Settings.Undefined_Variable_Action := Mold.Empty;
+      Settings.Undefined_Variable_Alert  := Mold.None;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
@@ -412,8 +412,8 @@ package body Variables_Tests is
         ("suite/tmp/lorem-ipsum.txt", "a497437f9f4ebc6b42ec0f9aa33dba3d");
 
       --  ----- undefined variables emptied, warning issued -------------------
-      Settings.Undef_Var_Action := Mold.Empty;
-      Settings.Undef_Var_Alert  := Mold.Warning;
+      Settings.Undefined_Variable_Action := Mold.Empty;
+      Settings.Undefined_Variable_Alert  := Mold.Warning;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
@@ -442,8 +442,8 @@ package body Variables_Tests is
         ("suite/tmp/lorem-ipsum.txt", "a497437f9f4ebc6b42ec0f9aa33dba3d");
 
       --  ----- undefined mandatory variable, no abort on error ---------------
-      Settings.Undef_Var_Action := Mold.Ignore;
-      Settings.Undef_Var_Alert  := Mold.Warning;
+      Settings.Undefined_Variable_Action := Mold.Ignore;
+      Settings.Undefined_Variable_Alert  := Mold.Warning;
       Settings.Abort_On_Error   := False;
       --!pp off
       Errors := Mold.Apply (

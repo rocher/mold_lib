@@ -47,13 +47,13 @@ package body Directory_Tests is
    begin
 
       --  ----- all variables replaced ----------------------------------------
-      Settings.Replace_In_Source_File := False;      --  changed in def file
-      Settings.Delete_Source_File     := True;       --  changed in def file
-      Settings.Overwrite_Destination  := True;
-      Settings.Allow_Defined_Settings := True;
-      Settings.Undef_Var_Action       := Mold.Empty; --  changed in def file
-      Settings.Undef_Var_Alert        := Mold.None;  --  changed in def file
-      Settings.Abort_On_Error         := True;       --  changed in def file
+      Settings.Replacement_In_File_Names   := False;    --  changed in def file
+      Settings.Delete_Source_Files         := True;     --  changed in def file
+      Settings.Overwrite_Destination_Files := True;
+      Settings.Enable_Defined_Settings     := True;
+      Settings.Undefined_Variable_Action := Mold.Empty; --  changed in def file
+      Settings.Undefined_Variable_Alert := Mold.None;   --  changed in def file
+      Settings.Abort_On_Error := True;                  --  changed in def file
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/dir",
@@ -124,13 +124,13 @@ package body Directory_Tests is
    begin
 
       --  ----- all variables replaced ----------------------------------------
-      Settings.Replace_In_Source_File := False;      --  changed in def file
-      Settings.Delete_Source_File     := True;       --  changed in def file
-      Settings.Overwrite_Destination  := True;
-      Settings.Allow_Defined_Settings := True;
-      Settings.Undef_Var_Action       := Mold.Empty; --  changed in def file
-      Settings.Undef_Var_Alert        := Mold.None;  --  changed in def file
-      Settings.Abort_On_Error         := True;       --  changed in def file
+      Settings.Replacement_In_File_Names := False;      --  changed in def file
+      Settings.Delete_Source_Files := True;       --  changed in def file
+      Settings.Overwrite_Destination_Files := True;
+      Settings.Enable_Defined_Settings     := True;
+      Settings.Undefined_Variable_Action := Mold.Empty; --  changed in def file
+      Settings.Undefined_Variable_Alert := Mold.None;  --  changed in def file
+      Settings.Abort_On_Error := True;       --  changed in def file
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/dir",

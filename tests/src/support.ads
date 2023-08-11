@@ -17,12 +17,12 @@ package Support is
    --!pp off
    Default_Test_Settings : aliased constant Mold.Settings_Type :=
    (
-      Replace_In_Source_File => True,
-      Delete_Source_File     => False,   --  Do not remove source files
-      Overwrite_Destination  => True,    --  Overwrite destination files
-      Allow_Defined_Settings => True,
-      Undef_Var_Action       => Mold.Ignore,
-      Undef_Var_Alert        => Mold.Warning,
+      Replacement_In_File_Names => True,
+      Delete_Source_Files     => False,   --  Do not remove source files
+      Overwrite_Destination_Files  => True,    --  Overwrite destination files
+      Enable_Defined_Settings => True,
+      Undefined_Variable_Action       => Mold.Ignore,
+      Undefined_Variable_Alert        => Mold.Warning,
       Abort_On_Error         => True
    );
    --!pp on

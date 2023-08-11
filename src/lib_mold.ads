@@ -22,26 +22,26 @@ package Lib_Mold is
    Defined_Setting_Prefix       : constant String    := "mold-";
 
    type Settings_Type is record
-      Replace_In_Source_File : aliased Boolean;
-      Delete_Source_File     : aliased Boolean;
-      Overwrite_Destination  : aliased Boolean;
-      Allow_Defined_Settings : aliased Boolean;
-      Undef_Var_Action       : aliased Undefined_Variable_Actions;
-      Undef_Var_Alert        : aliased Undefined_Variable_Alerts;
-      Abort_On_Error         : aliased Boolean;
+      Replacement_In_File_Names   : aliased Boolean;
+      Delete_Source_Files         : aliased Boolean;
+      Overwrite_Destination_Files : aliased Boolean;
+      Enable_Defined_Settings     : aliased Boolean;
+      Undefined_Variable_Action   : aliased Undefined_Variable_Actions;
+      Undefined_Variable_Alert    : aliased Undefined_Variable_Alerts;
+      Abort_On_Error              : aliased Boolean;
    end record;
    type Settings_Access is access all Settings_Type;
 
    --!pp off
    Default_Settings : aliased Settings_Type :=
    (
-      Replace_In_Source_File => True,
-      Delete_Source_File     => True,
-      Overwrite_Destination  => False,
-      Allow_Defined_Settings => True,
-      Undef_Var_Action       => Ignore,
-      Undef_Var_Alert        => Warning,
-      Abort_On_Error         => True
+      Replacement_In_File_Names   => True,
+      Delete_Source_Files         => True,
+      Overwrite_Destination_Files => False,
+      Enable_Defined_Settings     => True,
+      Undefined_Variable_Action   => Ignore,
+      Undefined_Variable_Alert    => Warning,
+      Abort_On_Error              => True
    );
    --!pp on
 
@@ -89,13 +89,13 @@ package Lib_Mold is
    --  Given Source, a file or directory, applies all variable substitution
    --  defined in Variables_Defined file. If Source is a Directory, then
    --  substitution is applied recursively in all Files_Processed in the subdirectories.
-   --  If Replace_In_Source_File is True, then substitution is also applied to the
+   --  If Replacement_In_File_Names is True, then substitution is also applied to the
    --  file name(s).
    --
    --  Source Files_Processed must end with the extension "mold", for example
    --  "README.md.mold". Destination file name is the same as the Source, but
    --  removing the "mold" extension ("README.md" in the example). If
-   --  Replace_In_Source_File is true, then the destination is obtained by variable
+   --  Replacement_In_File_Names is true, then the destination is obtained by variable
    --  substitution in the Source file name. Variables_Found in file names are
    --  written as "__variable__". For example, for the Source file name
    --  "README___title__.md.mold" with the definition 'title = "NOW"', the
@@ -106,10 +106,10 @@ package Lib_Mold is
    --  names must follow TOML convention. See https://toml.io for more
    --  information.
    --
-   --  If Delete_Source_File is true, then all Source Files_Processed are removed once the
+   --  If Delete_Source_Files is true, then all Source Files_Processed are removed once the
    --  variable substitution has been completed successfully, otherwise Source
    --  Files_Processed are kept for future uses (possibly because a different file is
-   --  generated each time mold is applied). If Overwrite_Destination is True, then
+   --  generated each time mold is applied). If Overwrite_Destination_Files is True, then
    --  destination Files_Processed are Files_Overwritten, if exists.
    --
    --  All Variables_Found in a Source mold file must be written as '{{variable}}'
@@ -117,12 +117,12 @@ package Lib_Mold is
    --  includes the curly braces and the spaces, so '{{foo}}', '{{ foo }}' and
    --  '{{  foo    }}' is always Variables_Replaced with 'bar'.
    --
-   --  If Allow_Defined_Settings is True, then special meta-Variables_Found starting with
+   --  If Enable_Defined_Settings is True, then special meta-Variables_Found starting with
    --  the prefix 'mold-' can be used to change the mold settings. In the
    --  Settings_Type, you can use any of the elements of the record to change
    --  the default setting in the Variables_Defined file. For example,
    --  'molt-delete-source = "false"' is both a mold variable and a setting
-   --  changer. If Allow_Defined_Settings is False, then these meta Variables_Found are
+   --  changer. If Enable_Defined_Settings is False, then these meta Variables_Found are
    --  read as normal Variables_Found but settings are not changed. The only
    --  exception is for variable 'mold-defined-settings', whish is always set
    --  and affects the possible settings in following lines.
@@ -134,7 +134,7 @@ package Lib_Mold is
    --
    --  All variable substitutions are Normal, meaning that if they haven't
    --  been defined, they can be Variables_Ignored or a warning can be issued, depending
-   --  on the Undef_Var_Action and Undef_Var_Alert specification. Substitutions of variable names
+   --  on the Undefined_Variable_Action and Undefined_Variable_Alert specification. Substitutions of variable names
    --  starting with '?' are optional, meaning that no warning is issued if
    --  they haven't been defined and substitution is empty. Substitutions of
    --  variable names starting with the character '#' are mandatory, meaning
@@ -152,7 +152,7 @@ package Lib_Mold is
    --  level value before calling this function. Info level is used to report
    --  number of substitutions in Source Files_Processed, and number of files processed
    --  Files_Processed in directories. It is used also to report the new file name
-   --  created when Replace_In_Source_File is True. Set log level to Error to hide all
+   --  created when Replacement_In_File_Names is True. Set log level to Error to hide all
    --  Warning and Info logs. Debug level is used only for development.
    --
    --  If Abort_On_Error is True, then the variable substitution process is
@@ -184,7 +184,7 @@ package Lib_Mold is
    --  Examples with defined variable foo="bar" and variable baz Variables_Undefined:
    --
    --  ------------------------------------------------------------------------
-   --  Kind       Undef_Var_Action   Undef_Var_Alert    Origin      Variables_Replaced   Log      r i e W E
+   --  Kind       Undefined_Variable_Action   Undefined_Variable_Alert    Origin      Variables_Replaced   Log      r i e W E
    --  ------------------------------------------------------------------------
    --  Normal     <any>    <any>    "{{foo}}"   "bar"      None     T F F F F
 

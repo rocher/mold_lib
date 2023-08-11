@@ -40,7 +40,7 @@ package body Rename_Tests is
       Settings : aliased Mold.Settings_Type := Global_Settings.all;
    begin
       --  ----- file renaming disabled ----------------------------------------
-      Settings.Replace_In_Source_File := False;
+      Settings.Replacement_In_File_Names := False;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/no-vars-__foo__.txt.mold",
@@ -69,7 +69,7 @@ package body Rename_Tests is
         ("suite/tmp/no-vars-__foo__.txt", "7ef8e151c0fde9d5fef738709a321300");
 
       --  ----- file renaming disabled ----------------------------------------
-      Settings.Replace_In_Source_File := False;
+      Settings.Replacement_In_File_Names := False;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
@@ -99,7 +99,7 @@ package body Rename_Tests is
          "7ef8e151c0fde9d5fef738709a321300");
 
       --  ----- variable in source file name is undefined ---------------------
-      Settings.Replace_In_Source_File := True;
+      Settings.Replacement_In_File_Names := True;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/no-vars-__foo__.txt.mold",
@@ -128,7 +128,7 @@ package body Rename_Tests is
         ("suite/tmp/no-vars-__foo__.txt", "7ef8e151c0fde9d5fef738709a321300");
 
       --  ----- variable in source file name is undefined ---------------------
-      Settings.Replace_In_Source_File := True;
+      Settings.Replacement_In_File_Names := True;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
@@ -169,7 +169,7 @@ package body Rename_Tests is
       Settings : aliased Mold.Settings_Type := Global_Settings.all;
    begin
 
-      Settings.Replace_In_Source_File := True;
+      Settings.Replacement_In_File_Names := True;
 
       --  ----- one variable replaced -----------------------------------------
       --!pp off
