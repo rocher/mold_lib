@@ -31,6 +31,7 @@ package body Variables_Tests is
         (T, Test_Basic_Substitution'Access, "Basic Substitutions");
       Register_Routine
         (T, Test_Modal_Substitution'Access, "Modal Substitutions");
+      Register_Routine (T, Test_Multiline'Access, "Multiline Variables");
    end Register_Tests;
 
    --------------------------
@@ -472,5 +473,43 @@ package body Variables_Tests is
         ("suite/tmp/lorem-ipsum.txt", "caa552768a9819fff5eb93f4096189c3");
 
    end Test_Modal_Substitution;
+
+   --------------------
+   -- Test_Multiline --
+   --------------------
+
+   procedure Test_Multiline (T : in out Test_Case'Class) is
+      Errors   : Natural;
+      Results  : aliased Mold.Results_Type;
+      Expected : aliased Mold.Results_Type;
+   begin
+      --  ----- multiline paragraphs ------------------------------------------
+      --!pp off
+      Errors := Mold.Apply (
+         Source      => "suite/mold/multiline.txt.mold",
+         Output_Dir  => "suite/tmp/",
+         Settings    => Global_Settings,
+         Definitions => "suite/toml/multiline.toml",
+         Results     => Results'Unchecked_Access
+      );
+      Expected := [
+         Files       => 1,
+         Renamed     => 0,
+         Overwritten => 0,
+         Definitions => 4,
+         Variables   => 4,
+         Undefined   => 0,
+         Replaced    => 4,
+         Ignored     => 0,
+         Emptied     => 0,
+         Warnings    => 0,
+         Mold.Errors => 0
+      ];
+      --!pp on
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+      Check_MD5_Digest
+        ("suite/tmp/multiline.txt", "cfafd88cdde135c6e27e9917e5a74504");
+   end Test_Multiline;
 
 end Variables_Tests;
