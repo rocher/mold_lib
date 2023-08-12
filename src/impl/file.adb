@@ -12,8 +12,8 @@ with Ada.Text_IO;
 with GNAT.Regpat;
 with Simple_Logging;
 
-with Dir_Ops; use Dir_Ops;
-with Results; use Results;
+with Dir_Ops;          use Dir_Ops;
+with Lib_Mold.Results; use Lib_Mold.Results;
 
 package body File is
 
@@ -444,12 +444,11 @@ package body File is
             return Global.Errors;
          end if;
 
-         -- *TODO - Use Global record
-         Inc (Results, Mold.Files_Processed);
+         Inc (Global.Results, Mold.Files_Processed);
 
          if Base_File_Name /= Dir.Simple_Name (Dst_File_Name) then
             --  file name has Variables_Found successfully Variables_Replaced
-            Inc (Results, Mold.Files_Renamed);
+            Inc (Global.Results, Mold.Files_Renamed);
          end if;
 
          Log.Debug ("REPLACE in File");
@@ -473,7 +472,7 @@ package body File is
             if Settings.Overwrite_Destination_Files then
                Dir.Delete_File (Dst_File_Name);
                Log.Debug ("Deleted file " & Dst_File_Name);
-               Inc (Results, Mold.Files_Overwritten);
+               Inc (Global.Results, Mold.Files_Overwritten);
             else
                Log.Error ("File " & Dst_File_Name & " already exists");
                Global.Errors := @ + 1;

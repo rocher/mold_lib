@@ -6,7 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
-package body Results is
+package body Lib_Mold.Results is
 
    use all type Mold.Results_Access;
 
@@ -22,4 +22,4 @@ package body Results is
       end if;
    end Inc;
 
-end Results;
+end Lib_Mold.Results;

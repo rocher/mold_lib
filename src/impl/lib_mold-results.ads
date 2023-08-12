@@ -8,13 +8,11 @@
 
 with Lib_Mold;
 
-package Results is
+package Lib_Mold.Results is
 
    package Mold renames Lib_Mold;
 
    procedure Inc (Results : Mold.Results_Access; Field : Mold.Results_Fields);
-   --  Increment results' field.
+   --  If Results is not null, increment the given Field.
 
-   --  *TODO - try to integrate this function in another file
-
-end Results;
+end Lib_Mold.Results;

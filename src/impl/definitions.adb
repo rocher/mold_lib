@@ -10,7 +10,7 @@ with Simple_Logging;
 with TOML;
 with TOML.File_IO;
 
-with Results; use Results;
+with Lib_Mold.Results; use Lib_Mold.Results;
 
 package body Definitions is
 
