@@ -50,16 +50,15 @@ package body Definitions is
    begin
 
       if Settings.Enable_Defined_Settings then
-         --  *TODO - Fix defined settings according new names in Settings_Type
-         if Key = "mold-rename-source" then
+         if Key = "mold-replacement-in-file-names" then
             Set_Boolean (Settings.Replacement_In_File_Names'Access, Value);
-         elsif Key = "mold-delete-source" then
+         elsif Key = "mold-delete-source-files" then
             Set_Boolean (Settings.Delete_Source_Files'Access, Value);
-         elsif Key = "mold-overwrite" then
+         elsif Key = "mold-overwrite-destination-files" then
             Set_Boolean (Settings.Overwrite_Destination_Files'Access, Value);
          elsif Key = "mold-abort-on-error" then
             Set_Boolean (Settings.Abort_On_Error'Access, Value);
-         elsif Key = "mold-action" then
+         elsif Key = "mold-undefined-variable-action" then
             case Value is
                when "IGNORE" | "Ignore" | "ignore" =>
                   Settings.Undefined_Variable_Action := Mold.Ignore;
@@ -71,7 +70,7 @@ package body Definitions is
                   Success := False;
             end case;
 
-         elsif Key = "mold-alert" then
+         elsif Key = "mold-undefined-variable-alert" then
             case Value is
                when "NONE" | "None" | "none" =>
                   Settings.Undefined_Variable_Alert := Mold.None;
