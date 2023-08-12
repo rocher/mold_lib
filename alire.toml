@@ -1,6 +1,6 @@
 name = "libmold"
 version = "0.1.0-dev"
-tags = ["template", "repository"]
+tags = ["template", "template-engine", "template-repository"]
 
 description = "Meta-variable Operations for Lean Development (lib)"
 long-description = '''
@@ -25,6 +25,9 @@ All template files must end with the extension '.mold', for example
 'README.md.mold'. Destination files (with variables replaced) have the same name
 without the 'mold' extensino: 'README.md'. This simplifies the work done in
 large subdirectories with few templates.
+
+This crate contains the Ada library and tests. For a CLI tool, please take a
+look at the crate 'mold'.
 
 For a complete reference of Mold, please visit https://rocher.github.io/rocher.
 '''
