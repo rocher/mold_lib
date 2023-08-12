@@ -80,7 +80,7 @@ package Lib_Mold is
       Settings    : Settings_Access := null;
       Results     : Results_Access  := null
    )
-   return Natural;  -- *TODO - consider returning just a Boolean
+   return Natural;
    --!pp on
    --
    --  For a complete description of Mold, please visit:
@@ -96,11 +96,9 @@ package Lib_Mold is
    --  Default_Settings, and Results can be a pointer to a Results_Type object
    --  if detailed information about the process is required.
    --
-   --  The function returns the numbers of errors detected. Do not confuse
-   --  with the Replacement_Errors field in the Results_Type: these are the
-   --  errors detected during the variable replacement process, specially when
-   --  Abort_On_Error is False.
-   --
+   --  Return the number of errors detected, including those detected during
+   --  the replacement process. If Abort_On_Error is False, the number of
+   --  errors can be arbitrarily big.
    --  ------------------------------------------------------------------------
 
    --  *TODO - Make sure everything is in the mold web page

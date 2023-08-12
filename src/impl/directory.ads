@@ -25,12 +25,15 @@ package Directory is
       Settings   : not null Mold.Settings_Access;
       Results    :          Mold.Results_Access := null
    )
-   return Natural; -- *TODO - consider returning a Boolean
+   return Natural;
    --!pp on
    --
    --  Recursively apply variable replacement to all mold files (with
    --  extension "mold") in all sub-directories, starting at directory Source.
-   --  Return the number of errors detected.
+   --
+   --  Return the number of errors detected, including those detected during
+   --  the replacement process. If Abort_On_Error is False, the number of
+   --  errors can be arbitrarily big.
    --  ------------------------------------------------------------------------
 
 end Directory;

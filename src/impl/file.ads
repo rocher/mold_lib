@@ -30,7 +30,7 @@ package File is
       Settings   : not null Mold.Settings_Access;
       Results    :          Mold.Results_Access := null
    )
-   return Natural; -- *TODO - Consider returning a Boolean
+   return Natural;
    --!pp on
    --
    --  In the given Source file name, replace all occurrences of mold
@@ -42,7 +42,9 @@ package File is
    --  the "mold" extension, "README.md", even when there are no variables to
    --  replace.
    --
-   --  Return the number of errors detected.  *TODO - review
+   --  Return the number of errors detected, including those detected during
+   --  the replacement process. If Abort_On_Error is False, the number of
+   --  errors can be arbitrarily big.
    --  ------------------------------------------------------------------------
 
 end File;
