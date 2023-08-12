@@ -31,10 +31,9 @@ package body File is
    use all type Mold.Undefined_Variable_Alerts;
    use all type Reg.Match_Location;
 
-   --  *TODO - rename to Variable_Matcher
-   Var_Matcher     : Reg.Pattern_Matcher (256);
-   File_Matcher    : Reg.Pattern_Matcher (256);
-   Include_Matcher : Reg.Pattern_Matcher (128);
+   Variable_Matcher : Reg.Pattern_Matcher (256);
+   File_Matcher     : Reg.Pattern_Matcher (256);
+   Include_Matcher  : Reg.Pattern_Matcher (128);
 
    type Global_Arguments is record
       Running_Directory : String_Access := null;
@@ -148,7 +147,7 @@ package body File is
    begin
 
       loop
-         Var_Matcher.Match (Line, Matches, Current);
+         Variable_Matcher.Match (Line, Matches, Current);
          exit when Matches (0) = Reg.No_Match;
 
          Has_Matches := True;
@@ -505,11 +504,11 @@ package body File is
 
 begin
 
-   --                              .------.
-   --                              |   3  |
-   Var_Matcher.Compile ("(.*?)({{ *([^} ]+) *}})");
-   --                    | 1 ||        2       |
-   --                    '---''----------------'
+   --                                   .------.
+   --                                   |   3  |
+   Variable_Matcher.Compile ("(.*?)({{ *([^} ]+) *}})");
+   --                         | 1 ||        2       |
+   --                         '---''----------------'
    --  Example:
    --
    --              1         2         3
