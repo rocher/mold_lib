@@ -31,6 +31,7 @@ package body File is
    use all type Mold.Undefined_Variable_Alerts;
    use all type Reg.Match_Location;
 
+   --  *TODO - rename to Variable_Matcher
    Var_Matcher     : Reg.Pattern_Matcher (256);
    File_Matcher    : Reg.Pattern_Matcher (256);
    Include_Matcher : Reg.Pattern_Matcher (128);
@@ -443,6 +444,7 @@ package body File is
             return Global.Errors;
          end if;
 
+         -- *TODO - Use Global record
          Inc (Results, Mold.Files_Processed);
 
          if Base_File_Name /= Dir.Simple_Name (Dst_File_Name) then

@@ -34,7 +34,7 @@ package Definitions is
    return Variables_Map;
    --!pp on
    --
-   --  Read all Definitions definition of the given TOML Vars_File. Return a
+   --  Read all variable definitions of the given TOML Vars_File. Return a
    --  Variables_Map object.
    --  ------------------------------------------------------------------------
 

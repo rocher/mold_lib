@@ -80,17 +80,35 @@ package Lib_Mold is
       Settings    : Settings_Access := null;
       Results     : Results_Access  := null
    )
-   return Natural;
+   return Natural;  -- *TODO - consider returning just a Boolean
    --!pp on
    --
-   --  #TODO - Put a brief explanation and move all the docs to
-   --          https://rocher.github.io/mold
+   --  For a complete description of Mold, please visit:
    --
-   --  Given Source, a file or directory, applies all variable substitution
-   --  defined in Variables_Defined file. If Source is a Directory, then
-   --  substitution is applied recursively in all Files_Processed in the subdirectories.
-   --  If Replacement_In_File_Names is True, then substitution is also applied to the
-   --  file name(s).
+   --                    https://rocher.github.io/mold
+   --
+   --  Given Source, a file or directory, a Definition file with a set of
+   --  variables defined in it, this function applies variable replacement
+   --  and template inclusion in Source file. Or, recursively, in all '.mold'
+   --  files in the current directory and subdirectories when Source is a
+   --  directory. Optionally, Output_Dir can specify a different output
+   --  directory, Settings can be a customized set  of settings other than
+   --  Default_Settings, and Results can be a pointer to a Results_Type object
+   --  if detailed information about the process is required.
+   --
+   --  The function returns the numbers of errors detected. Do not confuse
+   --  with the Replacement_Errors field in the Results_Type: these are the
+   --  errors detected during the variable replacement process, specially when
+   --  Abort_On_Error is False.
+   --
+   --  ------------------------------------------------------------------------
+
+   --  *TODO - Make sure everything is in the mold web page
+   --
+   --  in Variables_Defined file. If Source is a Directory, then
+   --  substitution is applied recursively in all Files_Processed in the
+   --  subdirectories. If Replacement_In_File_Names is True, then substitution
+   --  is also applied to the file name(s).
    --
    --  Source Files_Processed must end with the extension "mold", for example
    --  "README.md.mold". Destination file name is the same as the Source, but

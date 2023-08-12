@@ -50,6 +50,7 @@ package body Definitions is
    begin
 
       if Settings.Enable_Defined_Settings then
+         --  *TODO - Fix defined settings according new names in Settings_Type
          if Key = "mold-rename-source" then
             Set_Boolean (Settings.Replacement_In_File_Names'Access, Value);
          elsif Key = "mold-delete-source" then

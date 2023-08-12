@@ -17,9 +17,9 @@ package File is
 
    procedure Set_Running_Directory (Name : String);
    --  Set the directory from which the process has been invoked when
-   --  operating on directory trees. This directory is used to search include
-   --  files if not found in the current working (sub-)directory of the mold
-   --  file being processed.
+   --  operating on directory trees. This directory is used to search for
+   --  include files when an include file is not found in the current working
+   --  directory of the file being processed.
 
    --!pp off
    function Replace
@@ -30,19 +30,19 @@ package File is
       Settings   : not null Mold.Settings_Access;
       Results    :          Mold.Results_Access := null
    )
-   return Natural;
+   return Natural; -- *TODO - Consider returning a Boolean
    --!pp on
    --
-   --  Variables all occurrences of "{{variable}}" with the value defined in
-   --  Variables in the given file Name, according to the Settings when an
-   --  undefined variables is found.
+   --  In the given Source file name, replace all occurrences of mold
+   --  variables with the value defined in the Variables map. Behaves
+   --  according to the Settings given and updates the Results object.
    --
-   --  Parameter Name is the name of file with extension "mold", e.g.
+   --  Parameter source is the name of file with extension "mold", e.g.
    --  "README.md.mold". The name of the generated file is the same without
    --  the "mold" extension, "README.md", even when there are no variables to
-   --  Variables.
+   --  replace.
    --
-   --  Return the number of errors detected.
+   --  Return the number of errors detected.  *TODO - review
    --  ------------------------------------------------------------------------
 
 end File;

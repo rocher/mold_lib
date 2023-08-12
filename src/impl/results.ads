@@ -15,4 +15,6 @@ package Results is
    procedure Inc (Results : Mold.Results_Access; Field : Mold.Results_Fields);
    --  Increment results' field.
 
+   --  *TODO - try to integrate this function in another file
+
 end Results;
