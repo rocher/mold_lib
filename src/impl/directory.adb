@@ -19,9 +19,9 @@ package body Directory is
 
    use all type Dir.File_Kind;
 
-   ---------------
-   -- Variables --
-   ---------------
+   -------------
+   -- Replace --
+   -------------
 
    --!pp off
    function Replace
@@ -80,11 +80,6 @@ package body Directory is
                   declare
                      Out_Sub_dir : aliased String :=
                        Path (Output_Dir.all, Sub_Dir);
-                     --    Dir.Compose
-                     --      (Dir.Compose
-                     --         (Output_Dir.all,
-                     --          Dir.Containing_Directory (Sub_Dir)),
-                     --       Dir.Simple_Name (Sub_Dir));
                   begin
                      Log.Debug ("File replace in element " & Name);
                      Errors :=

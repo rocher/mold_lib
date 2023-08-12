@@ -290,10 +290,16 @@ package body File is
    -- Replace_In_Stream --
    -----------------------
 
+   --!pp off
    procedure Replace_In_Stream
-     (Src : in out Ada.Text_IO.File_Type; Dst : Ada.Text_IO.File_Type) with
+   (
+      Src : in out Ada.Text_IO.File_Type;
+      Dst : Ada.Text_IO.File_Type
+   )
+   with
      Pre  => (Src.Is_Open and then Dst.Is_Open),
      Post => (not Src.Is_Open and then Dst.Is_Open)
+   --!pp on
    is
       Line_Number : Natural := 0;
       Matches     : Reg.Match_Array (0 .. 1);
@@ -380,7 +386,6 @@ package body File is
    -------------
 
    --!pp off
-
    function Replace
    (
       Source     : not null String_Access;
