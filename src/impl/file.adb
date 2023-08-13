@@ -211,6 +211,11 @@ package body File is
                      then
                         Inc (Global.Results, Mold.Replacement_Warnings);
                         Log.Warning (Message);
+                     elsif Global.Settings.Undefined_Variable_Alert =
+                       Mold.Error
+                     then
+                        Log.Error (Message);
+                        Global.Errors := @ + 1;
                      end if;
                      if Global.Settings.Undefined_Variable_Action = Mold.Ignore
                      then

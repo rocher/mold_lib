@@ -52,35 +52,37 @@ package body Definitions is
       if Settings.Enable_Defined_Settings then
          if Key = "mold-replacement-in-file-names" then
             Set_Boolean (Settings.Replacement_In_File_Names'Access, Value);
+
          elsif Key = "mold-delete-source-files" then
             Set_Boolean (Settings.Delete_Source_Files'Access, Value);
+
          elsif Key = "mold-overwrite-destination-files" then
             Set_Boolean (Settings.Overwrite_Destination_Files'Access, Value);
+
          elsif Key = "mold-abort-on-error" then
             Set_Boolean (Settings.Abort_On_Error'Access, Value);
+
          elsif Key = "mold-undefined-variable-action" then
-            case Value is
-               when "IGNORE" | "Ignore" | "ignore" =>
-                  Settings.Undefined_Variable_Action := Mold.Ignore;
-               when "EMPTY" | "Empty" | "empty" =>
-                  Settings.Undefined_Variable_Action := Mold.Empty;
-               when others =>
+            begin
+               Settings.Undefined_Variable_Action :=
+                 Mold.Undefined_Variable_Actions'Value (Value);
+            exception
+               when Constraint_Error =>
                   Log.Error
                     ("Invalid setting value in " & Key & " = " & Value);
                   Success := False;
-            end case;
+            end;
 
          elsif Key = "mold-undefined-variable-alert" then
-            case Value is
-               when "NONE" | "None" | "none" =>
-                  Settings.Undefined_Variable_Alert := Mold.None;
-               when "WARNING" | "Warning" | "warning" =>
-                  Settings.Undefined_Variable_Alert := Mold.Warning;
-               when others =>
+            begin
+               Settings.Undefined_Variable_Alert :=
+                 Mold.Undefined_Variable_Alerts'Value (Value);
+            exception
+               when Constraint_Error =>
                   Log.Error
                     ("Invalid setting value in " & Key & " = " & Value);
                   Success := False;
-            end case;
+            end;
          else
             Log.Error ("Invalid setting key in " & Key & " = " & Value);
             Success := False;

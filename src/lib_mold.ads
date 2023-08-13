@@ -11,7 +11,7 @@ with Libmold_Config;
 package Lib_Mold is
 
    type Undefined_Variable_Actions is (Ignore, Empty);
-   type Undefined_Variable_Alerts is (None, Warning);
+   type Undefined_Variable_Alerts is (None, Warning, Error);
 
    Optional_Replacement_Prefix  : constant Character := '?';
    Mandatory_Replacement_Prefix : constant Character := '#';
@@ -39,7 +39,7 @@ package Lib_Mold is
       Overwrite_Destination_Files => False,
       Enable_Defined_Settings     => True,
       Undefined_Variable_Action   => Ignore,
-      Undefined_Variable_Alert    => Warning,
+      Undefined_Variable_Alert    => Error,
       Abort_On_Error              => True
    );
    --!pp on
