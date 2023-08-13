@@ -8,8 +8,6 @@
 
 package body Lib_Mold.Results is
 
-   use all type Mold.Results_Access;
-
    ---------
    -- Inc --
    ---------

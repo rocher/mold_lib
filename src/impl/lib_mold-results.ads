@@ -6,8 +6,6 @@
 --
 -------------------------------------------------------------------------------
 
-with Lib_Mold;
-
 package Lib_Mold.Results is
 
    package Mold renames Lib_Mold;

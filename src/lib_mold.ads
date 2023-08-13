@@ -10,7 +10,6 @@ with Libmold_Config;
 
 package Lib_Mold is
 
-   type Replacement_Kind is (Normal, Optional, Mandatory);
    type Undefined_Variable_Actions is (Ignore, Empty);
    type Undefined_Variable_Alerts is (None, Warning);
 
