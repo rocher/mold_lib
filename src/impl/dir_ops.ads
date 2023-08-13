@@ -11,7 +11,7 @@ with GNAT.Directory_Operations;
 
 package Dir_Ops is
 
-   -- *TODO - Check usage in other files
+   --  *TODO - Check usage in other files
 
    function Path (A, B : String) return String is
      (A & GNAT.Directory_Operations.Dir_Separator & B);
