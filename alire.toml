@@ -1,6 +1,6 @@
 name = "libmold"
 version = "0.1.0-dev"
-tags = ["template", "template-engine", "template-repository"]
+tags = ["template", "template-engine", "template-repo"]
 
 description = "Meta-variable Operations for Lean Development (lib)"
 long-description = '''
