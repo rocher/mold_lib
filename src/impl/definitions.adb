@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 --
---  Lib_Mold - Meta-variable Operations for Lean Development
+--  Mold_Lib - Meta-variable Operations for Lean Development
 --  Copyright (c) 2023 Francesc Rocher <francesc.rocher@gmail.com>
 --  SPDX-License-Identifier: MIT
 --
@@ -10,7 +10,7 @@ with Simple_Logging;
 with TOML;
 with TOML.File_IO;
 
-with Lib_Mold.Results; use Lib_Mold.Results;
+with Mold_Lib.Results; use Mold_Lib.Results;
 
 package body Definitions is
 

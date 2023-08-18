@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 --
---  Lib_Mold - Meta-variable Operations for Lean Development
+--  Mold_Lib - Meta-variable Operations for Lean Development
 --  Copyright (c) 2023 Francesc Rocher <francesc.rocher@gmail.com>
 --  SPDX-License-Identifier: MIT
 --
@@ -14,7 +14,7 @@ with Directory;
 with Dir_Ops; use Dir_Ops;
 with File;
 
-package body Lib_Mold is
+package body Mold_Lib is
 
    package Dir renames Ada.Directories;
    package Log renames Simple_Logging;
@@ -132,4 +132,4 @@ package body Lib_Mold is
 
    end Apply;
 
-end Lib_Mold;
+end Mold_Lib;

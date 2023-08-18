@@ -8,22 +8,22 @@
 
 with GNAT.Source_Info;
 
-with Lib_Mold;
+with Mold_Lib;
 
 package Support is
 
-   package Mold renames Lib_Mold;
+   package Mold renames Mold_Lib;
 
    --!pp off
    Default_Test_Settings : aliased constant Mold.Settings_Type :=
    (
-      Replacement_In_File_Names => True,
-      Delete_Source_Files     => False,   --  Do not remove source files
+      Replacement_In_File_Names    => True,
+      Delete_Source_Files          => False,   --  Do not remove source files
       Overwrite_Destination_Files  => True,    --  Overwrite destination files
-      Enable_Defined_Settings => True,
-      Undefined_Variable_Action       => Mold.Ignore,
-      Undefined_Variable_Alert        => Mold.Warning,
-      Abort_On_Error         => True
+      Enable_Defined_Settings      => True,
+      Undefined_Variable_Action    => Mold.Ignore,
+      Undefined_Variable_Alert     => Mold.Warning,
+      Abort_On_Error               => True
    );
    --!pp on
 

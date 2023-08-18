@@ -6,13 +6,10 @@
 --
 -------------------------------------------------------------------------------
 
-with Lib_Mold;
-with Support; use Support;
+with Mold_Lib; use Mold_Lib;
+with Support;  use Support;
 
 package body Directory_Tests is
-
-   package Mold renames Lib_Mold;
-   use Mold;
 
    ----------
    -- Name --
@@ -41,9 +38,9 @@ package body Directory_Tests is
 
    procedure Test_In_Place (T : in out Test_Case'Class) is
       Errors   : Natural;
-      Results  : aliased Mold.Results_Type;
-      Expected : aliased Mold.Results_Type;
-      Settings : aliased Mold.Settings_Type := Global_Settings.all;
+      Results  : aliased Results_Type;
+      Expected : aliased Results_Type;
+      Settings : aliased Settings_Type := Global_Settings.all;
    begin
 
       --  ----- all variables replaced ----------------------------------------
@@ -51,11 +48,11 @@ package body Directory_Tests is
       Settings.Delete_Source_Files         := True;     --  changed in def file
       Settings.Overwrite_Destination_Files := True;
       Settings.Enable_Defined_Settings     := True;
-      Settings.Undefined_Variable_Action := Mold.Empty; --  changed in def file
-      Settings.Undefined_Variable_Alert := Mold.None;   --  changed in def file
+      Settings.Undefined_Variable_Action   := Empty; --  changed in def file
+      Settings.Undefined_Variable_Alert    := None;   --  changed in def file
       Settings.Abort_On_Error := True;                  --  changed in def file
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/dir",
          Settings    => Settings'Unchecked_Access,
          Definitions => "suite/dir/mold.toml",
@@ -118,9 +115,9 @@ package body Directory_Tests is
 
    procedure Test_Destination (T : in out Test_Case'Class) is
       Errors   : Natural;
-      Results  : aliased Mold.Results_Type;
-      Expected : aliased Mold.Results_Type;
-      Settings : aliased Mold.Settings_Type := Global_Settings.all;
+      Results  : aliased Results_Type;
+      Expected : aliased Results_Type;
+      Settings : aliased Settings_Type := Global_Settings.all;
    begin
 
       --  ----- all variables replaced ----------------------------------------
@@ -128,11 +125,11 @@ package body Directory_Tests is
       Settings.Delete_Source_Files := True;       --  changed in def file
       Settings.Overwrite_Destination_Files := True;
       Settings.Enable_Defined_Settings     := True;
-      Settings.Undefined_Variable_Action := Mold.Empty; --  changed in def file
-      Settings.Undefined_Variable_Alert := Mold.None;  --  changed in def file
+      Settings.Undefined_Variable_Action   := Empty; --  changed in def file
+      Settings.Undefined_Variable_Alert    := None;  --  changed in def file
       Settings.Abort_On_Error := True;       --  changed in def file
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/dir",
          Output_Dir  => "suite/tmp/dir",
          Settings    => Settings'Unchecked_Access,

@@ -6,7 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
-with Lib_Mold; use Lib_Mold;
+with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
 package body Variables_Tests is
@@ -444,7 +444,7 @@ package body Variables_Tests is
       --  ----- undefined mandatory variable, no abort on error ---------------
       Settings.Undefined_Variable_Action := Mold.Ignore;
       Settings.Undefined_Variable_Alert  := Mold.Warning;
-      Settings.Abort_On_Error   := False;
+      Settings.Abort_On_Error            := False;
       --!pp off
       Errors := Mold.Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",

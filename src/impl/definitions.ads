@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 --
---  Lib_Mold - Meta-variable Operations for Lean Development
+--  Mold_Lib - Meta-variable Operations for Lean Development
 --  Copyright (c) 2023 Francesc Rocher <francesc.rocher@gmail.com>
 --  SPDX-License-Identifier: MIT
 --
@@ -10,11 +10,11 @@ with Ada.Containers.Hashed_Maps; use Ada.Containers;
 with Ada.Strings.Unbounded;      use Ada.Strings.Unbounded;
 with Ada.Strings.Unbounded.Hash;
 
-with Lib_Mold;
+with Mold_Lib;
 
 package Definitions is
 
-   package Mold renames Lib_Mold;
+   package Mold renames Mold_Lib;
 
    package Variables_Package is new Hashed_Maps
      (Key_Type => Unbounded_String, Element_Type => Unbounded_String,

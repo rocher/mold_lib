@@ -8,8 +8,8 @@
 
 with AUnit.Test_Suites;
 
-package Lib_Mold_Test_Suite is
+package Mold_Lib_Test_Suite is
 
    function Suite return AUnit.Test_Suites.Access_Test_Suite;
 
-end Lib_Mold_Test_Suite;
+end Mold_Lib_Test_Suite;

@@ -1,4 +1,4 @@
-name = "libmold"
+name = "mold_lib"
 version = "0.1.0-dev"
 tags = ["template", "template-engine", "template-repo"]
 
@@ -39,7 +39,7 @@ maintainers-logins = ["rocher"]
 licenses = "MIT"
 
 [build-profiles]
-"libmold" = "development"
+"mold_lib" = "development"
 
 [build-switches."*"]
 ada_version = ["-gnat2022", "-gnatX"]

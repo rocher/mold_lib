@@ -14,31 +14,25 @@ with AUnit.Run;
 with AUnit.Reporter.Text;
 with AUnit.Test_Results;
 
-with Libmold_Tests_Config;
-with Lib_Mold_Test_Suite;
-with Lib_Mold;
+with Mold_Lib_Tests_Config;
+with Mold_Lib_Test_Suite;
+with Mold_Lib;
 
-----------------
--- Mold_Tests --
-----------------
-
-procedure Mold_Tests is
-
-   package Mold renames Lib_Mold;
+procedure Mold_Lib_Tests is
 
    procedure Run is new AUnit.Run.Test_Runner_With_Results
-     (Lib_Mold_Test_Suite.Suite);
+     (Mold_Lib_Test_Suite.Suite);
    Reporter : AUnit.Reporter.Text.Text_Reporter;
    Results  : AUnit.Test_Results.Result;
 
-   use Libmold_Tests_Config;
+   use Mold_Lib_Tests_Config;
 begin
    Ada.Text_IO.Put_Line
-     ("Tests for " & Mold.Name & " version " & Mold.Version);
+     ("Tests for " & Mold_Lib.Name & " version " & Mold_Lib.Version);
 
    pragma Warnings (Off);
    Reporter.Set_Use_ANSI_Colors
-     (Libmold_Tests_Config.Build_Profile = Libmold_Tests_Config.development);
+     (Mold_Lib_Tests_Config.Build_Profile = Mold_Lib_Tests_Config.development);
    pragma Warnings (On);
 
    Run (Reporter, Results);
@@ -47,4 +41,4 @@ begin
       Ada.Command_Line.Set_Exit_Status (1);
    end if;
 
-end Mold_Tests;
+end Mold_Lib_Tests;

@@ -1,12 +1,12 @@
 -------------------------------------------------------------------------------
 --
---  Lib_Mold - Meta-variable Operations for Lean Development
+--  Mold_Lib - Meta-variable Operations for Lean Development
 --  Copyright (c) 2023 Francesc Rocher <francesc.rocher@gmail.com>
 --  SPDX-License-Identifier: MIT
 --
 -------------------------------------------------------------------------------
 
-package body Lib_Mold.Results is
+package body Mold_Lib.Results is
 
    ---------
    -- Inc --
@@ -20,4 +20,4 @@ package body Lib_Mold.Results is
       end if;
    end Inc;
 
-end Lib_Mold.Results;
+end Mold_Lib.Results;

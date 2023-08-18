@@ -6,7 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
-with Lib_Mold; use Lib_Mold;
+with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
 package body Rename_Tests is
@@ -35,14 +35,14 @@ package body Rename_Tests is
 
    procedure Test_No_Renaming (T : in out Test_Case'Class) is
       Errors   : Natural;
-      Results  : aliased Mold.Results_Type;
-      Expected : aliased Mold.Results_Type;
-      Settings : aliased Mold.Settings_Type := Global_Settings.all;
+      Results  : aliased Results_Type;
+      Expected : aliased Results_Type;
+      Settings : aliased Settings_Type := Global_Settings.all;
    begin
       --  ----- file renaming disabled ----------------------------------------
       Settings.Replacement_In_File_Names := False;
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/no-vars-__foo__.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
@@ -71,7 +71,7 @@ package body Rename_Tests is
       --  ----- file renaming disabled ----------------------------------------
       Settings.Replacement_In_File_Names := False;
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
@@ -101,7 +101,7 @@ package body Rename_Tests is
       --  ----- variable in source file name is undefined ---------------------
       Settings.Replacement_In_File_Names := True;
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/no-vars-__foo__.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
@@ -130,7 +130,7 @@ package body Rename_Tests is
       --  ----- variable in source file name is undefined ---------------------
       Settings.Replacement_In_File_Names := True;
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
@@ -164,16 +164,16 @@ package body Rename_Tests is
 
    procedure Test_Basic_Renaming (T : in out Test_Case'Class) is
       Errors   : Natural;
-      Results  : aliased Mold.Results_Type;
-      Expected : aliased Mold.Results_Type;
-      Settings : aliased Mold.Settings_Type := Global_Settings.all;
+      Results  : aliased Results_Type;
+      Expected : aliased Results_Type;
+      Settings : aliased Settings_Type := Global_Settings.all;
    begin
 
       Settings.Replacement_In_File_Names := True;
 
       --  ----- one variable replaced -----------------------------------------
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
@@ -202,7 +202,7 @@ package body Rename_Tests is
 
       --  ----- one variable replaced -----------------------------------------
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
@@ -231,7 +231,7 @@ package body Rename_Tests is
 
       --  ----- two variables replaced ----------------------------------------
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,

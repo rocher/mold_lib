@@ -1,16 +1,16 @@
 -------------------------------------------------------------------------------
 --
---  Lib_Mold - Meta-variable Operations for Lean Development
+--  Mold_Lib - Meta-variable Operations for Lean Development
 --  Copyright (c) 2023 Francesc Rocher <francesc.rocher@gmail.com>
 --  SPDX-License-Identifier: MIT
 --
 -------------------------------------------------------------------------------
 
-package Lib_Mold.Results is
+package Mold_Lib.Results is
 
-   package Mold renames Lib_Mold;
+   package Mold renames Mold_Lib;
 
    procedure Inc (Results : Mold.Results_Access; Field : Mold.Results_Fields);
    --  If Results is not null, increment the given Field.
 
-end Lib_Mold.Results;
+end Mold_Lib.Results;

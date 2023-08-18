@@ -1,14 +1,14 @@
 -------------------------------------------------------------------------------
 --
---  Lib_Mold - Meta-variable Operations for Lean Development
+--  Mold_Lib - Meta-variable Operations for Lean Development
 --  Copyright (c) 2023 Francesc Rocher <francesc.rocher@gmail.com>
 --  SPDX-License-Identifier: MIT
 --
 -------------------------------------------------------------------------------
 
-with Libmold_Config;
+with Mold_Lib_Config;
 
-package Lib_Mold is
+package Mold_Lib is
 
    type Undefined_Variable_Actions is (Ignore, Empty);
    type Undefined_Variable_Alerts is (None, Warning, Error);
@@ -64,10 +64,10 @@ package Lib_Mold is
    type Results_Type is array (Results_Fields) of Natural;
    type Results_Access is access all Results_Type;
 
-   function Name return String is (Libmold_Config.Crate_Name);
+   function Name return String is (Mold_Lib_Config.Crate_Name);
    --  Return create name.
 
-   function Version return String is (Libmold_Config.Crate_Version);
+   function Version return String is (Mold_Lib_Config.Crate_Version);
    --  Return crate version.
 
    --!pp off
@@ -100,4 +100,4 @@ package Lib_Mold is
    --  errors can be arbitrarily big.
    --  ------------------------------------------------------------------------
 
-end Lib_Mold;
+end Mold_Lib;
