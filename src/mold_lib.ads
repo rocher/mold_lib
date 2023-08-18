@@ -7,8 +7,11 @@
 -------------------------------------------------------------------------------
 
 with Mold_Lib_Config;
+with Simple_Logging;
 
 package Mold_Lib is
+
+   package Log renames Simple_Logging;
 
    type Undefined_Variable_Actions is (Ignore, Empty);
    type Undefined_Variable_Alerts is (None, Warning, Error);
@@ -77,7 +80,8 @@ package Mold_Lib is
       Output_Dir  : String          := "";
       Definitions : String          := "mold.toml";
       Settings    : Settings_Access := null;
-      Results     : Results_Access  := null
+      Results     : Results_Access  := null;
+      Log_Level   : Log.Levels      := Log.Info
    )
    return Natural;
    --!pp on
