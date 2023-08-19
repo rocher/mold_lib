@@ -29,10 +29,11 @@ large subdirectories with few templates.
 This crate contains the Ada library and tests. For a CLI tool, please take a
 look at the crate 'mold'.
 
-For a complete reference of Mold, please visit https://rocher.github.io/rocher.
+For a complete reference of Mold, please visit https://rocher.github.io/mold.
 '''
 
 authors = ["Francesc Rocher"]
+website = "https://rocher.github.io/mold"
 maintainers = ["Francesc Rocher <francesc.rocher@gmail.com>"]
 maintainers-logins = ["rocher"]
 
