@@ -33,7 +33,7 @@ package body Mold_Lib is
          return "";
       end if;
 
-      return Source_Path : String := Full_Path_Expanded (Source) do
+      return Source_Path : constant String := Full_Path_Expanded (Source) do
          if Source_Path'Length = 0 or else not Dir.Exists (Source_Path)
            or else Dir.Kind (Source_Path) = Dir.Special_File
          then
@@ -76,7 +76,7 @@ package body Mold_Lib is
       end if;
 
       return
-        Output_Dir_Path : String :=
+        Output_Dir_Path : constant String :=
           (if Output_Dir'Length > 0 then Full_Path_Expanded (Output_Dir)
            elsif Dir.Kind (Source_Path) = Dir.Ordinary_File then
              Dir.Containing_Directory (Source_Path)
@@ -109,7 +109,9 @@ package body Mold_Lib is
          return "";
       end if;
 
-      return Definitions_Path : String := Full_Path_Expanded (Definitions) do
+      return
+        Definitions_Path : constant String := Full_Path_Expanded (Definitions)
+      do
          if Dir.Exists (Definitions_Path)
            and then Dir.Kind (Definitions_Path) = Dir.Ordinary_File
          then
@@ -147,12 +149,12 @@ package body Mold_Lib is
    --!pp on
 
    is
-      Validation_Error : Boolean        := False;
-      Definitions_Path : String         :=
+      Validation_Error : Boolean         := False;
+      Definitions_Path : constant String :=
         Validate_Definitions (Definitions, Validation_Error);
-      Source_Path      : aliased String :=
+      Source_Path      : aliased String  :=
         Validate_Source (Source, Validation_Error);
-      Output_Dir_Path  : aliased String :=
+      Output_Dir_Path  : aliased String  :=
         Validate_Output_Dir (Source_Path, Output_Dir, Validation_Error);
 
       Used_Settings : constant Settings_Access :=
