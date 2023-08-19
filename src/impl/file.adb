@@ -55,7 +55,7 @@ package body File is
       Root_Directory : constant String_Access := new String'(Name);
    begin
       Global.Running_Directory := Root_Directory;
-      Log.Debug ("Root_Directory : " & Global.Running_Directory.all);
+      Log.Debug ("  Root_Directory : " & Global.Running_Directory.all);
    end Set_Running_Directory;
 
    ---------------
@@ -85,6 +85,7 @@ package body File is
       Current     : Natural          := Name'First;
       Has_Matches : Boolean          := False;
    begin
+      Log.Debug ("BEGIN Replace_In_File_Name");
 
       loop
          File_Matcher.Match (Name, Matches, Current);
@@ -106,16 +107,16 @@ package body File is
             Is_Undefined : constant Boolean := (Var_Value = "");
          begin
 
-            --  Log.Debug ("Pre_Name : '" & Pre_Name & "'");
-            --  Log.Debug ("Var_Mold : '" & Var_Mold & "'");
-            --  Log.Debug ("Var_Name : '" & Var_Name & "'");
-            --  Log.Debug ("Var_Value: '" & Var_Value & "'");
+            Log.Debug ("  Pre_Name : '" & Pre_Name & "'");
+            Log.Debug ("  Var_Mold : '" & Var_Mold & "'");
+            Log.Debug ("  Var_Name : '" & Var_Name & "'");
+            Log.Debug ("  Var_Value: '" & Var_Value & "'");
 
             New_Name.Append (Pre_Name);
             if Is_Undefined then
                New_Name.Append (Var_Mold);
                Log.Warning
-                 ("Undefined variable " & Var_Name &
+                 ("  Undefined variable " & Var_Name &
                   " in file name substitution");
                Inc (Global.Results, Mold.Replacement_Warnings);
             else
@@ -128,9 +129,12 @@ package body File is
 
       if Has_Matches then
          New_Name.Append (Name (Current .. Name'Last));
-         Log.Debug ("Renamed file " & Name & " to " & To_String (New_Name));
+         Log.Debug ("  Renamed file " & Name & " to " & To_String (New_Name));
+         Log.Debug ("END Replace_In_File_Name");
          return To_String (New_Name);
       else
+         Log.Debug ("  No replacement done");
+         Log.Debug ("END Replace_In_File_Name");
          return Name;
       end if;
    end Replace_In_File_Name;
@@ -248,47 +252,64 @@ package body File is
    ------------------
 
    function Include_Path
-     (Inc_Name : String; Success : out Boolean) return String
+     (File_Name : String; Success : out Boolean) return String
    is
-      Full_Name : constant String := Dir.Full_Name (Inc_Name);
-      Extension : constant String := Dir.Extension (Inc_Name);
+      Extension : constant String := Dir.Extension (File_Name);
    begin
-      Log.Debug ("Include file");
-      Log.Debug ("  Inc_Name  : " & Inc_Name);
-      Log.Debug ("  Full_Name : " & Full_Name);
+      Log.Debug ("BEGIN Include_Path");
+      Log.Debug ("  File_Name : " & File_Name);
       Log.Debug ("  Extension : " & Extension);
 
+      --  check extension file to be 'molt'
+      --  *TODO - Consider relaxing this, with a flag or permanently
+
       if Extension /= Mold.Include_File_Extension then
-         Log.Error ("Invalid extension of include file " & Inc_Name);
          Success := False;
+         Log.Error ("Invalid extension of include file " & File_Name);
          return "";
       end if;
 
-      if Dir.Exists (Full_Name) then
-         Log.Debug ("Including from current directory");
-         Success := True;
-         return Full_Name;
-      else
-         Log.Debug ("Trying to include from running directory");
-         declare
-            Inc_Full_Path : constant String :=
-              Path (Global.Running_Directory.all, Inc_Name);
-         begin
-            Log.Debug ("Inc_Full_Path : " & Inc_Full_Path);
+      --  check whether File_Name exists or not: it can be a relative path to
+      --  the currently processed file (e.g. lib/templates/foo.molt), or an
+      --  absolute path to a library or repository of templates (e.g.
+      --  /usr/share/molt/bar.molt)
 
-            if Dir.Exists (Inc_Full_Path)
-              and then Dir.Kind (Inc_Full_Path) = Dir.Ordinary_File
-            then
-               Log.Debug ("Including from running directory");
-               Success := True;
-               return Inc_Full_Path;
-            else
-               Log.Error ("Include file not found " & Inc_Name);
-               Success := False;
-               return "";
-            end if;
-         end;
+      if Dir.Exists (File_Name)
+        and then Dir.Kind (File_Name) = Dir.Ordinary_File
+      then
+         Success := True;
+         Log.Debug ("  Including file " & File_Name);
+         Log.Debug ("END Include_Path");
+         return File_Name;
       end if;
+
+      Log.Debug ("  Trying to include from running directory");
+
+      declare
+         File_Path : constant String :=
+           Full_Path_Expanded (Global.Running_Directory.all, File_Name);
+      begin
+         Log.Debug ("  File_Path : " & File_Path);
+
+         if Dir.Exists (File_Path)
+           and then Dir.Kind (File_Path) = Dir.Ordinary_File
+         then
+            Success := True;
+            Log.Debug ("  Include from running directory " & File_Path);
+            Log.Debug ("END Include_Path");
+            return File_Path;
+         else
+            Success := False;
+            Log.Debug ("  File not found " & File_Path);
+            Log.Debug ("END Include_Path");
+            return "";
+         end if;
+      end;
+
+   exception
+      when Dir.Name_Error =>
+         Log.Debug ("EXCEPTION Dir.Name_Error caught");
+         return "";
    end Include_Path;
 
    -----------------------
@@ -309,7 +330,7 @@ package body File is
       Line_Number : Natural := 0;
       Matches     : Reg.Match_Array (0 .. 1);
    begin
-
+      Log.Debug ("BEGIN File.Replace_In_Stream");
       For_Each_Line :
       loop
          exit For_Each_Line when Src.End_Of_File;
@@ -357,7 +378,7 @@ package body File is
                      Global.Errors := @ + 1;
                      goto Exit_Procedure;
                   else
-                     Log.Debug ("Including file " & Inc_Path & " ...");
+                     Log.Debug ("  Including file " & Inc_Path & " ...");
                   end if;
 
                   Global.Included_Files.Append
@@ -367,7 +388,7 @@ package body File is
                   Replace_In_Stream (Inc_File, Dst);
 
                   Global.Included_Files.Delete_Last;
-                  Log.Debug ("...  file included");
+                  Log.Debug ("  ...  file included");
                end;
             end if;
          end;
@@ -375,6 +396,7 @@ package body File is
 
       <<Exit_Procedure>>
       Src.Close;
+      Log.Debug ("END File.Replace_In_Stream");
 
    exception
       when others =>
@@ -446,21 +468,7 @@ package body File is
          Dst_File : IO.File_Type;
 
       begin
-
-         if Global.Errors > 0 then
-            --  error detected during file name substitution, in the function
-            --  Replace_In_File_Name
-            return Global.Errors;
-         end if;
-
-         Inc (Global.Results, Mold.Files_Processed);
-
-         if Base_File_Name /= Dir.Simple_Name (Dst_File_Name) then
-            --  file name has Variables_Found successfully Variables_Replaced
-            Inc (Global.Results, Mold.Files_Renamed);
-         end if;
-
-         Log.Debug ("REPLACE in File");
+         Log.Debug ("BEGIN File.Replace");
          Log.Debug ("  Dir_Name       : " & Dir_Name);
          Log.Debug ("  Src_File_Name  : " & Source.all);
          Log.Debug ("  Base_File_Name : " & Base_File_Name);
@@ -469,44 +477,69 @@ package body File is
          Log.Debug ("  Real_Out_Dir   : " & Real_Out_Dir);
          Log.Debug ("  Dst_File_Name  : " & Dst_File_Name);
 
+         if Global.Errors > 0 then
+            --  error detected during file name substitution, in the function
+            --  Replace_In_File_Name
+            goto Exit_Function;
+         end if;
+
+         Inc (Global.Results, Mold.Files_Processed);
+
+         if Base_File_Name /= Dir.Simple_Name (Dst_File_Name) then
+            --  file name has variables successfully replaced
+            Inc (Global.Results, Mold.Files_Renamed);
+         end if;
+
          --  open source file
+
          Src_File.Open (IO.In_File, Source.all);
 
          --  open or create destination file and directory
+
          if not Dir.Exists (Real_Out_Dir) then
             Dir.Create_Path (Real_Out_Dir);
-            Log.Debug ("Created dir " & Real_Out_Dir);
+            Log.Debug ("  Created dir " & Real_Out_Dir);
          end if;
+
          if Dir.Exists (Dst_File_Name) then
             if Settings.Overwrite_Destination_Files then
                Dir.Delete_File (Dst_File_Name);
-               Log.Debug ("Deleted file " & Dst_File_Name);
+               Log.Debug ("  Deleted file " & Dst_File_Name);
                Inc (Global.Results, Mold.Files_Overwritten);
             else
                Log.Error ("File " & Dst_File_Name & " already exists");
                Global.Errors := @ + 1;
-               return Global.Errors;
+               goto Exit_Function;
             end if;
          end if;
+
          Dst_File.Create (Name => Dst_File_Name);
-         Log.Debug ("Created file " & Dst_File_Name);
+         Log.Debug ("  Created file " & Dst_File_Name);
+
+         --  perform variable substitution from Src to Dst
 
          Replace_In_Stream (Src_File, Dst_File);
+
+         --  close Src file, and delete it when specified
 
          Dst_File.Close;
          if Settings.Delete_Source_Files and then Global.Errors = 0 then
             Dir.Delete_File (Source.all);
+            Log.Debug ("  Deleted file " & Source.all);
          end if;
 
+         <<Exit_Function>>
          Global.Included_Files.Clear;
+         Log.Debug ("END File.Replace");
          return Global.Errors;
 
       exception
          --  invalid output directory or file name
          when Dir.Name_Error =>
             Log.Error
-              ("EXCEPTION caught: Invalid output directory or file name: '" &
-               Dst_File_Name & "'");
+              ("EXCEPTION caught in File.Replace:" &
+               " Invalid output directory or file name: '" & Dst_File_Name &
+               "'");
             Global.Errors := @ + 1;
             return Global.Errors;
       end;
