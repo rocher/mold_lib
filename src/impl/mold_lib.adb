@@ -21,6 +21,114 @@ package body Mold_Lib is
    use all type Dir.File_Kind;
    use all type Log.Levels;
 
+   ---------------------
+   -- Validate_Source --
+   ---------------------
+
+   function Validate_Source
+     (Source : String; Error : in out Boolean) return String
+   is
+   begin
+      if Error then
+         return "";
+      end if;
+
+      return Source_Path : String := Full_Path_Expanded (Source) do
+         if Source_Path'Length = 0 or else not Dir.Exists (Source_Path)
+           or else Dir.Kind (Source_Path) = Dir.Special_File
+         then
+            Log.Error ("Invalid file or directory '" & Source_Path & "'");
+            Error := True;
+            return;
+         end if;
+
+         --  Source is either a file or directory
+
+         if Dir.Kind (Source_Path) = Dir.Ordinary_File then
+            if Dir.Extension (Source_Path) = Mold_File_Extension then
+               Log.Debug ("  Valid Source_Path");
+            else
+               Log.Error
+                 ("Source file with invalid extension '" & Source_Path & "'");
+               Error := True;
+               return;
+            end if;
+         end if;
+      end return;
+
+   exception
+      when Dir.Name_Error =>
+         Log.Error ("Invalid source file or directory");
+         Error := True;
+         return "";
+   end Validate_Source;
+
+   -------------------------
+   -- Validate_Output_Dir --
+   -------------------------
+
+   function Validate_Output_Dir
+     (Source_Path, Output_Dir : String; Error : in out Boolean) return String
+   is
+   begin
+      if Error then
+         return "";
+      end if;
+
+      return
+        Output_Dir_Path : String :=
+          (if Output_Dir'Length > 0 then Full_Path_Expanded (Output_Dir)
+           elsif Dir.Kind (Source_Path) = Dir.Ordinary_File then
+             Dir.Containing_Directory (Source_Path)
+           else Source_Path)
+      do
+         if Dir.Exists (Output_Dir_Path) then
+            Log.Debug ("  Valid Output_Path");
+         else
+            Log.Debug ("Create output path " & Output_Dir_Path);
+            Dir.Create_Path (Output_Dir_Path);
+         end if;
+      end return;
+
+   exception
+      when Dir.Name_Error | Dir.Use_Error =>
+         Log.Error ("Invalid output directory");
+         Error := True;
+         return "";
+   end Validate_Output_Dir;
+
+   --------------------------
+   -- Validate_Definitions --
+   --------------------------
+
+   function Validate_Definitions
+     (Definitions : String; Error : in out Boolean) return String
+   is
+   begin
+      if Error then
+         return "";
+      end if;
+
+      return Definitions_Path : String := Full_Path_Expanded (Definitions) do
+         if Dir.Exists (Definitions_Path)
+           and then Dir.Kind (Definitions_Path) = Dir.Ordinary_File
+         then
+            Log.Debug ("  Valid Definitions_Path");
+         else
+            Log.Error
+              ("Definitions file not found '" & Definitions_Path & "'");
+            Error := True;
+            return;
+         end if;
+      end return;
+
+   exception
+      when Dir.Name_Error =>
+         Log.Error ("Invalid definitions file");
+         Error := True;
+         return "";
+   end Validate_Definitions;
+
    -----------
    -- Apply --
    -----------
@@ -39,13 +147,13 @@ package body Mold_Lib is
    --!pp on
 
    is
-      Source_Path      : aliased String := Full_Path_Expanded (Source);
+      Validation_Error : Boolean        := False;
+      Definitions_Path : String         :=
+        Validate_Definitions (Definitions, Validation_Error);
+      Source_Path      : aliased String :=
+        Validate_Source (Source, Validation_Error);
       Output_Dir_Path  : aliased String :=
-        (if Output_Dir'Length > 0 then Full_Path_Expanded (Output_Dir)
-         elsif Dir.Kind (Source_Path) = Dir.Ordinary_File then
-           Dir.Containing_Directory (Source_Path)
-         else Source_Path);
-      Definitions_Path : String         := Full_Path_Expanded (Definitions);
+        Validate_Output_Dir (Source_Path, Output_Dir, Validation_Error);
 
       Used_Settings : constant Settings_Access :=
         (if Settings = null then Default_Settings'Access else Settings);
@@ -57,61 +165,18 @@ package body Mold_Lib is
            Log.Decorators.Simple_Location_Decorator'Access;
       end if;
 
+      if Results /= null then
+         Results.all := [others => 0];
+      end if;
+
       Log.Debug ("MOLD Apply");
       Log.Debug ("  Source_Path      : " & Source_Path);
       Log.Debug ("  Output_Dir_Path  : " & Output_Dir_Path);
       Log.Debug ("  Definitions_Path : " & Definitions_Path);
 
-      if Results /= null then
-         Results.all := [others => 0];
-      end if;
-
-      if Source_Path'Length = 0 or else not Dir.Exists (Source_Path)
-        or else Dir.Kind (Source_Path) = Dir.Special_File
-      then
-         Log.Error ("Invalid file or directory '" & Source_Path & "'");
+      if Validation_Error then
          return 1;
       end if;
-
-      --  Source is either a file or directory
-
-      if Dir.Kind (Source_Path) = Dir.Ordinary_File then
-         if Dir.Extension (Source_Path) = Mold_File_Extension then
-            Log.Debug ("  Valid Source_Path");
-         else
-            Log.Error
-              ("Source file with invalid extension '" & Source_Path & "'");
-            return 1;
-         end if;
-      end if;
-
-      if Dir.Exists (Output_Dir_Path) then
-         Log.Debug ("  Valid Output_Path");
-      else
-         Log.Debug ("Create output path " & Output_Dir_Path);
-         Dir.Create_Path (Output_Dir_Path);
-         --  elsif Dir.Kind (Output_Path) /= Dir.Directory then
-         --     Log.Error ("Invalid output directory " & Output_Path);
-         --     return 1;
-      end if;
-
-      if Dir.Exists (Definitions_Path)
-        and then Dir.Kind (Definitions_Path) = Dir.Ordinary_File
-      then
-         Log.Debug ("  Valid Definitions_Path");
-      else
-         Log.Error ("Definitions file not found '" & Definitions_Path & "'");
-         return 1;
-      end if;
-
-      --  if Definitions'Length = 0 or else not Dir.Exists (Definitions_Path)
-      --    or else Dir.Kind (Definitions_Path) /= Dir.Ordinary_File
-      --  then
-      --     Log.Error ("Definitions file not found '" & Definitions_Path & "'");
-      --     return 1;
-      --  else
-      --     Log.Debug ("  Valid Definitions_Path");
-      --  end if;
 
       declare
          Variables : aliased Standard.Definitions.Variables_Map;
