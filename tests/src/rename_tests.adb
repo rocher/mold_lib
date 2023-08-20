@@ -6,6 +6,8 @@
 --
 -------------------------------------------------------------------------------
 
+with GNAT.Source_Info;
+
 with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
@@ -39,6 +41,8 @@ package body Rename_Tests is
       Expected : aliased Results_Type;
       Settings : aliased Settings_Type := Global_Settings.all;
    begin
+      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
+
       --  ----- file renaming disabled ----------------------------------------
       Settings.Replacement_In_File_Names := False;
       --!pp off
@@ -172,6 +176,7 @@ package body Rename_Tests is
       Expected : aliased Results_Type;
       Settings : aliased Settings_Type := Global_Settings.all;
    begin
+      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       Settings.Replacement_In_File_Names := True;
 

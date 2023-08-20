@@ -6,6 +6,8 @@
 --
 -------------------------------------------------------------------------------
 
+with GNAT.Source_Info;
+
 with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
@@ -42,6 +44,7 @@ package body Directory_Tests is
       Expected : aliased Results_Type;
       Settings : aliased Settings_Type := Global_Settings.all;
    begin
+      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- all variables replaced ----------------------------------------
       Settings.Replacement_In_File_Names   := False;    --  changed in def file
@@ -120,6 +123,7 @@ package body Directory_Tests is
       Expected : aliased Results_Type;
       Settings : aliased Settings_Type := Global_Settings.all;
    begin
+      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- all variables replaced ----------------------------------------
       Settings.Replacement_In_File_Names := False;      --  changed in def file

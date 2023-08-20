@@ -6,6 +6,8 @@
 --
 -------------------------------------------------------------------------------
 
+with GNAT.Source_Info;
+
 with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
@@ -40,6 +42,8 @@ package body Inclusion_Tests is
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
    begin
+      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
+
       --  ----- inclusion of recursive templates ------------------------------
       --!pp off
       Errors := Apply (
@@ -78,6 +82,8 @@ package body Inclusion_Tests is
       Expected : aliased Results_Type;
       Settings : aliased Settings_Type := Global_Settings.all;
    begin
+      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
+
       --  ----- inclusion of 100 templates ------------------------------------
       --!pp off
       Errors := Apply (
