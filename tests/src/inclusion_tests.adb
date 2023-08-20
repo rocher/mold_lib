@@ -47,7 +47,8 @@ package body Inclusion_Tests is
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
          Definitions => "suite/toml/foo.toml",
-         Results     => Results'Unchecked_Access
+         Results     => Results'Unchecked_Access,
+         Log_Level   => Log.Level
       );
       Expected := [
          Files_Processed      => 1,
@@ -84,7 +85,8 @@ package body Inclusion_Tests is
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
          Definitions => "suite/toml/lorem-ipsum.toml",
-         Results     => Results'Unchecked_Access
+         Results     => Results'Unchecked_Access,
+         Log_Level   => Log.Level
       );
       Expected := [
          Files_Processed      =>    1,
@@ -113,7 +115,8 @@ package body Inclusion_Tests is
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
          Definitions => "suite/toml/lorem-ipsum.toml",
-         Results     => Results'Unchecked_Access
+         Results     => Results'Unchecked_Access,
+         Log_Level   => Log.Level
       );
       Expected := [
          Files_Processed      =>    1,
@@ -142,7 +145,8 @@ package body Inclusion_Tests is
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
          Definitions => "suite/toml/lorem-ipsum.toml",
-         Results     => Results'Unchecked_Access
+         Results     => Results'Unchecked_Access,
+         Log_Level   => Log.Level
       );
       Expected := [
          Files_Processed      =>    1,

@@ -56,7 +56,8 @@ package body Directory_Tests is
          Source      => "suite/dir",
          Settings    => Settings'Unchecked_Access,
          Definitions => "suite/dir/mold.toml",
-         Results     => Results'Unchecked_Access
+         Results     => Results'Unchecked_Access,
+         Log_Level   => Log.Level
       );
 
       --  FILE NAME                     VARS  RENAMED TO
@@ -134,7 +135,8 @@ package body Directory_Tests is
          Output_Dir  => "suite/tmp/dir",
          Settings    => Settings'Unchecked_Access,
          Definitions => "suite/dir/mold.toml",
-         Results     => Results'Unchecked_Access
+         Results     => Results'Unchecked_Access,
+         Log_Level   => Log.Level
       );
 
       --  FILE NAME                     VARS  RENAMED TO

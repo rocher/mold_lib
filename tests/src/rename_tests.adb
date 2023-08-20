@@ -47,7 +47,8 @@ package body Rename_Tests is
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
          Definitions => "suite/toml/foo.toml",
-         Results     => Results'Unchecked_Access
+         Results     => Results'Unchecked_Access,
+         Log_Level   => Log.Level
       );
       Expected := [
          Files_Processed      => 1,
@@ -76,7 +77,8 @@ package body Rename_Tests is
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
          Definitions => "suite/toml/foo-bar.toml",
-         Results     => Results'Unchecked_Access
+         Results     => Results'Unchecked_Access,
+         Log_Level   => Log.Level
       );
       Expected := [
          Files_Processed      => 1,
@@ -106,7 +108,8 @@ package body Rename_Tests is
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
          Definitions => "suite/toml/bar.toml",
-         Results     => Results'Unchecked_Access
+         Results     => Results'Unchecked_Access,
+         Log_Level   => Log.Level
       );
       Expected := [
          Files_Processed      => 1,
@@ -135,7 +138,8 @@ package body Rename_Tests is
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
          Definitions => "suite/toml/lorem-ipsum.toml",
-         Results     => Results'Unchecked_Access
+         Results     => Results'Unchecked_Access,
+         Log_Level   => Log.Level
       );
       Expected := [
          Files_Processed      =>  1,
@@ -178,7 +182,8 @@ package body Rename_Tests is
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
          Definitions => "suite/toml/foo.toml",
-         Results     => Results'Unchecked_Access
+         Results     => Results'Unchecked_Access,
+         Log_Level   => Log.Level
       );
       Expected := [
          Files_Processed      => 1,
@@ -207,7 +212,8 @@ package body Rename_Tests is
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
          Definitions => "suite/toml/bar.toml",
-         Results     => Results'Unchecked_Access
+         Results     => Results'Unchecked_Access,
+         Log_Level   => Log.Level
       );
       Expected := [
          Files_Processed      => 1,
@@ -236,7 +242,8 @@ package body Rename_Tests is
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
          Definitions => "suite/toml/foo-bar.toml",
-         Results     => Results'Unchecked_Access
+         Results     => Results'Unchecked_Access,
+         Log_Level   => Log.Level
       );
       Expected := [
          Files_Processed      => 1,
