@@ -46,7 +46,7 @@ package body Variables_Tests is
 
       --  ----- no variables in the source file -------------------------------
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/no-vars.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
@@ -75,7 +75,7 @@ package body Variables_Tests is
 
       --  ----- empty definitions file ----------------------------------------
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/foo.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
@@ -104,7 +104,7 @@ package body Variables_Tests is
 
       --  ----- no variable can be replaced -----------------------------------
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/foo.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
@@ -145,7 +145,7 @@ package body Variables_Tests is
 
       --  ----- variable replaced ---------------------------------------------
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/foo.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
@@ -174,7 +174,7 @@ package body Variables_Tests is
 
       --  ----- four variables, two are replaced ------------------------------
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/foo-bar.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
@@ -203,7 +203,7 @@ package body Variables_Tests is
 
       --  ----- all variables replaced ----------------------------------------
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/foo-bar.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
@@ -245,7 +245,7 @@ package body Variables_Tests is
 
       --  ----- all variables replaced ----------------------------------------
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
@@ -274,7 +274,7 @@ package body Variables_Tests is
 
       --  ----- no optional variables defined ---------------------------------
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
@@ -303,7 +303,7 @@ package body Variables_Tests is
 
       --  ----- some optional variables defined -------------------------------
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
@@ -334,7 +334,7 @@ package body Variables_Tests is
       Settings.Undefined_Variable_Action := Mold.Ignore;
       Settings.Undefined_Variable_Alert  := Mold.None;
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
@@ -365,7 +365,7 @@ package body Variables_Tests is
       Settings.Undefined_Variable_Action := Mold.Ignore;
       Settings.Undefined_Variable_Alert  := Mold.Warning;
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
@@ -396,7 +396,7 @@ package body Variables_Tests is
       Settings.Undefined_Variable_Action := Mold.Empty;
       Settings.Undefined_Variable_Alert  := Mold.None;
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
@@ -427,7 +427,7 @@ package body Variables_Tests is
       Settings.Undefined_Variable_Action := Mold.Empty;
       Settings.Undefined_Variable_Alert  := Mold.Warning;
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
@@ -459,7 +459,7 @@ package body Variables_Tests is
       Settings.Undefined_Variable_Alert  := Mold.Warning;
       Settings.Abort_On_Error            := False;
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
@@ -499,7 +499,7 @@ package body Variables_Tests is
    begin
       --  ----- multiline paragraphs ------------------------------------------
       --!pp off
-      Errors := Mold.Apply (
+      Errors := Apply (
          Source      => "suite/mold/multiline.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
