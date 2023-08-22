@@ -1,5 +1,5 @@
 name = "mold_lib"
-version = "0.1.0-dev"
+version = "0.1.1-dev"
 tags = ["template", "template-engine", "template-repo"]
 
 description = "Meta-variable Operations for Lean Development (lib)"
