@@ -1,0 +1,41 @@
+name: Unit test
+
+on:
+  push:
+    paths:
+      - '**.ad?'
+  pull_request:
+    paths:
+      - '**.ad?'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Mold Lib Unit Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Checkout Mold Lib
+      uses: actions/checkout@v3
+
+    - name: Get Alire v1.2.2
+      uses: alire-project/setup-alire@v2
+
+    - name: Build unit tests
+      run: |
+        cd tests
+        alr build --release
+
+    - name: Run Mold Lib unit tests
+      run: |
+        cd tests
+        ./bin/mold_lib_tests
