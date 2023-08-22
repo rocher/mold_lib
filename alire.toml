@@ -4,32 +4,43 @@ tags = ["template", "template-engine", "template-repo"]
 
 description = "Meta-variable Operations for Lean Development (lib)"
 long-description = '''
-MOLD : Meta-variable Operations for Lean Development (lib)
-----------------------------------------------------------
+
+> **MOLD : Meta-variable Operations for Lean Development (lib)**
 
 Mold is a Template Processor, or Template Engine, to work with repository
 templates. The main motivation of Mold is to have repositories in GitHub used as
 template repositories to create new, customized repositories for other users.
 
-Main features supported in Mold include variable replacement in files (*.mold)
-or, recursively for all subdirectories, in all files (*.mold) of a given
-directory; variable replacement in file names; inclusion of other templates;
-definition of varaibles with a TOML file.
+Main features supported in Mold include
 
-Variable replacement can be specified as 'normal', 'optional' or 'mandatory'.
-For example, the variable 'foo = "bar"' can be with specified '{{foo}}',
-'{{?foo}}' (optional) or '{{#foo}}' (mandatory). The difference is the handling
+  * variable replacement in mold files (*.mold)
+
+  * vaiable replacement recursively for all subdirectories, in all files
+    (*.mold), of a given directory
+
+  * variable replacement in file names
+
+  * inclusion of other templates
+
+  * definition of varaibles with a TOML file
+
+Variable replacement can be specified as *normal*, *optional* or *mandatory*.
+For example, the variable `foo = "bar"` can be specified with `{{foo}}`,
+`{{?foo}}` (optional) or `{{#foo}}` (mandatory). The difference is the handling
 of errors when an undefined variable is encountered.
 
-All template files must end with the extension '.mold', for example
-'README.md.mold'. Destination files (with variables replaced) have the same name
-without the 'mold' extensino: 'README.md'. This simplifies the work done in
-large subdirectories with few templates.
+All template files must end with the extension `.mold`, for example
+`README.md.mold`. Destination files (with variables replaced) have the same name
+without the extension: `README.md`. This simplifies the work done in large
+subdirectories with few templates.
 
 This crate contains the Ada library and tests. For a CLI tool, please take a
 look at the crate 'mold'.
 
-For a complete reference of Mold, please visit https://rocher.github.io/mold.
+### Reference Guide
+
+Visit https://rocher.github.io/mold for a complete Mold reference.
+
 '''
 
 authors = ["Francesc Rocher"]
