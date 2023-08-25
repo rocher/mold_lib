@@ -74,7 +74,7 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS = "windows" then
+      if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/no-vars.txt", "c81d1f24d9f8018b1760478e1ffe8f98");
       else
@@ -108,7 +108,7 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS = "windows" then
+      if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/foo.txt", "6cab9f28a762df56e553fa39883988c0");
       else
@@ -142,7 +142,7 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS = "windows" then
+      if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/foo.txt", "6cab9f28a762df56e553fa39883988c0");
       else
@@ -189,7 +189,7 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS = "windows" then
+      if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/foo.txt", "2858d2c557f2cecc74abff989db01c99");
       else
@@ -223,7 +223,7 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS = "windows" then
+      if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/foo-bar.txt", "a4123b8c2e3323543173f902e2605f61");
       else
@@ -257,7 +257,7 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS = "windows" then
+      if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/foo-bar.txt", "0ae8639e4d2086703c4f42c300cd0c7b");
       else
@@ -305,7 +305,7 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS = "windows" then
+      if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/lorem-ipsum.txt", "8880f5a8180491db9710d884c81f4117");
       else
@@ -339,7 +339,7 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS = "windows" then
+      if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/lorem-ipsum.txt", "24ac225ea04e94b461dd56198c9e5561");
       else
@@ -373,7 +373,7 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS = "windows" then
+      if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/lorem-ipsum.txt", "0faaaac0483521b52b19b0832c45855c");
       else
@@ -409,7 +409,7 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS = "windows" then
+      if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/lorem-ipsum.txt", "0b57373fbc9240bf183adfd5eb3fd82b");
       else
@@ -445,7 +445,7 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS = "windows" then
+      if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/lorem-ipsum.txt", "0b57373fbc9240bf183adfd5eb3fd82b");
       else
@@ -481,7 +481,7 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS = "windows" then
+      if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/lorem-ipsum.txt", "171564ce81dfde5ca643e2227e8524b7");
       else
@@ -517,7 +517,7 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS = "windows" then
+      if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/lorem-ipsum.txt", "171564ce81dfde5ca643e2227e8524b7");
       else
@@ -554,7 +554,7 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 90);
-      if Alire_Host_OS = "windows" then
+      if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/lorem-ipsum.txt", "87b82554bef807a9a230edd986473700");
       else
@@ -601,7 +601,7 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS = "windows" then
+      if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/multiline.txt", "ff09390de79ffd52e39d82c490d336ad");
       else
