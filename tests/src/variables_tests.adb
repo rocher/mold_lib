@@ -8,8 +8,9 @@
 
 with GNAT.Source_Info;
 
-with Mold_Lib;              use Mold_Lib;
-with Support;               use Support;
+with Mold_Lib; use Mold_Lib;
+with Support;  use Support;
+
 with Mold_Lib_Tests_Config; use Mold_Lib_Tests_Config;
 
 package body Variables_Tests is

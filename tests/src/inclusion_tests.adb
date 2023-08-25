@@ -11,6 +11,8 @@ with GNAT.Source_Info;
 with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
+with Mold_Lib_Tests_Config; use Mold_Lib_Tests_Config;
+
 package body Inclusion_Tests is
 
    ----------
@@ -110,9 +112,15 @@ package body Inclusion_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/lorem-ipsum-includes-01.txt",
-         "ff416bfec859c59a3834c46d60250e25");
+      if Alire_Host_OS in "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum-includes-01.txt",
+            "8880f5a8180491db9710d884c81f4117");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum-includes-01.txt",
+            "ff416bfec859c59a3834c46d60250e25");
+      end if;
 
       --  ----- inclusion of 100 templates ------------------------------------
       --!pp off
@@ -140,9 +148,15 @@ package body Inclusion_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/lorem-ipsum-includes-02.txt",
-         "ff416bfec859c59a3834c46d60250e25");
+      if Alire_Host_OS in "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum-includes-02.txt",
+            "8880f5a8180491db9710d884c81f4117");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum-includes-02.txt",
+            "ff416bfec859c59a3834c46d60250e25");
+      end if;
 
       --  ----- inclusion of 100 templates ------------------------------------
       --!pp off
@@ -170,9 +184,15 @@ package body Inclusion_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/lorem-ipsum-includes-03.txt",
-         "ff416bfec859c59a3834c46d60250e25");
+      if Alire_Host_OS in "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum-includes-03.txt",
+            "8880f5a8180491db9710d884c81f4117");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum-includes-03.txt",
+            "ff416bfec859c59a3834c46d60250e25");
+      end if;
 
    end Test_Inclusion;
 

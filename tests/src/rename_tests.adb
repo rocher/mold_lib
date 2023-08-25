@@ -11,6 +11,8 @@ with GNAT.Source_Info;
 with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
+with Mold_Lib_Tests_Config; use Mold_Lib_Tests_Config;
+
 package body Rename_Tests is
 
    ----------
@@ -100,9 +102,15 @@ package body Rename_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/no-vars-__foo__-__bar__.txt",
-         "7ef8e151c0fde9d5fef738709a321300");
+      if Alire_Host_OS in "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/no-vars-__foo__-__bar__.txt",
+            "c81d1f24d9f8018b1760478e1ffe8f98");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/no-vars-__foo__-__bar__.txt",
+            "7ef8e151c0fde9d5fef738709a321300");
+      end if;
 
       --  ----- variable in source file name is undefined ---------------------
       Settings.Replacement_In_File_Names := True;
@@ -131,8 +139,15 @@ package body Rename_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/no-vars-__foo__.txt", "7ef8e151c0fde9d5fef738709a321300");
+      if Alire_Host_OS in "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/no-vars-__foo__.txt",
+            "c81d1f24d9f8018b1760478e1ffe8f98");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/no-vars-__foo__.txt",
+            "7ef8e151c0fde9d5fef738709a321300");
+      end if;
 
       --  ----- variable in source file name is undefined ---------------------
       Settings.Replacement_In_File_Names := True;
@@ -161,8 +176,15 @@ package body Rename_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/no-vars-__foo__.txt", "7ef8e151c0fde9d5fef738709a321300");
+      if Alire_Host_OS in "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/no-vars-__foo__.txt",
+            "c81d1f24d9f8018b1760478e1ffe8f98");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/no-vars-__foo__.txt",
+            "7ef8e151c0fde9d5fef738709a321300");
+      end if;
 
    end Test_No_Renaming;
 
@@ -206,9 +228,15 @@ package body Rename_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/no-vars-foo-__bar__.txt",
-         "7ef8e151c0fde9d5fef738709a321300");
+      if Alire_Host_OS in "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/no-vars-foo-__bar__.txt",
+            "c81d1f24d9f8018b1760478e1ffe8f98");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/no-vars-foo-__bar__.txt",
+            "7ef8e151c0fde9d5fef738709a321300");
+      end if;
 
       --  ----- one variable replaced -----------------------------------------
       --!pp off
@@ -236,9 +264,15 @@ package body Rename_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/no-vars-__foo__-bar.txt",
-         "7ef8e151c0fde9d5fef738709a321300");
+      if Alire_Host_OS in "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/no-vars-__foo__-bar.txt",
+            "c81d1f24d9f8018b1760478e1ffe8f98");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/no-vars-__foo__-bar.txt",
+            "7ef8e151c0fde9d5fef738709a321300");
+      end if;
 
       --  ----- two variables replaced ----------------------------------------
       --!pp off
@@ -266,8 +300,15 @@ package body Rename_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/no-vars-foo-bar.txt", "7ef8e151c0fde9d5fef738709a321300");
+      if Alire_Host_OS in "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/no-vars-foo-bar.txt",
+            "c81d1f24d9f8018b1760478e1ffe8f98");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/no-vars-foo-bar.txt",
+            "7ef8e151c0fde9d5fef738709a321300");
+      end if;
 
    end Test_Basic_Renaming;
 
