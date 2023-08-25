@@ -27,6 +27,7 @@ package body File is
    subtype Inclusion_List is Inclusion_Package.List;
 
    use all type Dir.File_Kind;
+   use all type Mold.Line_Mark;
    use all type Mold.Undefined_Variable_Actions;
    use all type Mold.Undefined_Variable_Alerts;
    use all type Reg.Match_Location;
@@ -313,6 +314,27 @@ package body File is
    end Include_Path;
 
    -----------------------
+   -- Put_Line_With_EOL --
+   -----------------------
+
+   procedure Put_Line_With_EOL
+     (Dst : Ada.Text_IO.File_Type; Line : String; EOF : Boolean)
+   is
+   begin
+      if Global.Settings.End_Of_Line_Mark = Mold.Auto then
+         Dst.Put_Line (Line);
+      else
+         Dst.Put (Line);
+         if Global.Settings.End_Of_Line_Mark = Mold.CRLF then
+            Dst.Put (ASCII.CR);
+         end if;
+         if not EOF then
+            Dst.Put (ASCII.LF);
+         end if;
+      end if;
+   end Put_Line_With_EOL;
+
+   -----------------------
    -- Replace_In_Stream --
    -----------------------
 
@@ -320,7 +342,8 @@ package body File is
    procedure Replace_In_Stream
    (
       Src : in out Ada.Text_IO.File_Type;
-      Dst : Ada.Text_IO.File_Type
+      Dst : Ada.Text_IO.File_Type;
+      Included : Boolean := False
    )
    with
      Pre  => (Src.Is_Open and then Dst.Is_Open),
@@ -342,14 +365,17 @@ package body File is
             if Matches (0) = Reg.No_Match then
                --  variable substitution
                declare
-                  New_Line : constant String :=
+                  Replaced_Line : constant String :=
                     Replace_In_Line (Line, Line_Number);
                begin
                   if Global.Errors > 0 and then Global.Settings.Abort_On_Error
                   then
                      goto Exit_Procedure;
                   end if;
-                  Dst.Put_Line (New_Line);
+
+                  Put_Line_With_EOL
+                    (Dst, Replaced_Line,
+                     (not Included and then Src.End_Of_File));
                end;
             else
                --  file inclusion
@@ -385,7 +411,11 @@ package body File is
                     (To_Unbounded_String (Inc_Path));
 
                   Inc_File.Open (In_File, Inc_Path);
-                  Replace_In_Stream (Inc_File, Dst);
+                  Replace_In_Stream (Inc_File, Dst, True);
+
+                  if Global.Settings.End_Of_Line_Mark /= Mold.Auto then
+                     Put (Dst, ASCII.LF);
+                  end if;
 
                   Global.Included_Files.Delete_Last;
                   Log.Debug ("  ...  file included");

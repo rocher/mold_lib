@@ -17,6 +17,7 @@ package Support is
    --!pp off
    Default_Test_Settings : aliased constant Mold.Settings_Type :=
    (
+      End_Of_Line_Mark             => Mold.LF,
       Replacement_In_File_Names    => True,
       Delete_Source_Files          => False,   --  Do not remove source files
       Overwrite_Destination_Files  => True,    --  Overwrite destination files

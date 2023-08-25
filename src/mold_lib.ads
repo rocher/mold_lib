@@ -15,6 +15,7 @@ package Mold_Lib is
 
    type Undefined_Variable_Actions is (Ignore, Empty);
    type Undefined_Variable_Alerts is (None, Warning, Error);
+   type Line_Mark is (Auto, LF, CRLF);
 
    Optional_Replacement_Prefix  : constant Character := '?';
    Mandatory_Replacement_Prefix : constant Character := '#';
@@ -24,6 +25,7 @@ package Mold_Lib is
    Defined_Setting_Prefix       : constant String    := "mold-";
 
    type Settings_Type is record
+      End_Of_Line_Mark            : aliased Line_Mark;
       Replacement_In_File_Names   : aliased Boolean;
       Delete_Source_Files         : aliased Boolean;
       Overwrite_Destination_Files : aliased Boolean;
@@ -37,6 +39,7 @@ package Mold_Lib is
    --!pp off
    Default_Settings : aliased Settings_Type :=
    (
+      End_Of_Line_Mark            => Auto,
       Replacement_In_File_Names   => True,
       Delete_Source_Files         => True,
       Overwrite_Destination_Files => False,
