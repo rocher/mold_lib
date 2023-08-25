@@ -603,10 +603,10 @@ package body Variables_Tests is
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
       if Alire_Host_OS = "windows" then
          Check_MD5_Digest
-           ("suite/tmp/lorem-ipsum.txt", "ff09390de79ffd52e39d82c490d336ad");
+           ("suite/tmp/multiline.txt", "ff09390de79ffd52e39d82c490d336ad");
       else
          Check_MD5_Digest
-           ("suite/tmp/lorem-ipsum.txt", "cfafd88cdde135c6e27e9917e5a74504");
+           ("suite/tmp/multiline.txt", "cfafd88cdde135c6e27e9917e5a74504");
       end if;
    end Test_Multiline;
 
