@@ -189,8 +189,13 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/foo.txt", "3d22c1e66750c3e7925e643cfbe9e327");
+      if Alire_Host_OS = "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/foo.txt", "2858d2c557f2cecc74abff989db01c99");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/foo.txt", "3d22c1e66750c3e7925e643cfbe9e327");
+      end if;
 
       --  ----- four variables, two are replaced ------------------------------
       --!pp off
@@ -218,8 +223,13 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/foo-bar.txt", "9fe90f7706a6c0de1155e8e340fafed7");
+      if Alire_Host_OS = "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/foo-bar.txt", "a4123b8c2e3323543173f902e2605f61");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/foo-bar.txt", "9fe90f7706a6c0de1155e8e340fafed7");
+      end if;
 
       --  ----- all variables replaced ----------------------------------------
       --!pp off
@@ -247,8 +257,13 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/foo-bar.txt", "5b6c9393c2233d09b1517bc8c3ca9de1");
+      if Alire_Host_OS = "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/foo-bar.txt", "0ae8639e4d2086703c4f42c300cd0c7b");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/foo-bar.txt", "5b6c9393c2233d09b1517bc8c3ca9de1");
+      end if;
 
    end Test_Basic_Substitution;
 
@@ -290,8 +305,13 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/lorem-ipsum.txt", "ff416bfec859c59a3834c46d60250e25");
+      if Alire_Host_OS = "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "8880f5a8180491db9710d884c81f4117");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "ff416bfec859c59a3834c46d60250e25");
+      end if;
 
       --  ----- no optional variables defined ---------------------------------
       --!pp off
@@ -319,8 +339,13 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/lorem-ipsum.txt", "fee4ce163f4e85103e42ab27a49ee381");
+      if Alire_Host_OS = "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "24ac225ea04e94b461dd56198c9e5561");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "fee4ce163f4e85103e42ab27a49ee381");
+      end if;
 
       --  ----- some optional variables defined -------------------------------
       --!pp off
@@ -348,8 +373,13 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/lorem-ipsum.txt", "1ed55361c952f1e572a156c07a3c2f3d");
+      if Alire_Host_OS = "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "0faaaac0483521b52b19b0832c45855c");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "1ed55361c952f1e572a156c07a3c2f3d");
+      end if;
 
       --  ----- undefined variables ignored and no warning --------------------
       Settings.Undefined_Variable_Action := Mold.Ignore;
@@ -379,8 +409,13 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/lorem-ipsum.txt", "239eacc9eb868d2d3559a8ee4b903bb1");
+      if Alire_Host_OS = "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "0b57373fbc9240bf183adfd5eb3fd82b");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "239eacc9eb868d2d3559a8ee4b903bb1");
+      end if;
 
       --  ----- undefined variables ignored, warning issued -------------------
       Settings.Undefined_Variable_Action := Mold.Ignore;
@@ -410,8 +445,13 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/lorem-ipsum.txt", "239eacc9eb868d2d3559a8ee4b903bb1");
+      if Alire_Host_OS = "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "0b57373fbc9240bf183adfd5eb3fd82b");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "239eacc9eb868d2d3559a8ee4b903bb1");
+      end if;
 
       --  ----- undefined variables emptied and no warning --------------------
       Settings.Undefined_Variable_Action := Mold.Empty;
@@ -441,8 +481,13 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/lorem-ipsum.txt", "a497437f9f4ebc6b42ec0f9aa33dba3d");
+      if Alire_Host_OS = "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "171564ce81dfde5ca643e2227e8524b7");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "a497437f9f4ebc6b42ec0f9aa33dba3d");
+      end if;
 
       --  ----- undefined variables emptied, warning issued -------------------
       Settings.Undefined_Variable_Action := Mold.Empty;
@@ -472,8 +517,13 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/lorem-ipsum.txt", "a497437f9f4ebc6b42ec0f9aa33dba3d");
+      if Alire_Host_OS = "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "171564ce81dfde5ca643e2227e8524b7");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "a497437f9f4ebc6b42ec0f9aa33dba3d");
+      end if;
 
       --  ----- undefined mandatory variable, no abort on error ---------------
       Settings.Undefined_Variable_Action := Mold.Ignore;
@@ -504,8 +554,13 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 90);
-      Check_MD5_Digest
-        ("suite/tmp/lorem-ipsum.txt", "caa552768a9819fff5eb93f4096189c3");
+      if Alire_Host_OS = "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "87b82554bef807a9a230edd986473700");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "caa552768a9819fff5eb93f4096189c3");
+      end if;
 
    end Test_Modal_Substitution;
 
@@ -546,8 +601,13 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/multiline.txt", "cfafd88cdde135c6e27e9917e5a74504");
+      if Alire_Host_OS = "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "ff09390de79ffd52e39d82c490d336ad");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/lorem-ipsum.txt", "cfafd88cdde135c6e27e9917e5a74504");
+      end if;
    end Test_Multiline;
 
 end Variables_Tests;
