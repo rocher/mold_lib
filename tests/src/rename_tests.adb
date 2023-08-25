@@ -72,8 +72,15 @@ package body Rename_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/no-vars-__foo__.txt", "7ef8e151c0fde9d5fef738709a321300");
+      if Alire_Host_OS in "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/no-vars-__foo__.txt",
+            "c81d1f24d9f8018b1760478e1ffe8f98");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/no-vars-__foo__.txt",
+            "7ef8e151c0fde9d5fef738709a321300");
+      end if;
 
       --  ----- file renaming disabled ----------------------------------------
       Settings.Replacement_In_File_Names := False;
