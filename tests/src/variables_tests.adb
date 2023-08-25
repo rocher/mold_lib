@@ -8,8 +8,9 @@
 
 with GNAT.Source_Info;
 
-with Mold_Lib; use Mold_Lib;
-with Support;  use Support;
+with Mold_Lib;              use Mold_Lib;
+with Support;               use Support;
+with Mold_Lib_Tests_Config; use Mold_Lib_Tests_Config;
 
 package body Variables_Tests is
 
@@ -73,8 +74,13 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/no-vars.txt", "7ef8e151c0fde9d5fef738709a321300");
+      if Alire_Host_OS = "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/no-vars.txt", "c81d1f24d9f8018b1760478e1ffe8f98");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/no-vars.txt", "7ef8e151c0fde9d5fef738709a321300");
+      end if;
 
       --  ----- empty definitions file ----------------------------------------
       --!pp off
@@ -102,8 +108,13 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/foo.txt", "4c179dd0c4cc0c668539a25435286258");
+      if Alire_Host_OS = "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/foo.txt", "6cab9f28a762df56e553fa39883988c0");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/foo.txt", "4c179dd0c4cc0c668539a25435286258");
+      end if;
 
       --  ----- no variable can be replaced -----------------------------------
       --!pp off
@@ -131,8 +142,13 @@ package body Variables_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      Check_MD5_Digest
-        ("suite/tmp/foo.txt", "4c179dd0c4cc0c668539a25435286258");
+      if Alire_Host_OS = "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/foo.txt", "6cab9f28a762df56e553fa39883988c0");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/foo.txt", "4c179dd0c4cc0c668539a25435286258");
+      end if;
 
    end Test_No_Substitution;
 
