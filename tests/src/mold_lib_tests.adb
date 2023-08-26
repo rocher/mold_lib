@@ -7,7 +7,6 @@
 -------------------------------------------------------------------------------
 
 with Ada.Command_Line;
-with Ada.Containers;
 with Ada.Text_IO;
 
 with AUnit.Run;
