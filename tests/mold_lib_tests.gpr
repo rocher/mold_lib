@@ -7,20 +7,30 @@ project Mold_Lib_Tests is
    for Exec_Dir use "bin";
    for Main use ("mold_lib_tests.adb");
 
+    Compiler_Switches := ();
+    Linker_Switches := ();
+    case Mold_Lib_Tests_Config.Build_Profile is
+        when "release" =>
+            Compiler_Switches := ("-O2");
+        when "validation" =>
+            Compiler_Switches := ("-g", "--coverage");
+            Linker_Switches := ("--coverage");
+        when "development" =>
+            Compiler_Switches := ("-g");
+    end case;
+
    package Compiler is
       for Default_Switches ("Ada") use
-      Mold_Lib_Tests_Config.Ada_Compiler_Switches &
-         (
-              "-gnatW8"   --  Wide character encoding method
-            , "-gnat2022" --  Ada 2022 mode
-            , "-gnatX"    --  Language extensions permitted
-            , "-gnatwU"   --  turn off warnings for unused entity
-         );
+      Mold_Lib_Tests_Config.Ada_Compiler_Switches & Compiler_Switches;
    end Compiler;
 
    package Binder is
       for Switches ("Ada") use ("-Es"); --  Symbolic traceback
    end Binder;
+
+    package Linker is
+        for Switches ("Ada") use Linker_Switches;
+    end Linker;
 
    package Install is
       for Artifacts (".") use ("share");

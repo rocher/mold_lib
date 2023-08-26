@@ -1,18 +1,32 @@
 name = "mold_lib_tests"
+version = "0.1.1-dev"
 description = "Mold lib tests"
-version = "0.1.0-dev"
 
 authors = ["Francesc Rocher"]
+website = "https://rocher.github.io/mold"
 maintainers = ["Francesc Rocher <francesc.rocher@gmail.com>"]
 maintainers-logins = ["rocher"]
 
+licenses = "MIT"
+
 executables = ["mold_lib_tests"]
+
+[build-switches."*"]
+ada_version = ["-gnat2022", "-gnatW8", "-gnatX"]
+
+[build-switches]
+release.optimization = ["-O2", "-gnatn"]
 
 [[depends-on]]
 aunit = "^23.0.0"
 gnat = ">=2021 | (>=12 & <2000)"
-
-[[depends-on]]
 mold_lib = ">=0.1.0-dev"
+
 [[pins]]
 mold_lib = { path = '..' }
+
+# *NOTE - PROFILING with valgrind
+#       $ alr clean; alr build --validation
+#       $ git clean -dfx suite/
+#       $ valgrind --tool=callgrind ./bin/mold_lib_tests
+#       $ kcachegrind callgrind.out.*
