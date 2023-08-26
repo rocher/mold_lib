@@ -3,10 +3,12 @@ name: Unit test
 on:
   push:
     paths:
-      - '**.ad?'
+      - 'src/**'
+      - 'tests/src/**'
   pull_request:
     paths:
-      - '**.ad?'
+      - 'src/**'
+      - 'tests/src/**'
   workflow_dispatch:
 
 jobs:
