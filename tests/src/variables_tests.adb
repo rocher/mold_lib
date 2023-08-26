@@ -43,6 +43,7 @@ package body Variables_Tests is
    --------------------------
 
    procedure Test_No_Substitution (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
       Errors   : Natural;
       Results  : aliased Mold.Results_Type;
       Expected : aliased Mold.Results_Type;
@@ -158,6 +159,7 @@ package body Variables_Tests is
    -----------------------------
 
    procedure Test_Basic_Substitution (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
       Errors   : Natural;
       Results  : aliased Mold.Results_Type;
       Expected : aliased Mold.Results_Type;
@@ -273,6 +275,7 @@ package body Variables_Tests is
    -----------------------------
 
    procedure Test_Modal_Substitution (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
       Errors   : Natural;
       Results  : aliased Mold.Results_Type;
       Expected : aliased Mold.Results_Type;
@@ -570,6 +573,7 @@ package body Variables_Tests is
    --------------------
 
    procedure Test_Multiline (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
       Errors   : Natural;
       Results  : aliased Mold.Results_Type;
       Expected : aliased Mold.Results_Type;

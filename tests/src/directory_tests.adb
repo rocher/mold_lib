@@ -41,6 +41,7 @@ package body Directory_Tests is
    -------------------
 
    procedure Test_In_Place (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
       Errors   : Natural;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
@@ -145,6 +146,7 @@ package body Directory_Tests is
    ----------------------
 
    procedure Test_Destination (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
       Errors   : Natural;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;

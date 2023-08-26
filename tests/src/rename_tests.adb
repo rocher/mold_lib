@@ -38,6 +38,7 @@ package body Rename_Tests is
    ----------------------
 
    procedure Test_No_Renaming (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
       Errors   : Natural;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
@@ -200,6 +201,7 @@ package body Rename_Tests is
    -------------------------
 
    procedure Test_Basic_Renaming (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
       Errors   : Natural;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
