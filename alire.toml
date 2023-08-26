@@ -51,10 +51,13 @@ maintainers-logins = ["rocher"]
 licenses = "MIT"
 
 [build-profiles]
-"mold_lib" = "development"
+"mold_lib" = "release"
 
 [build-switches."*"]
-ada_version = ["-gnat2022", "-gnatX"]
+ada_version = ["-gnat2022", "-gnatW8", "-gnatX"]
+
+[build-switches]
+release.optimization = ["-O2", "-gnatn"]
 
 [[depends-on]]
 ada_toml = "~0.3.0"
