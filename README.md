@@ -4,6 +4,8 @@
 [![GitHub release](https://img.shields.io/github/release/rocher/mold_lib.svg)](https://github.com/rocher/mold_lib/releases/latest)
 [![License](https://img.shields.io/github/license/rocher/mold_lib.svg?color=blue)](https://github.com/rocher/mold_lib/blob/master/LICENSE)
 
+<img src="Ada_Mold_Lib.png" width="222" />
+
 ## Welcome to **Mold**
 
 > **MOLD**: *Meta-variable Operations for Lean Development*
