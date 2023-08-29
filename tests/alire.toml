@@ -23,6 +23,9 @@ gnat = ">=2021 | (>=12 & <2000)"
 gnatcov = "^22.0.1"
 mold_lib = ">=0.2.1"
 
+[[pins]]
+mold_lib = { path = '..' }
+
 # *NOTE - PROFILING with valgrind
 #       $ alr clean; alr build --validation
 #       $ git clean -dfx suite/
