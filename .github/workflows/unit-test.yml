@@ -41,3 +41,8 @@ jobs:
       run: |
         cd tests
         ./bin/mold_lib_tests
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-actions@v3
+      end:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

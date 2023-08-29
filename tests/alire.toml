@@ -20,10 +20,8 @@ release.optimization = ["-O2", "-gnatn"]
 [[depends-on]]
 aunit = "^23.0.0"
 gnat = ">=2021 | (>=12 & <2000)"
-mold_lib = ">=0.1.0-dev"
-
-[[pins]]
-mold_lib = { path = '..' }
+gnatcov = "^22.0.1"
+mold_lib = ">=0.2.1"
 
 # *NOTE - PROFILING with valgrind
 #       $ alr clean; alr build --validation

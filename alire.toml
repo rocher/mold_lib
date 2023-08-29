@@ -74,4 +74,5 @@ release.optimization = ["-O2", "-gnatn"]
 [[depends-on]]
 ada_toml = "~0.3.0"
 gnat = ">=2021 | (>=12 & <2000)"
+gnatcov = "^22.0.1"
 simple_logging = "^1.2.0"
