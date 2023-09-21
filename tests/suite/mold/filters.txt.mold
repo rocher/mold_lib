@@ -1,0 +1,12 @@
+No filter                : {{Title}}
+Replace all chars by '-' : {{Title/0}}
+Transform to Title_Case  : {{Title/1}}
+
+On line Lorem Ipsum:
+{{Paragraph}}
+
+Formatted Lorem Ipsum:
+{{Paragraph/2}}
+
+Formatted as Ada comment:
+{{Paragraph/3}}
