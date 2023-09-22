@@ -23,6 +23,7 @@ package Directory is
       Output_Dir : not null String_Access;
       Variables  : not null Definitions.Variables_Access;
       Settings   : not null Mold.Settings_Access;
+      Filters    : not null Mold.Filter_Array_Access;
       Results    :          Mold.Results_Access := null
    )
    return Natural;

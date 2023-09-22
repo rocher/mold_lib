@@ -31,6 +31,7 @@ package body Directory is
       Output_Dir : not null String_Access;
       Variables  : not null Definitions.Variables_Access;
       Settings   : not null Mold.Settings_Access;
+      Filters    : not null Mold.Filter_Array_Access;
       Results    :          Mold.Results_Access := null
    )
    return Natural
@@ -75,7 +76,7 @@ package body Directory is
                     Errors +
                     Replace
                       (Dir.Compose (Sub_Dir, Name), Name'Unchecked_Access,
-                       Output_Dir, Variables, Settings, Results);
+                       Output_Dir, Variables, Settings, Filters, Results);
                elsif Dir.Extension (Name) = Mold.Mold_File_Extension then
                   declare
                      Out_Sub_dir : aliased String :=
@@ -86,7 +87,7 @@ package body Directory is
                        Errors +
                        File.Replace
                          (Name'Unchecked_Access, Out_Sub_dir'Unchecked_Access,
-                          Variables, Settings, Results);
+                          Variables, Settings, Filters, Results);
                   end;
                end if;
                if Errors > 0 and then Settings.Abort_On_Error then

@@ -13,8 +13,8 @@ package Mold_Lib is
 
    package Log renames Simple_Logging;
 
+   type Undefined_Alerts is (None, Warning, Error);
    type Undefined_Variable_Actions is (Ignore, Empty);
-   type Undefined_Variable_Alerts is (None, Warning, Error);
 
    Optional_Replacement_Prefix  : constant Character := '?';
    Mandatory_Replacement_Prefix : constant Character := '#';
@@ -29,10 +29,15 @@ package Mold_Lib is
       Overwrite_Destination_Files : aliased Boolean;
       Enable_Defined_Settings     : aliased Boolean;
       Undefined_Variable_Action   : aliased Undefined_Variable_Actions;
-      Undefined_Variable_Alert    : aliased Undefined_Variable_Alerts;
+      Undefined_Variable_Alert    : aliased Undefined_Alerts;
+      Undefined_Filter_Alert      : aliased Undefined_Alerts;
       Abort_On_Error              : aliased Boolean;
    end record;
    type Settings_Access is access all Settings_Type;
+
+   type String_Filter is access function (S : String) return String;
+   type Filter_Array is array (0 .. 9) of String_Filter;
+   type Filter_Array_Access is access Filter_Array;
 
    --!pp off
    Default_Settings : aliased Settings_Type :=
@@ -43,6 +48,7 @@ package Mold_Lib is
       Enable_Defined_Settings     => True,
       Undefined_Variable_Action   => Ignore,
       Undefined_Variable_Alert    => Error,
+      Undefined_Filter_Alert      => Warning,
       Abort_On_Error              => True
    );
    --!pp on
@@ -59,6 +65,8 @@ package Mold_Lib is
       Variables_Replaced,
       Variables_Ignored,
       Variables_Emptied,
+      Filters_Found,
+      Filters_Applied,
       Replacement_Warnings,
       Replacement_Errors
    );
@@ -80,6 +88,7 @@ package Mold_Lib is
       Output_Dir  : String          := "";
       Definitions : String          := "mold.toml";
       Settings    : Settings_Access := null;
+      Filters     : Filter_Array    := [others => null];
       Results     : Results_Access  := null;
       Log_Level   : Log.Levels      := Log.Info
    )

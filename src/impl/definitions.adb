@@ -76,7 +76,7 @@ package body Definitions is
          elsif Key = "mold-undefined-variable-alert" then
             begin
                Settings.Undefined_Variable_Alert :=
-                 Mold.Undefined_Variable_Alerts'Value (Value);
+                 Mold.Undefined_Alerts'Value (Value);
             exception
                when Constraint_Error =>
                   Log.Error

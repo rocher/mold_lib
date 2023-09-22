@@ -142,6 +142,7 @@ package body Mold_Lib is
       Output_Dir  : String          := "";
       Definitions : String          := "mold.toml";
       Settings    : Settings_Access := null;
+      Filters     : Filter_Array    := [others => null];
       Results     : Results_Access  := null;
       Log_Level   : Log.Levels      := Log.Info
    )
@@ -201,7 +202,8 @@ package body Mold_Lib is
               File.Replace
                 (Source_Path'Unrestricted_Access,
                  Output_Dir_Path'Unrestricted_Access,
-                 Variables'Unchecked_Access, Used_Settings, Results);
+                 Variables'Unchecked_Access, Used_Settings,
+                 Filters'Unrestricted_Access, Results);
          else
             Log.Debug
               ("  File.Set_Running_Directory " & Dir.Current_Directory);
@@ -210,7 +212,8 @@ package body Mold_Lib is
               Directory.Replace
                 ("", Source_Path'Unrestricted_Access,
                  Output_Dir_Path'Unrestricted_Access,
-                 Variables'Unchecked_Access, Used_Settings, Results);
+                 Variables'Unchecked_Access, Used_Settings,
+                 Filters'Unrestricted_Access, Results);
          end if;
 
          return Errors;

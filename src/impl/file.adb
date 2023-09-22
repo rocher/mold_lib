@@ -27,8 +27,10 @@ package body File is
    subtype Inclusion_List is Inclusion_Package.List;
 
    use all type Dir.File_Kind;
+   use all type Mold.String_Filter;
+   use all type Mold.Filter_Array_Access;
    use all type Mold.Undefined_Variable_Actions;
-   use all type Mold.Undefined_Variable_Alerts;
+   use all type Mold.Undefined_Alerts;
    use all type Reg.Match_Location;
 
    Variable_Matcher : Reg.Pattern_Matcher (256);
@@ -40,6 +42,7 @@ package body File is
       Source            : String_Access;
       Variables         : Standard.Definitions.Variables_Access;
       Settings          : Mold.Settings_Access;
+      Filters           : Mold.Filter_Array_Access;
       Results           : Mold.Results_Access;
       Errors            : Natural;
       Included_Files    : Inclusion_List;
@@ -144,7 +147,7 @@ package body File is
    ---------------------
 
    function Replace_In_Line (Line : String; Number : Natural) return String is
-      Matches     : Reg.Match_Array (0 .. 3);
+      Matches     : Reg.Match_Array (0 .. 4);
       New_Line    : Unbounded_String := To_Unbounded_String ("");
       Current     : Natural          := Line'First;
       Has_Matches : Boolean          := False;
@@ -180,15 +183,24 @@ package body File is
                  Var_All_Name (Var_All_Name'First + 1 .. Var_All_Name'Last)
                else Var_All_Name);
 
+            Filter : constant String (1 .. 2) :=
+              (if Matches (4).First > 0 then
+                 Line (Matches (4).First .. Matches (4).Last)
+               else "xx");
+
             Var_Value : constant String := Get_Value (Var_Name);
 
             Is_Undefined : constant Boolean := (Var_Value = "");
          begin
 
-            --  Log.Debug ("Pre_Text    : '" & Pre_Text & "'");
-            --  Log.Debug ("Var_Mold    : '" & Var_Mold & "'");
-            --  Log.Debug ("Var_All_Name: '" & Var_All_Name & "'");
-            --  Log.Debug ("Var_Name    : '" & Var_Name & "'");
+            Log.Debug ("Pre_Text    : '" & Pre_Text & "'");
+            Log.Debug ("Var_Mold    : '" & Var_Mold & "'");
+            Log.Debug ("Var_All_Name: '" & Var_All_Name & "'");
+            Log.Debug ("Var_Name    : '" & Var_Name & "'");
+            Log.Debug ("Filter      : '" & Filter & "'");
+            Log.Debug ("Filter.Last : '" & Filter'Last'Image & "'");
+            Log.Debug ("Filter'Last : '" & Filter (Filter'Last) & "'");
+            Log.Debug ("Filter (2)  : '" & Filter (2) & "'");
 
             New_Line.Append (Pre_Text);
 
@@ -232,7 +244,36 @@ package body File is
                end;
             else
                Inc (Global.Results, Mold.Variables_Replaced);
-               New_Line.Append (Var_Value);
+               if Filter /= "xx" then
+                  Inc (Global.Results, Mold.Filters_Found);
+                  declare
+                     Idx : constant Natural :=
+                       Natural'Value ("" & Filter (Filter'Last));
+                  begin
+                     if Global.Filters (Idx) /= null then
+                        Log.Debug ("Applying filter" & Idx'Image);
+                        Inc (Global.Results, Mold.Filters_Applied);
+                        New_Line.Append (Global.Filters (Idx) (Var_Value));
+                     else
+                        if Global.Settings.Undefined_Filter_Alert =
+                          Mold.Warning
+                        then
+                           Log.Warning ("Filter " & Filter & " not found");
+                           Inc (Global.Results, Mold.Replacement_Warnings);
+                        end if;
+                        if Global.Settings.Undefined_Filter_Alert = Mold.Error
+                        then
+                           Log.Error ("Filter " & Filter & " not found");
+                           Inc (Global.Results, Mold.Replacement_Errors);
+                        end if;
+                        Log.Debug ("Invalid filter" & Idx'Image);
+                        New_Line.Append (Var_Value);
+                     end if;
+                  end;
+               else
+                  Log.Debug ("No filter applied");
+                  New_Line.Append (Var_Value);
+               end if;
             end if;
          end;
 
@@ -419,6 +460,7 @@ package body File is
       Output_Dir : not null String_Access;
       Variables  : not null Definitions.Variables_Access;
       Settings   : not null Mold.Settings_Access;
+      Filters    : not null Mold.Filter_Array_Access;
       Results    :          Mold.Results_Access := null
    )
    return Natural
@@ -430,6 +472,7 @@ package body File is
       Global.Source         := Source;
       Global.Variables      := Variables;
       Global.Settings       := Settings;
+      Global.Filters        := Filters;
       Global.Results        := Results;
       Global.Errors         := 0;
       Global.Included_Files := Inclusion_Package.Empty_List;
@@ -547,22 +590,23 @@ package body File is
 
 begin
 
-   --                                   .------.
-   --                                   |   3  |
-   Variable_Matcher.Compile ("(.*?)({{ *([^} ]+) *}})");
-   --                         | 1 ||        2       |
-   --                         '---''----------------'
+   --                                   .-------..-------.
+   --                                   |   3   ||   4   |
+   Variable_Matcher.Compile ("(.*?)({{ *([^/} ]+)(/[0-9])? *}})");
+   --                         | 1 ||            2             |
+   --                         '---''--------------------------'
    --  Example:
    --
    --              1         2         3
-   --     1234567890123456789012345678901234567
-   --     This is a {{ #foo }} variable example
+   --     123456789012345678901234567890123456789
+   --     This is a {{ #foo/0 }} variable example
    --
-   --                     Matches (0) = ( 1, 20) = "This is a {{ #foo }}"
+   --                     Matches (0) = ( 1, 22) = "This is a {{ #foo/0 }}"
    --     Pre_Text     := Matches (1) = ( 1, 10) = "This is a "
-   --     Var_Mold     := Matches (2) = (11, 20) =           "{{ #foo }}"
-   --     Var_All_Name := Matches (3) = (14, 17) =              "#foo"
+   --     Var_Mold     := Matches (2) = (11, 22) =           "{{ #foo/0 }}"
+   --     Var_All_Name := Matches (3) = (14, 19) =              "#foo"
    --     Var_Name     := ( remove # if exists ) =               "foo"
+   --     Filter       := Matches (4) = (18, 19) =                  "/0"
    --  ------------------------------------------------------------------------
    --
    --
