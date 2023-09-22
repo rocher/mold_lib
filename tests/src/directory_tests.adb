@@ -90,7 +90,7 @@ package body Directory_Tests is
          Variables_Ignored    =>    0 +  4 +   9 +    0 +    0 +    0,
          Variables_Emptied    =>    0 +  0 +   0 +    0 +    0 +    0,
          Replacement_Warnings =>    0 +  4 +   9 +    0 +    0 +    0,
-         Replacement_Errors   =>    0
+         others               =>    0
       ];
       --!pp on
       Check_Results
@@ -196,7 +196,7 @@ package body Directory_Tests is
          Variables_Ignored    =>    0 +  4 +   9 +    0 +    0 +    0,
          Variables_Emptied    =>    0 +  0 +   0 +    0 +    0 +    0,
          Replacement_Warnings =>    0 +  4 +   9 +    0 +    0 +    0,
-         Replacement_Errors   =>    0
+         others               =>    0
       ];
       --!pp on
       Check_Results

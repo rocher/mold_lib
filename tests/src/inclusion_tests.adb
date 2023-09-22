@@ -31,7 +31,7 @@ package body Inclusion_Tests is
    begin
       Register_Routine
         (T, Test_Recursive_Inclusion'Access,
-         "Prevent Recursive  Inclusion of Templates");
+         "Prevent Recursive Inclusion of Templates");
       Register_Routine (T, Test_Inclusion'Access, "Inclusion of Templates");
    end Register_Tests;
 
@@ -58,17 +58,9 @@ package body Inclusion_Tests is
          Log_Level   => Log.Level
       );
       Expected := [
-         Files_Processed      => 1,
-         Files_Renamed        => 0,
-         Files_Overwritten    => 0,
-         Variables_Defined    => 1,
-         Variables_Found      => 0,
-         Variables_Undefined  => 0,
-         Variables_Replaced   => 0,
-         Variables_Ignored    => 0,
-         Variables_Emptied    => 0,
-         Replacement_Warnings => 0,
-         Replacement_Errors   => 0
+         Files_Processed   => 1,
+         Variables_Defined => 1,
+         others            => 0
       ];
       --!pp on
       Check_Results
@@ -99,17 +91,11 @@ package body Inclusion_Tests is
          Log_Level   => Log.Level
       );
       Expected := [
-         Files_Processed      =>    1,
-         Files_Renamed        =>    0,
-         Files_Overwritten    =>    0,
-         Variables_Defined    =>   26,
-         Variables_Found      => 2118,
-         Variables_Undefined  =>    0,
-         Variables_Replaced   => 2118,
-         Variables_Ignored    =>    0,
-         Variables_Emptied    =>    0,
-         Replacement_Warnings =>    0,
-         Replacement_Errors   =>    0
+         Files_Processed    =>    1,
+         Variables_Defined  =>   26,
+         Variables_Found    => 2118,
+         Variables_Replaced => 2118,
+         others             =>    0
       ];
       --!pp on
       Check_Results
@@ -135,17 +121,11 @@ package body Inclusion_Tests is
          Log_Level   => Log.Level
       );
       Expected := [
-         Files_Processed      =>    1,
-         Files_Renamed        =>    0,
-         Files_Overwritten    =>    0,
-         Variables_Defined    =>   26,
-         Variables_Found      => 2118,
-         Variables_Undefined  =>    0,
-         Variables_Replaced   => 2118,
-         Variables_Ignored    =>    0,
-         Variables_Emptied    =>    0,
-         Replacement_Warnings =>    0,
-         Replacement_Errors   =>    0
+         Files_Processed    =>    1,
+         Variables_Defined  =>   26,
+         Variables_Found    => 2118,
+         Variables_Replaced => 2118,
+         others             =>    0
       ];
       --!pp on
       Check_Results
@@ -171,17 +151,11 @@ package body Inclusion_Tests is
          Log_Level   => Log.Level
       );
       Expected := [
-         Files_Processed      =>    1,
-         Files_Renamed        =>    0,
-         Files_Overwritten    =>    0,
-         Variables_Defined    =>   26,
-         Variables_Found      => 2118,
-         Variables_Undefined  =>    0,
-         Variables_Replaced   => 2118,
-         Variables_Ignored    =>    0,
-         Variables_Emptied    =>    0,
-         Replacement_Warnings =>    0,
-         Replacement_Errors   =>    0
+         Files_Processed    =>    1,
+         Variables_Defined  =>   26,
+         Variables_Found    => 2118,
+         Variables_Replaced => 2118,
+         others             =>    0
       ];
       --!pp on
       Check_Results

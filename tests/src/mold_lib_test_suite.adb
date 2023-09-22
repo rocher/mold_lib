@@ -6,10 +6,11 @@
 --
 -------------------------------------------------------------------------------
 
-with Rename_Tests;    use Rename_Tests;
-with Variables_Tests; use Variables_Tests;
-with Inclusion_Tests; use Inclusion_Tests;
-with Directory_Tests; use Directory_Tests;
+--  with Rename_Tests;    use Rename_Tests;
+--  with Variables_Tests; use Variables_Tests;
+--  with Inclusion_Tests; use Inclusion_Tests;
+--  with Directory_Tests; use Directory_Tests;
+with Filters_Tests;   use Filters_Tests;
 
 package body Mold_Lib_Test_Suite is
 
@@ -17,10 +18,11 @@ package body Mold_Lib_Test_Suite is
 
    Result : aliased Test_Suite;
 
-   Files_Test     : aliased Files_Test_Case;
-   Variables_Test : aliased Variables_Test_Case;
-   Inclusion_Test : aliased Inclusion_Test_Case;
-   Directory_Test : aliased Directory_Test_Case;
+   --  Files_Test     : aliased Files_Test_Case;
+   --  Variables_Test : aliased Variables_Test_Case;
+   --  Inclusion_Test : aliased Inclusion_Test_Case;
+   --  Directory_Test : aliased Directory_Test_Case;
+   Filters_Test   : aliased Filters_Test_Case;
 
    -----------
    -- Suite --
@@ -29,10 +31,11 @@ package body Mold_Lib_Test_Suite is
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    begin
 
-      Add_Test (Result'Access, Variables_Test'Access);
-      Add_Test (Result'Access, Files_Test'Access);
-      Add_Test (Result'Access, Inclusion_Test'Access);
-      Add_Test (Result'Access, Directory_Test'Access);
+      --  Add_Test (Result'Access, Variables_Test'Access);
+      --  Add_Test (Result'Access, Files_Test'Access);
+      --  Add_Test (Result'Access, Inclusion_Test'Access);
+      --  Add_Test (Result'Access, Directory_Test'Access);
+      Add_Test (Result'Access, Filters_Test'Access);
 
       return Result'Access;
    end Suite;

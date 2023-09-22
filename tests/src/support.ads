@@ -23,6 +23,7 @@ package Support is
       Enable_Defined_Settings      => True,
       Undefined_Variable_Action    => Mold.Ignore,
       Undefined_Variable_Alert     => Mold.Warning,
+      Undefined_Filter_Alert       => Mold.Warning,
       Abort_On_Error               => True
    );
    --!pp on

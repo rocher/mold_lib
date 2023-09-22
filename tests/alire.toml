@@ -11,6 +11,11 @@ licenses = "MIT"
 
 executables = ["mold_lib_tests"]
 
+[build-profiles]
+aunit = "release"
+mold_lib = "validation"
+mold_lib_tests = "validation"
+
 [build-switches."*"]
 ada_version = ["-gnat2022", "-gnatW8", "-gnatX"]
 
@@ -31,3 +36,5 @@ mold_lib = { path = '..' }
 #       $ git clean -dfx suite/
 #       $ valgrind --tool=callgrind ./bin/mold_lib_tests
 #       $ kcachegrind callgrind.out.*
+[[depends-on]]
+aaa = "~0.2.6"
