@@ -73,10 +73,18 @@ package body Definitions is
                   Success := False;
             end;
 
-         elsif Key = "mold-undefined-variable-alert" then
+         elsif Key = "mold-undefined-variable-alert"
+           or else Key = "mold-undefined-filter-alert"
+         then
+            declare
+               Undefined_Alert : Mold.Undefined_Alerts;
             begin
-               Settings.Undefined_Variable_Alert :=
-                 Mold.Undefined_Alerts'Value (Value);
+               Undefined_Alert := Mold.Undefined_Alerts'Value (Value);
+               if Key = "mold-undefined-variable-alert" then
+                  Settings.Undefined_Variable_Alert := Undefined_Alert;
+               else
+                  Settings.Undefined_Filter_Alert := Undefined_Alert;
+               end if;
             exception
                when Constraint_Error =>
                   Log.Error
