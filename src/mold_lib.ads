@@ -6,12 +6,17 @@
 --
 -------------------------------------------------------------------------------
 
-with Mold_Lib_Config;
 with Simple_Logging;
+
+with Custom_Text_Filters;
+with Mold_Lib_Config;
 
 package Mold_Lib is
 
    package Log renames Simple_Logging;
+
+   subtype Filters_Array is Custom_Text_Filters.Filters_Array;
+   subtype Filters_Access is Custom_Text_Filters.Filters_Access;
 
    type Undefined_Alerts is (None, Warning, Error);
    type Undefined_Variable_Actions is (Ignore, Empty);
@@ -35,8 +40,8 @@ package Mold_Lib is
    end record;
    type Settings_Access is access all Settings_Type;
 
-   type String_Filter is access function (S : String) return String;
-   type Filter_Array is array (0 .. 9) of String_Filter;
+   type Text_Filter is access function (S : String) return String;
+   type Filter_Array is array (0 .. 9) of Text_Filter;
    type Filter_Array_Access is access Filter_Array;
 
    --!pp off
@@ -88,7 +93,7 @@ package Mold_Lib is
       Output_Dir  : String          := "";
       Definitions : String          := "mold.toml";
       Settings    : Settings_Access := null;
-      Filters     : Filter_Array    := [others => null];
+      Filters     : Filters_Access  := null;
       Results     : Results_Access  := null;
       Log_Level   : Log.Levels      := Log.Info
    )

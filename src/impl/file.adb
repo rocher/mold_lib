@@ -14,6 +14,7 @@ with Simple_Logging;
 
 with Dir_Ops;          use Dir_Ops;
 with Mold_Lib.Results; use Mold_Lib.Results;
+with Text_Filters;
 
 package body File is
 
@@ -27,8 +28,6 @@ package body File is
    subtype Inclusion_List is Inclusion_Package.List;
 
    use all type Dir.File_Kind;
-   use all type Mold.String_Filter;
-   use all type Mold.Filter_Array_Access;
    use all type Mold.Undefined_Variable_Actions;
    use all type Mold.Undefined_Alerts;
    use all type Reg.Match_Location;
@@ -42,7 +41,7 @@ package body File is
       Source            : String_Access;
       Variables         : Standard.Definitions.Variables_Access;
       Settings          : Mold.Settings_Access;
-      Filters           : Mold.Filter_Array_Access;
+      Filters           : Mold.Filters_Access;
       Results           : Mold.Results_Access;
       Errors            : Natural;
       Included_Files    : Inclusion_List;
@@ -146,7 +145,9 @@ package body File is
    -- Replace_In_Line --
    ---------------------
 
-   function Replace_In_Line (Line : String; Number : Natural) return String is
+   function Replace_In_Line
+     (Line : String; Number : Natural; Output : IO.File_Type) return String
+   is
       Matches     : Reg.Match_Array (0 .. 4);
       New_Line    : Unbounded_String := To_Unbounded_String ("");
       Current     : Natural          := Line'First;
@@ -183,10 +184,10 @@ package body File is
                  Var_All_Name (Var_All_Name'First + 1 .. Var_All_Name'Last)
                else Var_All_Name);
 
-            Filter : constant String (1 .. 2) :=
+            Filters : constant String :=
               (if Matches (4).First > 0 then
                  Line (Matches (4).First .. Matches (4).Last)
-               else "xx");
+               else "");
 
             Var_Value : constant String := Get_Value (Var_Name);
 
@@ -197,10 +198,7 @@ package body File is
             Log.Debug ("Var_Mold    : '" & Var_Mold & "'");
             Log.Debug ("Var_All_Name: '" & Var_All_Name & "'");
             Log.Debug ("Var_Name    : '" & Var_Name & "'");
-            Log.Debug ("Filter      : '" & Filter & "'");
-            Log.Debug ("Filter.Last : '" & Filter'Last'Image & "'");
-            Log.Debug ("Filter'Last : '" & Filter (Filter'Last) & "'");
-            Log.Debug ("Filter (2)  : '" & Filter (2) & "'");
+            Log.Debug ("Filters     : '" & Filters & "'");
 
             New_Line.Append (Pre_Text);
 
@@ -244,35 +242,49 @@ package body File is
                end;
             else
                Inc (Global.Results, Mold.Variables_Replaced);
-               if Filter /= "xx" then
-                  Inc (Global.Results, Mold.Filters_Found);
-                  declare
-                     Idx : constant Natural :=
-                       Natural'Value ("" & Filter (Filter'Last));
-                  begin
-                     if Global.Filters (Idx) /= null then
-                        Log.Debug ("Applying filter" & Idx'Image);
-                        Inc (Global.Results, Mold.Filters_Applied);
-                        New_Line.Append (Global.Filters (Idx) (Var_Value));
-                     else
-                        if Global.Settings.Undefined_Filter_Alert =
-                          Mold.Warning
-                        then
-                           Log.Warning ("Filter " & Filter & " not found");
-                           Inc (Global.Results, Mold.Replacement_Warnings);
-                        end if;
-                        if Global.Settings.Undefined_Filter_Alert = Mold.Error
-                        then
-                           Log.Error ("Filter " & Filter & " not found");
-                           Inc (Global.Results, Mold.Replacement_Errors);
-                        end if;
-                        Log.Debug ("Invalid filter" & Idx'Image);
-                        New_Line.Append (Var_Value);
-                     end if;
-                  end;
-               else
+               if Filters = "" then
                   Log.Debug ("No filter applied");
                   New_Line.Append (Var_Value);
+               else
+                  declare
+                     Results : Text_Filters.Results_Type;
+                  begin
+                     Log.Debug ("Applying filters");
+                     New_Line.Append
+                       (Text_Filters.Apply
+                          (Filters, Var_Value, Output, Results,
+                           Global.Settings.Undefined_Filter_Alert =
+                           Mold.Error));
+                  end;
+
+                  pragma Style_Checks (off);
+                  --  Inc (Global.Results, Mold.Filters_Found);
+                  --  declare
+                  --     Idx : constant Natural :=
+                  --       Natural'Value ("" & Filter (Filter'Last));
+                  --  begin
+                  --     if Global.Filters (Idx) /= null then
+                  --        Log.Debug ("Applying filter" & Idx'Image);
+                  --        Inc (Global.Results, Mold.Filters_Applied);
+                  --        New_Line.Append (Global.Filters (Idx) (Var_Value));
+                  --     else
+                  --        if Global.Settings.Undefined_Filter_Alert =
+                  --          Mold.Warning
+                  --        then
+                  --           Log.Warning ("Filter " & Filter & " not found");
+                  --           Inc (Global.Results, Mold.Replacement_Warnings);
+                  --        end if;
+                  --        if Global.Settings.Undefined_Filter_Alert = Mold.Error
+                  --        then
+                  --           Log.Error ("Filter " & Filter & " not found");
+                  --           Inc (Global.Results, Mold.Replacement_Errors);
+                  --        end if;
+                  --        Log.Debug ("Invalid filter" & Idx'Image);
+                  --        New_Line.Append (Var_Value);
+                  --     end if;
+                  --  end;
+                  pragma Style_Checks (on);
+
                end if;
             end if;
          end;
@@ -360,12 +372,12 @@ package body File is
    --!pp off
    procedure Replace_In_Stream
    (
-      Src : in out Ada.Text_IO.File_Type;
-      Dst : Ada.Text_IO.File_Type
+      Input : in out Ada.Text_IO.File_Type;
+      Output : Ada.Text_IO.File_Type
    )
    with
-     Pre  => (Src.Is_Open and then Dst.Is_Open),
-     Post => (not Src.Is_Open and then Dst.Is_Open)
+     Pre  => (Input.Is_Open and then Output.Is_Open),
+     Post => (not Input.Is_Open and then Output.Is_Open)
    --!pp on
    is
       Line_Number : Natural := 0;
@@ -374,23 +386,23 @@ package body File is
       Log.Debug ("BEGIN File.Replace_In_Stream");
       For_Each_Line :
       loop
-         exit For_Each_Line when Src.End_Of_File;
+         exit For_Each_Line when Input.End_Of_File;
          Line_Number := @ + 1;
          declare
-            Line : constant String := Src.Get_Line;
+            Line : constant String := Input.Get_Line;
          begin
             Include_Matcher.Match (Line, Matches);
             if Matches (0) = Reg.No_Match then
                --  variable substitution
                declare
                   New_Line : constant String :=
-                    Replace_In_Line (Line, Line_Number);
+                    Replace_In_Line (Line, Line_Number, Output);
                begin
                   if Global.Errors > 0 and then Global.Settings.Abort_On_Error
                   then
                      goto Exit_Procedure;
                   end if;
-                  Dst.Put_Line (New_Line);
+                  Output.Put_Line (New_Line);
                end;
             else
                --  file inclusion
@@ -426,7 +438,7 @@ package body File is
                     (To_Unbounded_String (Inc_Path));
 
                   Inc_File.Open (In_File, Inc_Path);
-                  Replace_In_Stream (Inc_File, Dst);
+                  Replace_In_Stream (Inc_File, Output);
 
                   Global.Included_Files.Delete_Last;
                   Log.Debug ("  ...  file included");
@@ -436,7 +448,7 @@ package body File is
       end loop For_Each_Line;
 
       <<Exit_Procedure>>
-      Src.Close;
+      Input.Close;
       Log.Debug ("END File.Replace_In_Stream");
 
    exception
@@ -460,7 +472,7 @@ package body File is
       Output_Dir : not null String_Access;
       Variables  : not null Definitions.Variables_Access;
       Settings   : not null Mold.Settings_Access;
-      Filters    : not null Mold.Filter_Array_Access;
+      Filters    :          Mold.Filters_Access := null;
       Results    :          Mold.Results_Access := null
    )
    return Natural
@@ -559,7 +571,7 @@ package body File is
          Dst_File.Create (Name => Dst_File_Name);
          Log.Debug ("  Created file " & Dst_File_Name);
 
-         --  perform variable substitution from Src to Dst
+         --  perform variable substitution from Src to Output
 
          Replace_In_Stream (Src_File, Dst_File);
 
@@ -590,11 +602,11 @@ package body File is
 
 begin
 
-   --                                   .-------..-------.
-   --                                   |   3   ||   4   |
-   Variable_Matcher.Compile ("(.*?)({{ *([^/} ]+)(/[0-9])? *}})");
-   --                         | 1 ||            2             |
-   --                         '---''--------------------------'
+   --                                   .-------..----.
+   --                                   |   3   ||  4 |
+   Variable_Matcher.Compile ("(.*?)({{ *([^/} ]+)(/.*)? *}})");
+   --                         | 1 ||           2           |
+   --                         '---''-----------------------'
    --  Example:
    --
    --              1         2         3

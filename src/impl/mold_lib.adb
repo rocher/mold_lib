@@ -13,6 +13,7 @@ with Definitions;
 with Directory;
 with Dir_Ops; use Dir_Ops;
 with File;
+with Text_Filters;
 
 package body Mold_Lib is
 
@@ -142,7 +143,7 @@ package body Mold_Lib is
       Output_Dir  : String          := "";
       Definitions : String          := "mold.toml";
       Settings    : Settings_Access := null;
-      Filters     : Filter_Array    := [others => null];
+      Filters     : Filters_Access  := null;
       Results     : Results_Access  := null;
       Log_Level   : Log.Levels      := Log.Info
    )
@@ -197,13 +198,14 @@ package body Mold_Lib is
             return 1;
          end if;
 
+         Text_Filters.Set_Custom_Text_Filters (Filters);
+
          if Dir.Kind (Source_Path) = Dir.Ordinary_File then
             Errors :=
               File.Replace
                 (Source_Path'Unrestricted_Access,
                  Output_Dir_Path'Unrestricted_Access,
-                 Variables'Unchecked_Access, Used_Settings,
-                 Filters'Unrestricted_Access, Results);
+                 Variables'Unchecked_Access, Used_Settings, Filters, Results);
          else
             Log.Debug
               ("  File.Set_Running_Directory " & Dir.Current_Directory);
@@ -212,8 +214,7 @@ package body Mold_Lib is
               Directory.Replace
                 ("", Source_Path'Unrestricted_Access,
                  Output_Dir_Path'Unrestricted_Access,
-                 Variables'Unchecked_Access, Used_Settings,
-                 Filters'Unrestricted_Access, Results);
+                 Variables'Unchecked_Access, Used_Settings, Filters, Results);
          end if;
 
          return Errors;
