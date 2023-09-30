@@ -17,6 +17,7 @@ package Filters_Tests is
 
    overriding procedure Register_Tests (T : in out Filters_Test_Case);
 
-   procedure Test_Filters (T : in out Test_Case'Class);
+   procedure Test_Predefined_Filters (T : in out Test_Case'Class);
+   procedure Test_Custom_Filters (T : in out Test_Case'Class);
 
 end Filters_Tests;

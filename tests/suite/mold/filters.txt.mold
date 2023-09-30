@@ -1,11 +1,69 @@
-Number   : {{Number}}
-Zero pad = {{Number/5}}
-
-FortyTwo : {{FortyTwo}}
-FortyTwo : {{FortyTwo/5}}
-FortyTwo : {{FortyTwo/0}}
+NN : {{N1/sN/pr-33}}
+N1 : {{N1/pl07/pl 11/pl.22/pr 23/pr_33}}
+N2 : {{N2/pl07/pl 11/pl.22/pr 23/pr_33}}
+N3 : {{N3/pl07/pl 11/pl.22/pr 23/pr_33}}
+N4 : {{N4/pl07/pl 11/pl.22/pr 23/pr_33}}
+N5 : {{N5/pl07/pl 11/pl.22/pr 23/pr_33}}
+N6 : {{N6/pl07/pl 11/pl.22/pr 23/pr_33}}
+N7 : {{N7/pl07/pl 11/pl.22/pr 23/pr_33}}
+N8 : {{N8/pl07/pl 11/pl.22/pr 23/pr_33}}
+N9 : {{N9/pl07/pl 11/pl.22/pr 23/pr_33}}
+N0 : {{N0/pl07/pl 11/pl.22/pr 23/pr_33}}
+NN : {{N0/sN/pl-33}}
 
 No filter                : {{Title}}
-Replace all chars by '-' : {{Title/0}}
-Transform to Title_Case  : {{Title/1}}
-Non-existent filter      : {{Title/9}}
+Replace all chars by '-' : {{Title/s-}}
+Replace all chars by '=' : {{Title/s=}}
+Replace all chars by '/' : {{Title/0}}
+Undefined filter:        : {{Title/1}}
+Replace all chars by '/' : {{Title/2}}
+Random Transforms        : {{Title/rai1/rlt*/rae3/rat_/ra_^/raa4/ras5/rao0/raf7}}
+Non-existent filter      : {{Title/Q}}
+Pad to 40 right          : {{Title/pr*40}}
+Pad to 40 left           : {{Title/pl*40}}
+Truncate to 10           : 1234567890
+Truncate to 10           : {{Title/W10}}
+Truncate to 15           : 123456789.123456789.123456789.123456789.
+Truncate to 15           : {{Title/W15}}
+Truncate to 25           : 123456789.123456789.123456789.123456789.
+Truncate to 25           : {{Title/W25}}
+Truncate to 35           : 123456789.123456789.123456789.123456789.
+Truncate to 35           : {{Title/W35}}
+
+Truncate to 10           : {{Title/W10}}
+Truncate to 11           : {{Title/W11}}
+Truncate to 12           : {{Title/W12}}
+Truncate to 13           : {{Title/W13}}
+Truncate to 14           : {{Title/W14}}
+Truncate to 15           : {{Title/W15}}
+Truncate to 16           : {{Title/W16}}
+Truncate to 17           : {{Title/W17}}
+Truncate to 18           : {{Title/W18}}
+Truncate to 19           : {{Title/W19}}
+Truncate to 20           : {{Title/W20}}
+
+Line        : [{{ Line  }}]
+Line/Tl     : [{{ Line/Tl}}]
+Line/Tr     : [{{ Line/Tr}}]
+Line/Tb     : [{{ Line/Tb}}]
+Line/Ts     : [{{ Line/Ts}}]
+Line/Tl/ts  : [{{ Line/Tl/Ts}}]
+Line/Ta     : [{{ Line/Ta}}]
+Line/X      : [{{ Line/X}}]
+Line/D      : [{{ Line/D }}]
+Line/Di     : [{{ Line/Di}}]
+Line/Ta/cl  : [{{ Line/Ta/cl}}]
+Line/Ta/cc  : [{{ Line/Ta/cc}}]
+Line/Ta/cu  : [{{ Line/Ta/cu}}]
+
+Line/Nf    : [{{ Line/nf}}]
+Line/Nc    : [{{ Line/nc}}]
+Line/NC    : [{{ Line/nC}}]
+Line/NU    : [{{ Line/nU}}]
+Line/Ns    : [{{ Line/ns}}]
+Line/NS    : [{{ Line/nS}}]
+Line/Ni    : [{{ Line/ni}}]
+Line/NA    : [{{ Line/nA}}]
+Line/Nd    : [{{ Line/nd}}]
+Line/Nt    : [{{ Line/nt}}]
+Line/NT    : [{{ Line/nT}}]

@@ -13,8 +13,8 @@ executables = ["mold_lib_tests"]
 
 [build-profiles]
 aunit = "release"
-mold_lib = "validation"
-mold_lib_tests = "validation"
+mold_lib = "development"
+mold_lib_tests = "development"
 
 [build-switches."*"]
 ada_version = ["-gnat2022", "-gnatW8", "-gnatX"]

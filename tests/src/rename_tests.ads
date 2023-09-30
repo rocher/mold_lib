@@ -11,11 +11,11 @@ with AUnit.Test_Cases; use AUnit.Test_Cases;
 
 package Rename_Tests is
 
-   type Files_Test_Case is new Test_Case with null record;
+   type Rename_Test_Case is new Test_Case with null record;
 
-   overriding function Name (T : Files_Test_Case) return Message_String;
+   overriding function Name (T : Rename_Test_Case) return Message_String;
 
-   overriding procedure Register_Tests (T : in out Files_Test_Case);
+   overriding procedure Register_Tests (T : in out Rename_Test_Case);
 
    procedure Test_No_Renaming (T : in out Test_Case'Class);
    procedure Test_Basic_Renaming (T : in out Test_Case'Class);

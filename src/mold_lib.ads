@@ -54,7 +54,7 @@ package Mold_Lib is
    --  Settings to configure the behavior of mold. Refer to the documentation
    --  for more information.
 
-   Default_Settings : aliased Settings_Type :=
+   Default_Settings : constant Settings_Type :=
    (
       Replacement_In_File_Names   => True,
       Delete_Source_Files         => True,
@@ -65,7 +65,6 @@ package Mold_Lib is
       Undefined_Filter_Alert      => Warning,
       Abort_On_Error              => True
    );
-   --  Default settings used in mold.
 
    type Results_Fields is
    (

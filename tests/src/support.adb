@@ -10,11 +10,9 @@ with Ada.Directories;
 with Ada.Streams;
 with Ada.Streams.Stream_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-
-with AUnit.Assertions; use AUnit.Assertions;
-
 with GNAT.MD5;
 
+with AUnit.Assertions; use AUnit.Assertions;
 with Simple_Logging;
 with Simple_Logging.Decorators;
 
@@ -119,12 +117,12 @@ package body Support is
 
 begin
 
-   Simple_Logging.Level                         := Simple_Logging.Always;
-   Simple_Logging.Decorators.Location_Decorator :=
-     Simple_Logging.Decorators.No_Location_Decorator'Access;
+   Simple_Logging.Level := Simple_Logging.Always;
+   --  Simple_Logging.Decorators.Location_Decorator :=
+   --    Simple_Logging.Decorators.No_Location_Decorator'Access;
 
    --  Simple_Logging.Level                         := Simple_Logging.Debug;
-   --  Simple_Logging.Decorators.Location_Decorator :=
-   --    Simple_Logging.Decorators.Simple_Location_Decorator'Access;
+   Simple_Logging.Decorators.Location_Decorator :=
+     Simple_Logging.Decorators.Simple_Location_Decorator'Access;
 
 end Support;

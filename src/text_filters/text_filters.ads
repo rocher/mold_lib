@@ -25,7 +25,7 @@ package Text_Filters is
       Errors   : Natural := 0;
    end record;
 
-   procedure Set_Custom_Text_Filters (Text_Filters : not null Filters_Access);
+   procedure Set_Custom_Text_Filters (Text_Filters : Filters_Access);
    --  Set custom text filters to be applied during the Apply process.
 
    --!pp off

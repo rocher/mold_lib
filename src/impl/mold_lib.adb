@@ -7,10 +7,10 @@
 -------------------------------------------------------------------------------
 
 with Ada.Directories;
+
 with Simple_Logging.Decorators;
 
 with Mold_Lib.Impl; use Mold_Lib.Impl;
-
 with Mold_Lib.Impl.Definitions;
 with Mold_Lib.Impl.Directory;
 with Mold_Lib.Impl.File;
@@ -173,8 +173,8 @@ package body Mold_Lib is
       Output_Dir_Path  : aliased String  :=
         Validate_Output_Dir (Source_Path, Output_Dir, Validation_Error);
 
-      Used_Settings : constant Settings_Access :=
-        (if Settings = null then Default_Settings'Access else Settings);
+      Used_Settings : aliased Settings_Type :=
+        (if Settings = null then Default_Settings else Settings.all);
    begin
 
       Log.Level := Log_Level;
@@ -203,7 +203,8 @@ package body Mold_Lib is
       begin
          Variables :=
            Impl.Definitions.Read_Variables
-             (Definitions_Path, Used_Settings, Results, Success);
+             (Definitions_Path, Used_Settings'Unrestricted_Access, Results,
+              Success);
 
          if Success then
             Log.Debug ("  Definitions_Path loaded");
@@ -219,7 +220,8 @@ package body Mold_Lib is
               Impl.File.Replace
                 (Source_Path'Unrestricted_Access,
                  Output_Dir_Path'Unrestricted_Access,
-                 Variables'Unchecked_Access, Used_Settings, Filters, Results);
+                 Variables'Unchecked_Access, Used_Settings'Unrestricted_Access,
+                 Filters, Results);
          else
             Log.Debug
               ("  File.Set_Running_Directory " & Dir.Current_Directory);
@@ -228,7 +230,8 @@ package body Mold_Lib is
               Impl.Directory.Replace
                 ("", Source_Path'Unrestricted_Access,
                  Output_Dir_Path'Unrestricted_Access,
-                 Variables'Unchecked_Access, Used_Settings, Filters, Results);
+                 Variables'Unchecked_Access, Used_Settings'Unrestricted_Access,
+                 Filters, Results);
          end if;
 
          return Errors;

@@ -29,13 +29,12 @@ package body Variables_Tests is
    overriding procedure Register_Tests (T : in out Variables_Test_Case) is
       use AUnit.Test_Cases.Registration;
    begin
-      Register_Routine
-        (T, Test_No_Substitution'Access, "No Substitutions Expected");
+      Register_Routine (T, Test_No_Substitution'Access, "No Substitution");
       Register_Routine
         (T, Test_Basic_Substitution'Access, "Basic Substitutions");
       Register_Routine
-        (T, Test_Modal_Substitution'Access, "Modal Substitutions");
-      Register_Routine (T, Test_Multiline'Access, "Multiline Variables");
+        (T, Test_Modal_Substitution'Access, "Modal Substitution");
+      Register_Routine (T, Test_Multiline'Access, "Multiline");
    end Register_Tests;
 
    --------------------------
@@ -61,17 +60,8 @@ package body Variables_Tests is
          Log_Level   => Log.Level
       );
       Expected := [
-         Files_Processed      => 1,
-         Files_Renamed        => 0,
-         Files_Overwritten    => 0,
-         Variables_Defined    => 0,
-         Variables_Found      => 0,
-         Variables_Undefined  => 0,
-         Variables_Replaced   => 0,
-         Variables_Ignored    => 0,
-         Variables_Emptied    => 0,
-         Replacement_Warnings => 0,
-         Replacement_Errors   => 0
+         Files_Processed => 1,
+         others          => 0
       ];
       --!pp on
       Check_Results
@@ -96,16 +86,11 @@ package body Variables_Tests is
       );
       Expected := [
          Files_Processed      => 1,
-         Files_Renamed        => 0,
-         Files_Overwritten    => 0,
-         Variables_Defined    => 0,
+         Variables_Ignored    => 9,
          Variables_Found      => 9,
          Variables_Undefined  => 9,
-         Variables_Replaced   => 0,
-         Variables_Ignored    => 9,
-         Variables_Emptied    => 0,
          Replacement_Warnings => 9,
-         Replacement_Errors   => 0
+         others               => 0
       ];
       --!pp on
       Check_Results
@@ -130,16 +115,13 @@ package body Variables_Tests is
       );
       Expected := [
          Files_Processed      => 1,
-         Files_Renamed        => 0,
          Files_Overwritten    => 1,
          Variables_Defined    => 1,
          Variables_Found      => 9,
          Variables_Undefined  => 9,
-         Variables_Replaced   => 0,
          Variables_Ignored    => 9,
-         Variables_Emptied    => 0,
          Replacement_Warnings => 9,
-         Replacement_Errors   => 0
+         others               => 0
       ];
       --!pp on
       Check_Results
@@ -177,17 +159,12 @@ package body Variables_Tests is
          Log_Level   => Log.Level
       );
       Expected := [
-         Files_Processed      => 1,
-         Files_Renamed        => 0,
-         Files_Overwritten    => 1,
-         Variables_Defined    => 1,
-         Variables_Found      => 9,
-         Variables_Undefined  => 0,
-         Variables_Replaced   => 9,
-         Variables_Ignored    => 0,
-         Variables_Emptied    => 0,
-         Replacement_Warnings => 0,
-         Replacement_Errors   => 0
+         Files_Processed    => 1,
+         Files_Overwritten  => 1,
+         Variables_Defined  => 1,
+         Variables_Found    => 9,
+         Variables_Replaced => 9,
+         others             => 0
       ];
       --!pp on
       Check_Results
@@ -212,16 +189,13 @@ package body Variables_Tests is
       );
       Expected := [
          Files_Processed      => 1,
-         Files_Renamed        => 0,
-         Files_Overwritten    => 0,
          Variables_Defined    => 1,
          Variables_Found      => 4,
          Variables_Undefined  => 2,
          Variables_Replaced   => 2,
          Variables_Ignored    => 2,
-         Variables_Emptied    => 0,
          Replacement_Warnings => 2,
-         Replacement_Errors   => 0
+         others               => 0
       ];
       --!pp on
       Check_Results
@@ -245,17 +219,12 @@ package body Variables_Tests is
          Log_Level   => Log.Level
       );
       Expected := [
-         Files_Processed      => 1,
-         Files_Renamed        => 0,
-         Files_Overwritten    => 1,
-         Variables_Defined    => 2,
-         Variables_Found      => 4,
-         Variables_Undefined  => 0,
-         Variables_Replaced   => 4,
-         Variables_Ignored    => 0,
-         Variables_Emptied    => 0,
-         Replacement_Warnings => 0,
-         Replacement_Errors   => 0
+         Files_Processed    => 1,
+         Files_Overwritten  => 1,
+         Variables_Defined  => 2,
+         Variables_Found    => 4,
+         Variables_Replaced => 4,
+         others             => 0
       ];
       --!pp on
       Check_Results
@@ -294,17 +263,11 @@ package body Variables_Tests is
          Log_Level   => Log.Level
       );
       Expected := [
-         Files_Processed      =>    1,
-         Files_Renamed        =>    0,
-         Files_Overwritten    =>    0,
-         Variables_Defined    =>   26,
-         Variables_Found      => 2118,
-         Variables_Undefined  =>    0,
-         Variables_Replaced   => 2118,
-         Variables_Ignored    =>    0,
-         Variables_Emptied    =>    0,
-         Replacement_Warnings =>    0,
-         Replacement_Errors   =>    0
+         Files_Processed    =>    1,
+         Variables_Defined  =>   26,
+         Variables_Found    => 2118,
+         Variables_Replaced => 2118,
+         others             =>    0
       ];
       --!pp on
       Check_Results
@@ -328,17 +291,14 @@ package body Variables_Tests is
          Log_Level   => Log.Level
       );
       Expected := [
-         Files_Processed      =>    1,
-         Files_Renamed        =>    0,
-         Files_Overwritten    =>    1,
-         Variables_Defined    =>   23,
-         Variables_Found      => 2118,
-         Variables_Undefined  =>  291,
-         Variables_Replaced   => 1827,
-         Variables_Ignored    =>    0,
-         Variables_Emptied    =>  291,
-         Replacement_Warnings =>    0,
-         Replacement_Errors   =>    0
+         Files_Processed     =>    1,
+         Files_Overwritten   =>    1,
+         Variables_Defined   =>   23,
+         Variables_Found     => 2118,
+         Variables_Undefined =>  291,
+         Variables_Replaced  => 1827,
+         Variables_Emptied   =>  291,
+         others              =>    0
       ];
       --!pp on
       Check_Results
@@ -362,17 +322,14 @@ package body Variables_Tests is
          Log_Level   => Log.Level
       );
       Expected := [
-         Files_Processed      =>    1,
-         Files_Renamed        =>    0,
-         Files_Overwritten    =>    1,
-         Variables_Defined    =>   24,
-         Variables_Found      => 2118,
-         Variables_Undefined  =>  176,
-         Variables_Replaced   => 1942,
-         Variables_Ignored    =>    0,
-         Variables_Emptied    =>  176,
-         Replacement_Warnings =>    0,
-         Replacement_Errors   =>    0
+         Files_Processed     =>    1,
+         Files_Overwritten   =>    1,
+         Variables_Defined   =>   24,
+         Variables_Found     => 2118,
+         Variables_Undefined =>  176,
+         Variables_Replaced  => 1942,
+         Variables_Emptied   =>  176,
+         others              =>    0
       ];
       --!pp on
       Check_Results
@@ -398,17 +355,14 @@ package body Variables_Tests is
          Log_Level   => Log.Level
       );
       Expected := [
-         Files_Processed      =>    1,
-         Files_Renamed        =>    0,
-         Files_Overwritten    =>    1,
-         Variables_Defined    =>   24,
-         Variables_Found      => 2118,
-         Variables_Undefined  =>  294,
-         Variables_Replaced   => 1824,
-         Variables_Ignored    =>  294,
-         Variables_Emptied    =>    0,
-         Replacement_Warnings =>    0,
-         Replacement_Errors   =>    0
+         Files_Processed     =>    1,
+         Files_Overwritten   =>    1,
+         Variables_Defined   =>   24,
+         Variables_Found     => 2118,
+         Variables_Undefined =>  294,
+         Variables_Replaced  => 1824,
+         Variables_Ignored   =>  294,
+         others              =>    0
       ];
       --!pp on
       Check_Results
@@ -435,16 +389,14 @@ package body Variables_Tests is
       );
       Expected := [
          Files_Processed      =>    1,
-         Files_Renamed        =>    0,
          Files_Overwritten    =>    1,
          Variables_Defined    =>   24,
          Variables_Found      => 2118,
          Variables_Undefined  =>  294,
          Variables_Replaced   => 1824,
          Variables_Ignored    =>  294,
-         Variables_Emptied    =>    0,
          Replacement_Warnings =>  294,
-         Replacement_Errors   =>    0
+         others               =>    0
       ];
       --!pp on
       Check_Results
@@ -470,17 +422,14 @@ package body Variables_Tests is
          Log_Level   => Log.Level
       );
       Expected := [
-         Files_Processed      =>    1,
-         Files_Renamed        =>    0,
-         Files_Overwritten    =>    1,
-         Variables_Defined    =>   24,
-         Variables_Found      => 2118,
-         Variables_Undefined  =>  294,
-         Variables_Replaced   => 1824,
-         Variables_Ignored    =>    0,
-         Variables_Emptied    =>  294,
-         Replacement_Warnings =>    0,
-         Replacement_Errors   =>    0
+         Files_Processed     =>    1,
+         Files_Overwritten   =>    1,
+         Variables_Defined   =>   24,
+         Variables_Found     => 2118,
+         Variables_Undefined =>  294,
+         Variables_Replaced  => 1824,
+         Variables_Emptied   =>  294,
+         others              =>    0
       ];
       --!pp on
       Check_Results
@@ -507,16 +456,14 @@ package body Variables_Tests is
       );
       Expected := [
          Files_Processed      =>    1,
-         Files_Renamed        =>    0,
          Files_Overwritten    =>    1,
          Variables_Defined    =>   24,
          Variables_Found      => 2118,
          Variables_Undefined  =>  294,
          Variables_Replaced   => 1824,
-         Variables_Ignored    =>    0,
          Variables_Emptied    =>  294,
          Replacement_Warnings =>  294,
-         Replacement_Errors   =>    0
+         others               =>    0
       ];
       --!pp on
       Check_Results
@@ -544,7 +491,6 @@ package body Variables_Tests is
       );
       Expected := [
          Files_Processed      =>    1,
-         Files_Renamed        =>    0,
          Files_Overwritten    =>    1,
          Variables_Defined    =>   18,
          Variables_Found      => 2118,
@@ -553,7 +499,8 @@ package body Variables_Tests is
          Variables_Ignored    =>  405,
          Variables_Emptied    =>  186,
          Replacement_Warnings =>  315,
-         Replacement_Errors   =>   90
+         Replacement_Errors   =>   90,
+         others               =>    0
       ];
       --!pp on
       Check_Results
@@ -591,17 +538,11 @@ package body Variables_Tests is
          Log_Level   => Log.Level
       );
       Expected := [
-         Files_Processed      => 1,
-         Files_Renamed        => 0,
-         Files_Overwritten    => 0,
-         Variables_Defined    => 4,
-         Variables_Found      => 4,
-         Variables_Undefined  => 0,
-         Variables_Replaced   => 4,
-         Variables_Ignored    => 0,
-         Variables_Emptied    => 0,
-         Replacement_Warnings => 0,
-         Replacement_Errors   => 0
+         Files_Processed    => 1,
+         Variables_Defined  => 4,
+         Variables_Found    => 4,
+         Variables_Replaced => 4,
+         others             => 0
       ];
       --!pp on
       Check_Results

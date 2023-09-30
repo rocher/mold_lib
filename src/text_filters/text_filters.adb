@@ -22,8 +22,7 @@ package body Text_Filters is
    -- Set_Custom_Text_Filters --
    -----------------------------
 
-   procedure Set_Custom_Text_Filters (Text_Filters : not null Filters_Access)
-   is
+   procedure Set_Custom_Text_Filters (Text_Filters : Filters_Access) is
    begin
       Custom_Filters := Text_Filters;
    end Set_Custom_Text_Filters;
