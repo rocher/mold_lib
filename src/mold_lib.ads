@@ -17,19 +17,6 @@ package Mold_Lib is
 
    package Log renames Simple_Logging;
 
-   subtype Filters_Array is Custom_Text_Filters.Filters_Array;
-   subtype Filters_Access is Custom_Text_Filters.Filters_Access;
-   --  Text filters are pointers to functions with the specification:
-   --
-   --     function (S : String) return String;
-   --
-   --  that can be applied during variable substitution to provide additional
-   --  text transformation. There are several predefined text filters covering
-   --  a wide range of use cases. In case you need to define your custom text
-   --  filter, you can provide up to ten functions with the above
-   --  specification. The type Filter_Access is a pointer to an array of ten
-   --  (0 .. 9) pointers to functions.
-
    type Undefined_Alerts is (None, Warning, Error);
    --  Error level to assume when undefined things are encountered, e.g.
    --  undefined variable or undefined custom text filter.
@@ -54,8 +41,7 @@ package Mold_Lib is
    --  Settings to configure the behavior of mold. Refer to the documentation
    --  for more information.
 
-   Default_Settings : constant Settings_Type :=
-   (
+   Default_Settings : constant Settings_Type := (
       Replacement_In_File_Names   => True,
       Delete_Source_Files         => True,
       Overwrite_Destination_Files => False,
@@ -66,8 +52,7 @@ package Mold_Lib is
       Abort_On_Error              => True
    );
 
-   type Results_Fields is
-   (
+   type Results_Fields is (
       Files_Processed,
       Files_Renamed,
       Files_Overwritten,
@@ -82,9 +67,22 @@ package Mold_Lib is
       Replacement_Warnings,
       Replacement_Errors
    );
-   type Results_Type is array (Results_Fields) of Natural;
+   type Results_Type   is array (Results_Fields) of Natural;
    type Results_Access is access all Results_Type;
    --  Set of results returned by mold, when requested.
+
+   subtype Filters_Array  is Custom_Text_Filters.Filters_Array;
+   subtype Filters_Access is Custom_Text_Filters.Filters_Access;
+   --  Text filters are pointers to functions with the specification:
+   --
+   --     function (S : String) return String;
+   --
+   --  that can be applied during variable substitution to provide additional
+   --  text transformation. There are several predefined text filters covering
+   --  a wide range of use cases. In case you need to define your custom text
+   --  filter, you can provide up to ten functions with the above
+   --  specification. The type Filter_Access is a pointer to an array of ten
+   --  (0 .. 9) pointers to functions.
 
    function Name return String;
    --  Return create name.
@@ -92,23 +90,21 @@ package Mold_Lib is
    function Version return String;
    --  Return crate version.
 
-   function Apply
-   (
-      Source      : String          := ".";
-      Output_Dir  : String          := "";
-      Definitions : String          := "mold.toml";
-      Settings    : Settings_Access := null;
-      Filters     : Filters_Access  := null;
-      Results     : Results_Access  := null;
-      Log_Level   : Log.Levels      := Log.Info
-   )
-   return Natural;
-   --  Given Source, a file or directory, a Definition file with a set of
-   --  variables defined in it, this function applies variable replacement
-   --  and template inclusion in Source file. Or, recursively, in all '.mold'
-   --  files in the current directory and subdirectories when Source is a
-   --  directory. Optionally, Output_Dir can specify a different output
-   --  directory, Settings can be a customized set  of settings other than
+   function Apply (
+      Source     : String          := ".";
+      Output_Dir : String          := "";
+      Toml_File  : String          := "mold.toml";
+      Settings   : Settings_Access := null;
+      Filters    : Filters_Access  := null;
+      Results    : Results_Access  := null;
+      Log_Level  : Log.Levels      := Log.Info
+   )  return Natural;
+   --  Given Source, a file or directory, a TOML file with a set of variables
+   --  defined in it, this function applies variable replacement and template
+   --  inclusion in Source file. Or, recursively, in all '.mold' files in the
+   --  current directory and subdirectories when Source is a directory.
+   --  Optionally, Output_Dir can specify a different output directory,
+   --  Settings can be a customized set  of settings other than
    --  Default_Settings, and Results can be a pointer to a Results_Type object
    --  if detailed information about the process is required.
    --

@@ -13,47 +13,83 @@
 separate (Text_Filters)
 function Parse
   (Filters : UString; Tail : out UString) return Text_Filter_Parsed
+
 is
    package Natural_IO is new Ada.Text_IO.Integer_IO (Natural);
 
+   Kind    : Character;
+   Argc    : Natural;
+   Args    : UString;
+   Arg     : Character;
+   Matches : Reg.Match_Array (0 .. 3);
+
    function UStr (S : String) return UString renames To_Unbounded_String;
 
-   Arg         : Character;
-   Filter_Kind : Character;
-   Matches     : Reg.Match_Array (0 .. 2);
+   procedure Get_Args is
+      Slash : Boolean := False;
+   begin
+      Argc := 0;
+      Args := Null_Unbounded_String;
+      if Matches (2).First <= Matches (2).Last then
+         for I in Matches (2).First .. Matches (2).Last loop
+            if Slash then
+               Slash := False;
+            else
+               Args.Append (Filters.Element (I));
+               Argc  := Argc + 1;
+               Slash := (Filters.Element (I) = '/');
+            end if;
+         end loop;
+      end if;
+   end Get_Args;
+
 begin
    Text_Filter_Matcher.Match (To_String (Filters), Matches, 1);
 
-   if Matches (2).First < Matches (2).Last then
-      Tail := Filters.Unbounded_Slice (Matches (2).First, Matches (2).Last);
+   if Matches (3).First < Matches (3).Last then
+      Tail := Filters.Unbounded_Slice (Matches (3).First, Matches (3).Last);
    else
       Tail := Null_Unbounded_String;
    end if;
 
-   Log.Debug ("Filters    : """ & To_String (Filters) & """");
-   Log.Debug ("Element(1) : " & Filters.Element (Matches (1).First + 1));
-   Log.Debug ("Tail       : """ & To_String (Tail) & """");
-   Log.Debug ("Matches    : " & Matches'Image);
+   Log.Debug ("Filters     : """ & To_String (Filters) & """");
+   --  Log.Debug
+   --    ("Matches(0)  : " & Matches (0).First'Image & ", " &
+   --     Matches (0).Last'Image);
+   --  Log.Debug
+   --    ("Matches(1)  : " & Matches (1).First'Image & ", " &
+   --     Matches (1).Last'Image);
+   --  Log.Debug
+   --    ("Matches(2)  : " & Matches (2).First'Image & ", " &
+   --     Matches (2).Last'Image);
+   --  Log.Debug
+   --    ("Matches(3)  : " & Matches (3).First'Image & ", " &
+   --     Matches (3).Last'Image);
+   Log.Debug ("Filter kind : " & Filters.Element (Matches (1).First));
+   Log.Debug
+     ("Filter args : " & Filters.Slice (Matches (2).First, Matches (2).Last));
+   Log.Debug ("Tail        : """ & To_String (Tail) & """");
+   Log.Debug ("Matches     : " & Matches'Image);
 
    return Text_Filter : Text_Filter_Parsed do
-      Filter_Kind := Filters.Element (Matches (1).First + 1);
-      case Filter_Kind is
+      Kind := Filters.Element (Matches (1).First);
+      case Kind is
 
          when '0' .. '9' =>
-            Text_Filter.Number := Integer'Value (Filter_Kind & "");
+            Text_Filter.Number := Integer'Value (Kind & "");
             if Custom_Filters = null
               or else Custom_Filters.all (Text_Filter.Number) = null
             then
                Text_Filter.Kind  := filter_error;
-               Text_Filter.Error :=
-                 UStr ("Null custom filter '" & Filter_Kind & "'");
+               Text_Filter.Error := UStr ("Null custom filter '" & Kind & "'");
             else
                Text_Filter.Kind := filter_custom;
             end if;
 
          when 'T' =>
-            if Matches (1).Last = Matches (1).First + 2 then
-               Arg := Filters.Element (Matches (1).Last);
+            Get_Args;
+            if Argc = 1 then
+               Arg := Args.Element (1);
                case Arg is
                   when 'l' =>
                      Text_Filter.Kind := filter_trim_left;
@@ -80,8 +116,9 @@ begin
             Text_Filter.Kind := filter_remove_blanks;
 
          when 'r' =>
-            if Matches (1).Last = Matches (1).First + 4 then
-               Arg := Filters.Element (Matches (1).First + 2);
+            Get_Args;
+            if Argc = 3 then
+               Arg := Args.Element (1);
                case Arg is
                   when 'a' =>
                      Text_Filter.Kind := filter_replace_all;
@@ -95,8 +132,8 @@ begin
                        UStr
                          ("Invalid substitution '" & Arg & "' in filter 'r'");
                end case;
-               Text_Filter.Src := Filters.Element (Matches (1).Last - 1);
-               Text_Filter.Dst := Filters.Element (Matches (1).Last);
+               Text_Filter.Src := Args.Element (2);
+               Text_Filter.Dst := Args.Element (3);
             else
                Text_Filter.Kind  := filter_error;
                Text_Filter.Error :=
@@ -104,9 +141,10 @@ begin
             end if;
 
          when 's' =>
-            if Matches (1).Last = Matches (1).First + 2 then
+            Get_Args;
+            if Argc = 1 then
                Text_Filter.Kind := filter_sequence;
-               Text_Filter.Dst  := Filters.Element (Matches (1).Last);
+               Text_Filter.Dst  := Args.Element (1);
             else
                Text_Filter.Kind  := filter_error;
                Text_Filter.Error :=
@@ -114,10 +152,11 @@ begin
             end if;
 
          when 'D' =>
-            if Matches (1).Last = Matches (1).First + 2 then
+            Get_Args;
+            if Argc = 1 then
                Text_Filter.Kind := filter_delete_all;
-               Text_Filter.Src  := Filters.Element (Matches (1).Last);
-               Text_Filter.Dst  := Filters.Element (Matches (1).Last);
+               Text_Filter.Src  := Args.Element (1);
+               Text_Filter.Dst  := Args.Element (1);
             else
                Text_Filter.Kind  := filter_error;
                Text_Filter.Error :=
@@ -125,11 +164,12 @@ begin
             end if;
 
          when 'p' =>
-            if Matches (1).Last >= Matches (1).First + 4 then
+            Get_Args;
+            if Argc >= 3 then
                Text_Filter.Kind := filter_padding;
 
                --  <DIR>
-               Arg := Filters.Element (Matches (1).First + 2);
+               Arg := Args.Element (1);
                case Arg is
                   when 'l' =>
                      Text_Filter.Dir := left;
@@ -142,10 +182,9 @@ begin
                end case;
 
                --  <CHAR>
-               Text_Filter.Src := Filters.Element (Matches (1).First + 3);
+               Text_Filter.Src := Args.Element (2);
                declare
-                  Text  : constant String :=
-                    Filters.Slice (Matches (1).First + 4, Matches (1).Last);
+                  Text  : constant String := Args.Slice (3, Args.Length);
                   Width : Natural;
                   Last  : Natural;
                begin
@@ -164,11 +203,11 @@ begin
             end if;
 
          when 'W' =>
-            if Matches (1).Last >= Matches (1).First + 2 then
+            Get_Args;
+            if Argc >= 1 then
                Text_Filter.Kind := filter_truncate;
                declare
-                  Text  : constant String :=
-                    Filters.Slice (Matches (1).First + 2, Matches (1).Last);
+                  Text  : constant String := Args.Slice (1, Args.Length);
                   Width : Natural;
                   Last  : Natural;
                begin
@@ -187,8 +226,9 @@ begin
             end if;
 
          when 'c' =>
-            if Matches (1).Last = Matches (1).First + 2 then
-               Arg := Filters.Element (Matches (1).Last);
+            Get_Args;
+            if Argc = 1 then
+               Arg := Args.Element (1);
                case Arg is
                   when 'l' =>
                      Text_Filter.Kind := filter_case_lowercase;
@@ -208,8 +248,9 @@ begin
             end if;
 
          when 'n' =>
-            if Matches (1).Last = Matches (1).First + 2 then
-               Arg := Filters.Element (Matches (1).Last);
+            Get_Args;
+            if Argc = 1 then
+               Arg := Args.Element (1);
                case Arg is
                   when 'f' =>
                      Text_Filter.Kind := filter_style_flat_case;

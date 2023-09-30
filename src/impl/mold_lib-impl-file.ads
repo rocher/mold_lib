@@ -5,32 +5,11 @@
 --  SPDX-License-Identifier: MIT
 --
 -------------------------------------------------------------------------------
---!pp off
-
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-
-with Mold_Lib.Impl.Definitions;
 
 package Mold_Lib.Impl.File is
 
-   package Def renames Mold_Lib.Impl.Definitions;
-
-   procedure Set_Running_Directory (Name : String);
-   --  Set the directory from which the process has been invoked when
-   --  operating on directory trees. This directory is used to search for
-   --  include files when an include file is not found in the current working
-   --  directory of the file being processed.
-
    function Replace
-   (
-      Source     : not null String_Access;
-      Output_Dir : not null String_Access;
-      Variables  : not null Def.Variables_Access;
-      Settings   : not null Settings_Access;
-      Filters    :          Filters_Access := null;
-      Results    :          Results_Access := null
-   )
-   return Natural;
+     (Source, Output_Dir : not null String_Access) return Natural;
    --  In the given Source file name, replace all occurrences of mold
    --  variables with the value defined in the Variables map. Behaves
    --  according to the Settings given and updates the Results object.

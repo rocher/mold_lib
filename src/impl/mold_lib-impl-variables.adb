@@ -6,31 +6,24 @@
 --
 -------------------------------------------------------------------------------
 
-with Simple_Logging;
 with TOML;
 with TOML.File_IO;
 
-package body Mold_Lib.Impl.Definitions is
-
-   package Log renames Simple_Logging;
+package body Mold_Lib.Impl.Variables is
 
    ----------------------
    -- Set_Mold_Setting --
    ----------------------
 
-   function Set_Mold_Setting
-     (Key, Value : String; Settings : not null Settings_Access)
-      return Boolean
-   is
+   function Set_Mold_Setting (Key, Value : String) return Boolean is
+
       Success : Boolean := True;
 
       -----------------
       -- Set_Boolean --
       -----------------
 
-      procedure Set_Boolean
-        (Variable : not null access Boolean; Value : String)
-      is
+      procedure Set_Boolean (Variable : not null access Boolean) is
       begin
          case Value is
             when "TRUE" | "True" | "true" =>
@@ -44,23 +37,22 @@ package body Mold_Lib.Impl.Definitions is
       end Set_Boolean;
 
    begin
-
-      if Settings.Enable_Defined_Settings then
+      if Args.Settings.Enable_Defined_Settings then
          if Key = "mold-replacement-in-file-names" then
-            Set_Boolean (Settings.Replacement_In_File_Names'Access, Value);
+            Set_Boolean (Args.Settings.Replacement_In_File_Names'Access);
 
          elsif Key = "mold-delete-source-files" then
-            Set_Boolean (Settings.Delete_Source_Files'Access, Value);
+            Set_Boolean (Args.Settings.Delete_Source_Files'Access);
 
          elsif Key = "mold-overwrite-destination-files" then
-            Set_Boolean (Settings.Overwrite_Destination_Files'Access, Value);
+            Set_Boolean (Args.Settings.Overwrite_Destination_Files'Access);
 
          elsif Key = "mold-abort-on-error" then
-            Set_Boolean (Settings.Abort_On_Error'Access, Value);
+            Set_Boolean (Args.Settings.Abort_On_Error'Access);
 
          elsif Key = "mold-undefined-variable-action" then
             begin
-               Settings.Undefined_Variable_Action :=
+               Args.Settings.Undefined_Variable_Action :=
                  Undefined_Variable_Actions'Value (Value);
             exception
                when Constraint_Error =>
@@ -77,9 +69,9 @@ package body Mold_Lib.Impl.Definitions is
             begin
                Undefined_Alert := Undefined_Alerts'Value (Value);
                if Key = "mold-undefined-variable-alert" then
-                  Settings.Undefined_Variable_Alert := Undefined_Alert;
+                  Args.Settings.Undefined_Variable_Alert := Undefined_Alert;
                else
-                  Settings.Undefined_Filter_Alert := Undefined_Alert;
+                  Args.Settings.Undefined_Filter_Alert := Undefined_Alert;
                end if;
             exception
                when Constraint_Error =>
@@ -100,28 +92,19 @@ package body Mold_Lib.Impl.Definitions is
       return Success;
    end Set_Mold_Setting;
 
-   ------------------------
-   -- Read_Variables_Map --
-   ------------------------
+   ----------
+   -- Read --
+   ----------
 
-   --!pp off
-   function Read_Variables
-   (
-      Vars_File :          String;
-      Settings  : not null Settings_Access;
-      Results   :          Results_Access := null;
-      Success   : out      Boolean
-   )
-   return Variables_Map
-   --!pp on
-
+   function Read
+     (Toml_Path : String; Success : out Boolean) return Variables_Map
    is
       use Variables_Package;
 
       Vars        : Variables_Map := Empty_Map;
       Read_Result : TOML.Read_Result;
    begin
-      Read_Result := TOML.File_IO.Load_File (Vars_File);
+      Read_Result := TOML.File_IO.Load_File (Toml_Path);
 
       if Read_Result.Success then
          for Element of Read_Result.Value.Iterate_On_Table loop
@@ -129,7 +112,7 @@ package body Mold_Lib.Impl.Definitions is
               and then Element.Key.Slice (1, 5) = Defined_Setting_Prefix
             then
                if not Set_Mold_Setting
-                   (To_String (Element.Key), Element.Value.As_String, Settings)
+                   (To_String (Element.Key), Element.Value.As_String)
                then
                   return Empty_Map;
                end if;
@@ -140,14 +123,31 @@ package body Mold_Lib.Impl.Definitions is
             --    ("defined var " & To_String (Element.Key) & " = " &
             --     Element.Value.As_String);
 
-            Inc (Results, Variables_Defined);
+            Inc_Result (Variables_Defined);
          end loop;
       else
-         Log.Debug ("Error reading definitions file");
+         Log.Debug ("Error reading variables file");
       end if;
 
       Success := Read_Result.Success;
       return Vars;
-   end Read_Variables;
+   end Read;
 
-end Mold_Lib.Impl.Definitions;
+   ---------------
+   -- Get_Value --
+   ---------------
+
+   function Get_Value (Variable : String) return String is
+      use Variables_Package;
+      Ref : constant Cursor :=
+        Args.Variables.Find (To_Unbounded_String (Variable));
+   begin
+      if Ref = No_Element then
+         Log.Debug ("Unmapped variable " & Variable);
+         return "";
+      else
+         return To_String (Element (Ref));
+      end if;
+   end Get_Value;
+
+end Mold_Lib.Impl.Variables;

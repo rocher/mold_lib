@@ -7,23 +7,13 @@
 -------------------------------------------------------------------------------
 --!pp off
 
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-
-with Mold_Lib.Impl.Definitions;
-
 package Mold_Lib.Impl.Directory is
 
-   function Replace
-   (
+   function Replace (
       Sub_Dir    :          String;
       Source     : not null String_Access;
-      Output_Dir : not null String_Access;
-      Variables  : not null Definitions.Variables_Access;
-      Settings   : not null Settings_Access;
-      Filters    :          Filters_Access := null;
-      Results    :          Results_Access := null
-   )
-   return Natural;
+      Output_Dir : not null String_Access
+   )  return Natural;
    --  Recursively apply variable replacement to all mold files (with
    --  extension "mold") in all sub-directories, starting at directory Source.
    --

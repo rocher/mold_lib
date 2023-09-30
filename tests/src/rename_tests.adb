@@ -53,7 +53,7 @@ package body Rename_Tests is
          Source      => "suite/mold/no-vars-__foo__.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/foo.toml",
+         Toml_File   => "suite/toml/foo.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -82,7 +82,7 @@ package body Rename_Tests is
          Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/foo-bar.toml",
+         Toml_File   => "suite/toml/foo-bar.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -111,7 +111,7 @@ package body Rename_Tests is
          Source      => "suite/mold/no-vars-__foo__.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/bar.toml",
+         Toml_File   => "suite/toml/bar.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -142,7 +142,7 @@ package body Rename_Tests is
          Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/lorem-ipsum.toml",
+         Toml_File   => "suite/toml/lorem-ipsum.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -189,7 +189,7 @@ package body Rename_Tests is
          Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/foo.toml",
+         Toml_File   => "suite/toml/foo.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -219,7 +219,7 @@ package body Rename_Tests is
          Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/bar.toml",
+         Toml_File   => "suite/toml/bar.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -249,7 +249,7 @@ package body Rename_Tests is
          Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/foo-bar.toml",
+         Toml_File   => "suite/toml/foo-bar.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );

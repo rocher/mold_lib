@@ -6,64 +6,13 @@
 --
 -------------------------------------------------------------------------------
 
-with Ada.Containers.Doubly_Linked_Lists; use Ada.Containers;
-with Ada.Text_IO;
-with Simple_Logging;
-
-with Text_Filters;
+with Mold_Lib.Impl.Line;
+with Mold_Lib.Impl.Variables;
 
 package body Mold_Lib.Impl.File is
 
-   package IO renames Ada.Text_IO;
-   package Log renames Simple_Logging;
-
-   package Inclusion_Package is new Doubly_Linked_Lists
-     (Unbounded_String, "=");
-   subtype Inclusion_List is Inclusion_Package.List;
-
    use all type Dir.File_Kind;
    use all type Reg.Match_Location;
-
-   type Global_Arguments is record
-      Running_Directory : String_Access := null;
-      Source            : String_Access;
-      Variables         : Def.Variables_Access;
-      Settings          : Settings_Access;
-      Filters           : Filters_Access;
-      Results           : Results_Access;
-      Errors            : Natural;
-      Included_Files    : Inclusion_List;
-   end record;
-
-   Global : Global_Arguments;
-
-   ---------------------------
-   -- Set_Running_Directory --
-   ---------------------------
-
-   procedure Set_Running_Directory (Name : String) is
-      Root_Directory : constant String_Access := new String'(Name);
-   begin
-      Global.Running_Directory := Root_Directory;
-      Log.Debug ("  Root_Directory : " & Global.Running_Directory.all);
-   end Set_Running_Directory;
-
-   ---------------
-   -- Get_Value --
-   ---------------
-
-   function Get_Value (Var_Name : String) return String is
-      use Def.Variables_Package;
-      Ref : constant Cursor :=
-        Global.Variables.Find (To_Unbounded_String (Var_Name));
-   begin
-      if Ref = No_Element then
-         Log.Debug ("Unmapped variable " & Var_Name);
-         return "";
-      else
-         return To_String (Element (Ref));
-      end if;
-   end Get_Value;
 
    --------------------------
    -- Replace_In_File_Name --
@@ -75,7 +24,7 @@ package body Mold_Lib.Impl.File is
       Current     : Natural          := Name'First;
       Has_Matches : Boolean          := False;
    begin
-      Log.Debug ("BEGIN Replace_In_File_Name");
+      Log.Debug ("BEGIN Impl.File.Replace_In_File_Name");
 
       loop
          File_Matcher.Match (Name, Matches, Current);
@@ -92,7 +41,7 @@ package body Mold_Lib.Impl.File is
             Var_Name : constant String :=
               Name (Matches (3).First .. Matches (3).Last);
 
-            Var_Value : constant String := Get_Value (Var_Name);
+            Var_Value : constant String := Impl.Variables.Get_Value (Var_Name);
 
             Is_Undefined : constant Boolean := (Var_Value = "");
          begin
@@ -108,7 +57,7 @@ package body Mold_Lib.Impl.File is
                Log.Warning
                  ("  Undefined variable " & Var_Name &
                   " in file name substitution");
-               Inc (Global.Results, Replacement_Warnings);
+               Inc_Result (Replacement_Warnings);
             else
                New_Name.Append (Var_Value);
             end if;
@@ -129,161 +78,6 @@ package body Mold_Lib.Impl.File is
       end if;
    end Replace_In_File_Name;
 
-   ---------------------
-   -- Replace_In_Line --
-   ---------------------
-
-   function Replace_In_Line
-     (Line : String; Number : Natural; Output : IO.File_Type) return String
-   is
-      Matches     : Reg.Match_Array (0 .. 4);
-      New_Line    : Unbounded_String := To_Unbounded_String ("");
-      Current     : Natural          := Line'First;
-      Has_Matches : Boolean          := False;
-   begin
-
-      loop
-         Variable_Matcher.Match (Line, Matches, Current);
-         exit when Matches (0) = Reg.No_Match;
-
-         Has_Matches := True;
-         Inc (Global.Results, Variables_Found);
-
-         declare
-            Pre_Text : constant String :=
-              Line (Matches (1).First .. Matches (1).Last);
-
-            Var_Mold : constant String :=
-              Line (Matches (2).First .. Matches (2).Last);
-
-            Var_All_Name : constant String :=
-              Line (Matches (3).First .. Matches (3).Last);
-
-            Is_Mandatory : constant Boolean :=
-              (Var_All_Name (Var_All_Name'First) =
-               Mandatory_Replacement_Prefix);
-
-            Is_Optional : constant Boolean :=
-              (Var_All_Name (Var_All_Name'First) =
-               Optional_Replacement_Prefix);
-
-            Var_Name : constant String :=
-              (if Is_Mandatory or Is_Optional then
-                 Var_All_Name (Var_All_Name'First + 1 .. Var_All_Name'Last)
-               else Var_All_Name);
-
-            Filters : constant String :=
-              (if Matches (4).First > 0 then
-                 Line (Matches (4).First .. Matches (4).Last)
-               else "");
-
-            Var_Value : constant String := Get_Value (Var_Name);
-
-            Is_Undefined : constant Boolean := (Var_Value = "");
-         begin
-
-            Log.Debug ("Pre_Text    : '" & Pre_Text & "'");
-            Log.Debug ("Var_Mold    : '" & Var_Mold & "'");
-            Log.Debug ("Var_All_Name: '" & Var_All_Name & "'");
-            Log.Debug ("Var_Name    : '" & Var_Name & "'");
-            Log.Debug ("Filters     : '" & Filters & "'");
-
-            New_Line.Append (Pre_Text);
-
-            if Is_Undefined then
-               Inc (Global.Results, Variables_Undefined);
-               declare
-                  LIN     : constant String := Number'Image;
-                  COL     : constant String := Matches (2).First'Image;
-                  Message : constant String :=
-                    "Undefined variable '" & Var_Name & "' in " &
-                    Global.Source.all & ":" & LIN (2 .. LIN'Last) & ":" &
-                    COL (2 .. COL'Last);
-               begin
-                  if Is_Mandatory then
-                     Inc (Global.Results, Variables_Ignored);
-                     Inc (Global.Results, Replacement_Errors);
-                     New_Line.Append (Var_Mold);
-                     Log.Error (Message);
-                     Global.Errors := @ + 1;
-                  elsif Is_Optional then
-                     Inc (Global.Results, Variables_Emptied);
-                  else  --  Is Normal
-                     if Global.Settings.Undefined_Variable_Alert = Warning then
-                        Inc (Global.Results, Replacement_Warnings);
-                        Log.Warning (Message);
-                     elsif Global.Settings.Undefined_Variable_Alert = Error
-                     then
-                        Log.Error (Message);
-                        Global.Errors := @ + 1;
-                     end if;
-                     if Global.Settings.Undefined_Variable_Action = Ignore then
-                        Inc (Global.Results, Variables_Ignored);
-                        New_Line.Append (Var_Mold);
-                     else
-                        Inc (Global.Results, Variables_Emptied);
-                     end if;
-                  end if;
-               end;
-            else
-               Inc (Global.Results, Variables_Replaced);
-               if Filters = "" then
-                  Log.Debug ("No filter applied");
-                  New_Line.Append (Var_Value);
-               else
-                  declare
-                     Results : Text_Filters.Results_Type;
-                  begin
-                     Log.Debug ("Applying filters");
-                     New_Line.Append
-                       (Text_Filters.Apply
-                          (Filters, Var_Value, Output, Results,
-                           Global.Settings.Undefined_Filter_Alert = Error));
-                  end;
-
-                  pragma Style_Checks (off);
-                  --  Inc (Global.Results, Filters_Found);
-                  --  declare
-                  --     Idx : constant Natural :=
-                  --       Natural'Value ("" & Filter (Filter'Last));
-                  --  begin
-                  --     if Global.Filters (Idx) /= null then
-                  --        Log.Debug ("Applying filter" & Idx'Image);
-                  --        Inc (Global.Results, Filters_Applied);
-                  --        New_Line.Append (Global.Filters (Idx) (Var_Value));
-                  --     else
-                  --        if Global.Settings.Undefined_Filter_Alert =
-                  --          Warning
-                  --        then
-                  --           Log.Warning ("Filter " & Filter & " not found");
-                  --           Inc (Global.Results, Replacement_Warnings);
-                  --        end if;
-                  --        if Global.Settings.Undefined_Filter_Alert = Error
-                  --        then
-                  --           Log.Error ("Filter " & Filter & " not found");
-                  --           Inc (Global.Results, Replacement_Errors);
-                  --        end if;
-                  --        Log.Debug ("Invalid filter" & Idx'Image);
-                  --        New_Line.Append (Var_Value);
-                  --     end if;
-                  --  end;
-                  pragma Style_Checks (on);
-
-               end if;
-            end if;
-         end;
-
-         Current := Matches (0).Last + 1;
-      end loop;
-
-      if Has_Matches then
-         New_Line.Append (Line (Current .. Line'Last));
-         return To_String (New_Line);
-      else
-         return Line;
-      end if;
-   end Replace_In_Line;
-
    ------------------
    -- Include_Path --
    ------------------
@@ -293,7 +87,7 @@ package body Mold_Lib.Impl.File is
    is
       Extension : constant String := Dir.Extension (File_Name);
    begin
-      Log.Debug ("BEGIN Include_Path");
+      Log.Debug ("BEGIN Impl.File.Include_Path");
       Log.Debug ("  File_Name : " & File_Name);
       Log.Debug ("  Extension : " & Extension);
 
@@ -324,7 +118,7 @@ package body Mold_Lib.Impl.File is
 
       declare
          File_Path : constant String :=
-           Full_Path_Expanded (Global.Running_Directory.all, File_Name);
+           Full_Path_Expanded (To_String (Args.Running_Directory), File_Name);
       begin
          Log.Debug ("  File_Path : " & File_Path);
 
@@ -367,7 +161,7 @@ package body Mold_Lib.Impl.File is
       Line_Number : Natural := 0;
       Matches     : Reg.Match_Array (0 .. 1);
    begin
-      Log.Debug ("BEGIN File.Replace_In_Stream");
+      Log.Debug ("BEGIN Impl.File.Replace_In_Stream");
       For_Each_Line :
       loop
          exit For_Each_Line when Input.End_Of_File;
@@ -380,10 +174,9 @@ package body Mold_Lib.Impl.File is
                --  variable substitution
                declare
                   New_Line : constant String :=
-                    Replace_In_Line (Line, Line_Number, Output);
+                    Impl.Line.Replace (Line, Line_Number, Output);
                begin
-                  if Global.Errors > 0 and then Global.Settings.Abort_On_Error
-                  then
+                  if Args.Errors > 0 and then Args.Settings.Abort_On_Error then
                      goto Exit_Procedure;
                   end if;
                   Output.Put_Line (New_Line);
@@ -404,27 +197,26 @@ package body Mold_Lib.Impl.File is
 
                   if not Is_Valid then
                      Log.Error ("Cannot find include file '" & Inc_Name & "'");
-                     Global.Errors := @ + 1;
+                     Args.Errors := @ + 1;
                      goto Exit_Procedure;
                   end if;
 
-                  if Global.Included_Files.Contains
+                  if Args.Included_Files.Contains
                       (To_Unbounded_String (Inc_Path))
                   then
                      Log.Error ("Circular inclusion of file " & Inc_Path);
-                     Global.Errors := @ + 1;
+                     Args.Errors := @ + 1;
                      goto Exit_Procedure;
                   else
                      Log.Debug ("  Including file " & Inc_Path & " ...");
                   end if;
 
-                  Global.Included_Files.Append
-                    (To_Unbounded_String (Inc_Path));
+                  Args.Included_Files.Append (To_Unbounded_String (Inc_Path));
 
                   Inc_File.Open (In_File, Inc_Path);
                   Replace_In_Stream (Inc_File, Output);
 
-                  Global.Included_Files.Delete_Last;
+                  Args.Included_Files.Delete_Last;
                   Log.Debug ("  ...  file included");
                end;
             end if;
@@ -441,7 +233,7 @@ package body Mold_Lib.Impl.File is
            ("EXCEPTION caught in file.adb: " &
             " Please run again with logging Debug enabled" &
             " and report this error");
-         Global.Errors := @ + 1;
+         Args.Errors := @ + 1;
 
    end Replace_In_Stream;
 
@@ -449,29 +241,13 @@ package body Mold_Lib.Impl.File is
    -- Replace --
    -------------
 
-   --!pp off
    function Replace
-   (
-      Source     : not null String_Access;
-      Output_Dir : not null String_Access;
-      Variables  : not null Definitions.Variables_Access;
-      Settings   : not null Settings_Access;
-      Filters    :          Filters_Access := null;
-      Results    :          Results_Access := null
-   )
-   return Natural
-   --!pp on
-
+     (Source, Output_Dir : not null String_Access) return Natural
    is
    begin
-
-      Global.Source         := Source;
-      Global.Variables      := Variables;
-      Global.Settings       := Settings;
-      Global.Filters        := Filters;
-      Global.Results        := Results;
-      Global.Errors         := 0;
-      Global.Included_Files := Inclusion_Package.Empty_List;
+      Args.Source         := Source;
+      Args.Errors         := 0;
+      Args.Included_Files := Inclusion_Package.Empty_List;
 
       declare
          --  path to the source file
@@ -487,7 +263,7 @@ package body Mold_Lib.Impl.File is
          --  "Replaced" file name: variable substitution in "preparation" file
          --  name, if enabled
          Repl_File_Name : constant String :=
-           (if Settings.Replacement_In_File_Names then
+           (if Args.Settings.Replacement_In_File_Names then
               Replace_In_File_Name (Prep_File_Name)
             else Prep_File_Name);
 
@@ -507,7 +283,7 @@ package body Mold_Lib.Impl.File is
          Dst_File : IO.File_Type;
 
       begin
-         Log.Debug ("BEGIN File.Replace");
+         Log.Debug ("BEGIN Impl.File.Replace");
          Log.Debug ("  Dir_Name       : " & Dir_Name);
          Log.Debug ("  Src_File_Name  : " & Source.all);
          Log.Debug ("  Base_File_Name : " & Base_File_Name);
@@ -516,17 +292,17 @@ package body Mold_Lib.Impl.File is
          Log.Debug ("  Real_Out_Dir   : " & Real_Out_Dir);
          Log.Debug ("  Dst_File_Name  : " & Dst_File_Name);
 
-         if Global.Errors > 0 then
+         if Args.Errors > 0 then
             --  error detected during file name substitution, in the function
             --  Replace_In_File_Name
             goto Exit_Function;
          end if;
 
-         Inc (Global.Results, Files_Processed);
+         Inc_Result (Files_Processed);
 
          if Base_File_Name /= Dir.Simple_Name (Dst_File_Name) then
             --  file name has variables successfully replaced
-            Inc (Global.Results, Files_Renamed);
+            Inc_Result (Files_Renamed);
          end if;
 
          --  open source file
@@ -541,13 +317,13 @@ package body Mold_Lib.Impl.File is
          end if;
 
          if Dir.Exists (Dst_File_Name) then
-            if Settings.Overwrite_Destination_Files then
+            if Args.Settings.Overwrite_Destination_Files then
                Dir.Delete_File (Dst_File_Name);
                Log.Debug ("  Deleted file " & Dst_File_Name);
-               Inc (Global.Results, Files_Overwritten);
+               Inc_Result (Files_Overwritten);
             else
                Log.Error ("File " & Dst_File_Name & " already exists");
-               Global.Errors := @ + 1;
+               Args.Errors := @ + 1;
                goto Exit_Function;
             end if;
          end if;
@@ -555,22 +331,20 @@ package body Mold_Lib.Impl.File is
          Dst_File.Create (Name => Dst_File_Name);
          Log.Debug ("  Created file " & Dst_File_Name);
 
-         --  perform variable substitution from Src to Output
-
+         --  perform variable substitution from Src to Dst
          Replace_In_Stream (Src_File, Dst_File);
 
          --  close Src file, and delete it when specified
-
          Dst_File.Close;
-         if Settings.Delete_Source_Files and then Global.Errors = 0 then
+         if Args.Settings.Delete_Source_Files and then Args.Errors = 0 then
             Dir.Delete_File (Source.all);
             Log.Debug ("  Deleted file " & Source.all);
          end if;
 
          <<Exit_Function>>
-         Global.Included_Files.Clear;
-         Log.Debug ("END File.Replace");
-         return Global.Errors;
+         Args.Included_Files.Clear;
+         Log.Debug ("END Impl.File.Replace");
+         return Args.Errors;
 
       exception
          --  invalid output directory or file name
@@ -579,8 +353,8 @@ package body Mold_Lib.Impl.File is
               ("EXCEPTION caught in File.Replace:" &
                " Invalid output directory or file name: '" & Dst_File_Name &
                "'");
-            Global.Errors := @ + 1;
-            return Global.Errors;
+            Args.Errors := @ + 1;
+            return Args.Errors;
       end;
    end Replace;
 

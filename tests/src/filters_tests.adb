@@ -59,7 +59,7 @@ package body Filters_Tests is
          Source      => "suite/mold/filters.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
-         Definitions => "suite/toml/filters.toml",
+         Toml_File   => "suite/toml/filters.toml",
          Filters     => Filters'Unchecked_Access,
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
@@ -105,7 +105,7 @@ package body Filters_Tests is
          Source      => "suite/mold/filters.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
-         Definitions => "suite/toml/filters.toml",
+         Toml_File   => "suite/toml/filters.toml",
          Filters     => Filters'Unchecked_Access,
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level

@@ -53,7 +53,7 @@ package body Inclusion_Tests is
          Source      => "suite/mold/recursion.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
-         Definitions => "suite/toml/foo.toml",
+         Toml_File   => "suite/toml/foo.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -86,7 +86,7 @@ package body Inclusion_Tests is
          Source      => "suite/mold/lorem-ipsum-includes-01.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/lorem-ipsum.toml",
+         Toml_File   => "suite/toml/lorem-ipsum.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -116,7 +116,7 @@ package body Inclusion_Tests is
          Source      => "suite/mold/lorem-ipsum-includes-02.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/lorem-ipsum.toml",
+         Toml_File   => "suite/toml/lorem-ipsum.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -146,7 +146,7 @@ package body Inclusion_Tests is
          Source      => "suite/mold/lorem-ipsum-includes-03.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/lorem-ipsum.toml",
+         Toml_File   => "suite/toml/lorem-ipsum.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );

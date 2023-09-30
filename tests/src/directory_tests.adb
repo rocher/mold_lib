@@ -61,7 +61,7 @@ package body Directory_Tests is
       Errors := Apply (
          Source      => "suite/dir",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/dir/mold.toml",
+         Toml_File   => "suite/dir/mold.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -167,7 +167,7 @@ package body Directory_Tests is
          Source      => "suite/dir",
          Output_Dir  => "suite/tmp/dir",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/dir/mold.toml",
+         Toml_File   => "suite/dir/mold.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );

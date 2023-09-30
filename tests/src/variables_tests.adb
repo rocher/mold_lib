@@ -55,7 +55,7 @@ package body Variables_Tests is
          Source      => "suite/mold/no-vars.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
-         Definitions => "suite/toml/empty.toml",
+         Toml_File   => "suite/toml/empty.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -80,7 +80,7 @@ package body Variables_Tests is
          Source      => "suite/mold/foo.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
-         Definitions => "suite/toml/empty.toml",
+         Toml_File   => "suite/toml/empty.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -109,7 +109,7 @@ package body Variables_Tests is
          Source      => "suite/mold/foo.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
-         Definitions => "suite/toml/bar.toml",
+         Toml_File   => "suite/toml/bar.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -154,7 +154,7 @@ package body Variables_Tests is
          Source      => "suite/mold/foo.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
-         Definitions => "suite/toml/foo.toml",
+         Toml_File   => "suite/toml/foo.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -183,7 +183,7 @@ package body Variables_Tests is
          Source      => "suite/mold/foo-bar.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
-         Definitions => "suite/toml/foo.toml",
+         Toml_File   => "suite/toml/foo.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -214,7 +214,7 @@ package body Variables_Tests is
          Source      => "suite/mold/foo-bar.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
-         Definitions => "suite/toml/foo-bar.toml",
+         Toml_File   => "suite/toml/foo-bar.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -258,7 +258,7 @@ package body Variables_Tests is
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/lorem-ipsum.toml",
+         Toml_File   => "suite/toml/lorem-ipsum.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -286,7 +286,7 @@ package body Variables_Tests is
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/lorem-ipsum_no-opts1.toml",
+         Toml_File   => "suite/toml/lorem-ipsum_no-opts1.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -317,7 +317,7 @@ package body Variables_Tests is
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/lorem-ipsum_no-opts2.toml",
+         Toml_File   => "suite/toml/lorem-ipsum_no-opts2.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -350,7 +350,7 @@ package body Variables_Tests is
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/lorem-ipsum_no-norm1.toml",
+         Toml_File   => "suite/toml/lorem-ipsum_no-norm1.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -383,7 +383,7 @@ package body Variables_Tests is
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/lorem-ipsum_no-norm1.toml",
+         Toml_File   => "suite/toml/lorem-ipsum_no-norm1.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -417,7 +417,7 @@ package body Variables_Tests is
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/lorem-ipsum_no-norm1.toml",
+         Toml_File   => "suite/toml/lorem-ipsum_no-norm1.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -450,7 +450,7 @@ package body Variables_Tests is
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/lorem-ipsum_no-norm1.toml",
+         Toml_File   => "suite/toml/lorem-ipsum_no-norm1.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -485,7 +485,7 @@ package body Variables_Tests is
          Source      => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/lorem-ipsum_mix.toml",
+         Toml_File   => "suite/toml/lorem-ipsum_mix.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -533,7 +533,7 @@ package body Variables_Tests is
          Source      => "suite/mold/multiline.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
-         Definitions => "suite/toml/multiline.toml",
+         Toml_File   => "suite/toml/multiline.toml",
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );

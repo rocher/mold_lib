@@ -12,13 +12,12 @@ package body Mold_Lib.Impl is
    -- Inc --
    ---------
 
-   procedure Inc (Results : Results_Access; Field : Results_Fields)
-   is
+   procedure Inc_Result (Field : Results_Fields; Amount : Natural := 1) is
    begin
-      if Results /= null then
-         Results.all (Field) := @ + 1;
+      if Args.Results /= null then
+         Args.Results.all (Field) := @ + Amount;
       end if;
-   end Inc;
+   end Inc_Result;
 
 begin
    --                                   .-------..----.
@@ -30,14 +29,14 @@ begin
    --
    --              1         2         3
    --     123456789012345678901234567890123456789
-   --     This is a {{ #foo/0 }} variable example
+   --     This is a {{ #foo/s }} variable example
    --
-   --                     Matches (0) = ( 1, 22) = "This is a {{ #foo/0 }}"
+   --                     Matches (0) = ( 1, 22) = "This is a {{ #foo/s }}"
    --     Pre_Text     := Matches (1) = ( 1, 10) = "This is a "
-   --     Var_Mold     := Matches (2) = (11, 22) =           "{{ #foo/0 }}"
+   --     Var_Mold     := Matches (2) = (11, 22) =           "{{ #foo/s }}"
    --     Var_All_Name := Matches (3) = (14, 19) =              "#foo"
    --     Var_Name     := ( remove # if exists ) =               "foo"
-   --     Filter       := Matches (4) = (18, 19) =                  "/0"
+   --     Filter       := Matches (4) = (18, 20) =                  "/s "
 
    --                             .------.
    --                             |   3  |

@@ -13,14 +13,11 @@ executables = ["mold_lib_tests"]
 
 [build-profiles]
 aunit = "release"
-mold_lib = "development"
-mold_lib_tests = "development"
+mold_lib = "validation"
+mold_lib_tests = "validation"
 
 [build-switches."*"]
 ada_version = ["-gnat2022", "-gnatW8", "-gnatX"]
-
-[build-switches]
-release.optimization = ["-O2", "-gnatn"]
 
 [[depends-on]]
 aunit = "^23.0.0"
@@ -31,10 +28,5 @@ mold_lib = ">=0.2.1"
 [[pins]]
 mold_lib = { path = '..' }
 
-# *NOTE - PROFILING with valgrind
-#       $ alr clean; alr build --validation
-#       $ git clean -dfx suite/
-#       $ valgrind --tool=callgrind ./bin/mold_lib_tests
-#       $ kcachegrind callgrind.out.*
 [[depends-on]]
 aaa = "~0.2.6"

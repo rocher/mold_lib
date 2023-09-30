@@ -6,73 +6,13 @@
 --
 -------------------------------------------------------------------------------
 
-with Ada.Characters.Handling;
 with Ada.Strings.Maps.Constants;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Characters.Handling;
 
-with Simple_Logging;
-
-package body Text_Filters is
+package body Predefined_Text_Filters is
 
    package CHAR renames Ada.Characters.Handling;
-   package Log renames Simple_Logging;
-
-   Custom_Filters : Filters_Access := null;
-
-   -----------------------------
-   -- Set_Custom_Text_Filters --
-   -----------------------------
-
-   procedure Set_Custom_Text_Filters (Text_Filters : Filters_Access) is
-   begin
-      Custom_Filters := Text_Filters;
-   end Set_Custom_Text_Filters;
-
-   -----------
-   -- Apply --
-   -----------
-
-   function Apply
-     (Filters :     String; Value : String; Output : IO.File_Type;
-      Summary : out Results_Type; Errors : Boolean := True) return UString
-   is
-      pragma Unreferenced (Output, Errors);
-      Filter_Parsed : Text_Filter_Parsed;
-
-      Result : UString := To_Unbounded_String (Value);
-      Filter : UString := To_Unbounded_String (Filters);
-      Tail   : UString;
-   begin
-      Summary := (others => 0);
-      loop
-         Filter_Parsed := Parse (Filter, Tail);
-         Result        := Apply (Filter_Parsed, Result);
-         Filter        := Tail;
-
-         Log.Debug ("Filter_Parsed : " & Filter_Parsed'Image);
-         Log.Debug ("Tail          : '" & Tail'Image & "'");
-         Log.Debug ("Result        : '" & To_String (Result) & "'");
-
-         --  exit when Filter_Parsed.Kind in filter_none | filter_error;
-         exit when Tail = Null_Unbounded_String;
-      end loop;
-
-      return Result;
-   end Apply;
-
-   -----------
-   -- Parse --
-   -----------
-
-   function Parse
-     (Filters : UString; Tail : out UString)
-      return Text_Filter_Parsed is separate;
-
-   -----------
-   -- Apply --
-   -----------
-
-   function Apply
-     (Filter : Text_Filter_Parsed; S : UString) return UString is separate;
 
    --------------
    -- Is_Blank --
@@ -388,13 +328,4 @@ package body Text_Filters is
    function Style_Train_Uppercase (S : UString) return UString is
      (Replace_All (Case_Uppercase (Trim_All (S)), ' ', '-'));
 
-begin
-
-   --
-   Text_Filter_Matcher.Compile ("^(/[a-zA-Z0-9][^/]*)(.*)$");
-   --                             |         1       || 2|
-   --                             '-----------------''--'
-   --  (1) --> First text filter
-   --  (2) --> Empty or additional text filters
-
-end Text_Filters;
+end Predefined_Text_Filters;
