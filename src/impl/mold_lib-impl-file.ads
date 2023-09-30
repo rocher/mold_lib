@@ -5,15 +5,15 @@
 --  SPDX-License-Identifier: MIT
 --
 -------------------------------------------------------------------------------
+--!pp off
 
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
-with Definitions;
-with Mold_Lib;
+with Mold_Lib.Impl.Definitions;
 
-package File is
+package Mold_Lib.Impl.File is
 
-   package Mold renames Mold_Lib;
+   package Def renames Mold_Lib.Impl.Definitions;
 
    procedure Set_Running_Directory (Name : String);
    --  Set the directory from which the process has been invoked when
@@ -21,19 +21,16 @@ package File is
    --  include files when an include file is not found in the current working
    --  directory of the file being processed.
 
-   --!pp off
    function Replace
    (
       Source     : not null String_Access;
       Output_Dir : not null String_Access;
-      Variables  : not null Definitions.Variables_Access;
-      Settings   : not null Mold.Settings_Access;
-      Filters    :          Mold.Filters_Access := null;
-      Results    :          Mold.Results_Access := null
+      Variables  : not null Def.Variables_Access;
+      Settings   : not null Settings_Access;
+      Filters    :          Filters_Access := null;
+      Results    :          Results_Access := null
    )
    return Natural;
-   --!pp on
-   --
    --  In the given Source file name, replace all occurrences of mold
    --  variables with the value defined in the Variables map. Behaves
    --  according to the Settings given and updates the Results object.
@@ -46,6 +43,5 @@ package File is
    --  Return the number of errors detected, including those detected during
    --  the replacement process. If Abort_On_Error is False, the number of
    --  errors can be arbitrarily big.
-   --  ------------------------------------------------------------------------
 
-end File;
+end Mold_Lib.Impl.File;

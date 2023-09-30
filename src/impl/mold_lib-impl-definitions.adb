@@ -10,20 +10,16 @@ with Simple_Logging;
 with TOML;
 with TOML.File_IO;
 
-with Mold_Lib.Results; use Mold_Lib.Results;
-
-package body Definitions is
+package body Mold_Lib.Impl.Definitions is
 
    package Log renames Simple_Logging;
-
-   use all type Mold.Results_Access;
 
    ----------------------
    -- Set_Mold_Setting --
    ----------------------
 
    function Set_Mold_Setting
-     (Key, Value : String; Settings : not null Mold.Settings_Access)
+     (Key, Value : String; Settings : not null Settings_Access)
       return Boolean
    is
       Success : Boolean := True;
@@ -65,7 +61,7 @@ package body Definitions is
          elsif Key = "mold-undefined-variable-action" then
             begin
                Settings.Undefined_Variable_Action :=
-                 Mold.Undefined_Variable_Actions'Value (Value);
+                 Undefined_Variable_Actions'Value (Value);
             exception
                when Constraint_Error =>
                   Log.Error
@@ -77,9 +73,9 @@ package body Definitions is
            or else Key = "mold-undefined-filter-alert"
          then
             declare
-               Undefined_Alert : Mold.Undefined_Alerts;
+               Undefined_Alert : Undefined_Alerts;
             begin
-               Undefined_Alert := Mold.Undefined_Alerts'Value (Value);
+               Undefined_Alert := Undefined_Alerts'Value (Value);
                if Key = "mold-undefined-variable-alert" then
                   Settings.Undefined_Variable_Alert := Undefined_Alert;
                else
@@ -112,8 +108,8 @@ package body Definitions is
    function Read_Variables
    (
       Vars_File :          String;
-      Settings  : not null Mold.Settings_Access;
-      Results   :          Mold.Results_Access := null;
+      Settings  : not null Settings_Access;
+      Results   :          Results_Access := null;
       Success   : out      Boolean
    )
    return Variables_Map
@@ -130,7 +126,7 @@ package body Definitions is
       if Read_Result.Success then
          for Element of Read_Result.Value.Iterate_On_Table loop
             if Element.Key.Length >= 10
-              and then Element.Key.Slice (1, 5) = Mold.Defined_Setting_Prefix
+              and then Element.Key.Slice (1, 5) = Defined_Setting_Prefix
             then
                if not Set_Mold_Setting
                    (To_String (Element.Key), Element.Value.As_String, Settings)
@@ -144,7 +140,7 @@ package body Definitions is
             --    ("defined var " & To_String (Element.Key) & " = " &
             --     Element.Value.As_String);
 
-            Inc (Results, Mold.Variables_Defined);
+            Inc (Results, Variables_Defined);
          end loop;
       else
          Log.Debug ("Error reading definitions file");
@@ -154,4 +150,4 @@ package body Definitions is
       return Vars;
    end Read_Variables;
 
-end Definitions;
+end Mold_Lib.Impl.Definitions;

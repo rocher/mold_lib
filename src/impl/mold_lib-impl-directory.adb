@@ -9,12 +9,10 @@
 with Ada.Directories;
 with Simple_Logging;
 
-with Dir_Ops; use Dir_Ops;
-with File;
+with Mold_Lib.Impl.File;
 
-package body Directory is
+package body Mold_Lib.Impl.Directory is
 
-   package Dir renames Ada.Directories;
    package Log renames Simple_Logging;
 
    use all type Dir.File_Kind;
@@ -30,9 +28,9 @@ package body Directory is
       Source     : not null String_Access;
       Output_Dir : not null String_Access;
       Variables  : not null Definitions.Variables_Access;
-      Settings   : not null Mold.Settings_Access;
-      Filters    :          Mold.Filters_Access := null;
-      Results    :          Mold.Results_Access := null
+      Settings   : not null Settings_Access;
+      Filters    :          Filters_Access := null;
+      Results    :          Results_Access := null
    )
    return Natural
    --!pp on
@@ -77,7 +75,7 @@ package body Directory is
                     Replace
                       (Dir.Compose (Sub_Dir, Name), Name'Unchecked_Access,
                        Output_Dir, Variables, Settings, Filters, Results);
-               elsif Dir.Extension (Name) = Mold.Mold_File_Extension then
+               elsif Dir.Extension (Name) = Mold_File_Extension then
                   declare
                      Out_Sub_dir : aliased String :=
                        Path (Output_Dir.all, Sub_Dir);
@@ -111,4 +109,4 @@ package body Directory is
 
    end Replace;
 
-end Directory;
+end Mold_Lib.Impl.Directory;

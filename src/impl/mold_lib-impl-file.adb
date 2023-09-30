@@ -7,42 +7,30 @@
 -------------------------------------------------------------------------------
 
 with Ada.Containers.Doubly_Linked_Lists; use Ada.Containers;
-with Ada.Directories;
 with Ada.Text_IO;
-with GNAT.Regpat;
 with Simple_Logging;
 
-with Dir_Ops;          use Dir_Ops;
-with Mold_Lib.Results; use Mold_Lib.Results;
 with Text_Filters;
 
-package body File is
+package body Mold_Lib.Impl.File is
 
-   package Dir renames Ada.Directories;
    package IO renames Ada.Text_IO;
    package Log renames Simple_Logging;
-   package Reg renames GNAT.Regpat;
 
    package Inclusion_Package is new Doubly_Linked_Lists
      (Unbounded_String, "=");
    subtype Inclusion_List is Inclusion_Package.List;
 
    use all type Dir.File_Kind;
-   use all type Mold.Undefined_Variable_Actions;
-   use all type Mold.Undefined_Alerts;
    use all type Reg.Match_Location;
-
-   Variable_Matcher : Reg.Pattern_Matcher (256);
-   File_Matcher     : Reg.Pattern_Matcher (256);
-   Include_Matcher  : Reg.Pattern_Matcher (128);
 
    type Global_Arguments is record
       Running_Directory : String_Access := null;
       Source            : String_Access;
-      Variables         : Standard.Definitions.Variables_Access;
-      Settings          : Mold.Settings_Access;
-      Filters           : Mold.Filters_Access;
-      Results           : Mold.Results_Access;
+      Variables         : Def.Variables_Access;
+      Settings          : Settings_Access;
+      Filters           : Filters_Access;
+      Results           : Results_Access;
       Errors            : Natural;
       Included_Files    : Inclusion_List;
    end record;
@@ -65,7 +53,7 @@ package body File is
    ---------------
 
    function Get_Value (Var_Name : String) return String is
-      use Standard.Definitions.Variables_Package;
+      use Def.Variables_Package;
       Ref : constant Cursor :=
         Global.Variables.Find (To_Unbounded_String (Var_Name));
    begin
@@ -120,7 +108,7 @@ package body File is
                Log.Warning
                  ("  Undefined variable " & Var_Name &
                   " in file name substitution");
-               Inc (Global.Results, Mold.Replacement_Warnings);
+               Inc (Global.Results, Replacement_Warnings);
             else
                New_Name.Append (Var_Value);
             end if;
@@ -159,7 +147,7 @@ package body File is
          exit when Matches (0) = Reg.No_Match;
 
          Has_Matches := True;
-         Inc (Global.Results, Mold.Variables_Found);
+         Inc (Global.Results, Variables_Found);
 
          declare
             Pre_Text : constant String :=
@@ -173,11 +161,11 @@ package body File is
 
             Is_Mandatory : constant Boolean :=
               (Var_All_Name (Var_All_Name'First) =
-               Mold.Mandatory_Replacement_Prefix);
+               Mandatory_Replacement_Prefix);
 
             Is_Optional : constant Boolean :=
               (Var_All_Name (Var_All_Name'First) =
-               Mold.Optional_Replacement_Prefix);
+               Optional_Replacement_Prefix);
 
             Var_Name : constant String :=
               (if Is_Mandatory or Is_Optional then
@@ -203,7 +191,7 @@ package body File is
             New_Line.Append (Pre_Text);
 
             if Is_Undefined then
-               Inc (Global.Results, Mold.Variables_Undefined);
+               Inc (Global.Results, Variables_Undefined);
                declare
                   LIN     : constant String := Number'Image;
                   COL     : constant String := Matches (2).First'Image;
@@ -213,35 +201,32 @@ package body File is
                     COL (2 .. COL'Last);
                begin
                   if Is_Mandatory then
-                     Inc (Global.Results, Mold.Variables_Ignored);
-                     Inc (Global.Results, Mold.Replacement_Errors);
+                     Inc (Global.Results, Variables_Ignored);
+                     Inc (Global.Results, Replacement_Errors);
                      New_Line.Append (Var_Mold);
                      Log.Error (Message);
                      Global.Errors := @ + 1;
                   elsif Is_Optional then
-                     Inc (Global.Results, Mold.Variables_Emptied);
+                     Inc (Global.Results, Variables_Emptied);
                   else  --  Is Normal
-                     if Global.Settings.Undefined_Variable_Alert = Mold.Warning
-                     then
-                        Inc (Global.Results, Mold.Replacement_Warnings);
+                     if Global.Settings.Undefined_Variable_Alert = Warning then
+                        Inc (Global.Results, Replacement_Warnings);
                         Log.Warning (Message);
-                     elsif Global.Settings.Undefined_Variable_Alert =
-                       Mold.Error
+                     elsif Global.Settings.Undefined_Variable_Alert = Error
                      then
                         Log.Error (Message);
                         Global.Errors := @ + 1;
                      end if;
-                     if Global.Settings.Undefined_Variable_Action = Mold.Ignore
-                     then
-                        Inc (Global.Results, Mold.Variables_Ignored);
+                     if Global.Settings.Undefined_Variable_Action = Ignore then
+                        Inc (Global.Results, Variables_Ignored);
                         New_Line.Append (Var_Mold);
                      else
-                        Inc (Global.Results, Mold.Variables_Emptied);
+                        Inc (Global.Results, Variables_Emptied);
                      end if;
                   end if;
                end;
             else
-               Inc (Global.Results, Mold.Variables_Replaced);
+               Inc (Global.Results, Variables_Replaced);
                if Filters = "" then
                   Log.Debug ("No filter applied");
                   New_Line.Append (Var_Value);
@@ -253,31 +238,30 @@ package body File is
                      New_Line.Append
                        (Text_Filters.Apply
                           (Filters, Var_Value, Output, Results,
-                           Global.Settings.Undefined_Filter_Alert =
-                           Mold.Error));
+                           Global.Settings.Undefined_Filter_Alert = Error));
                   end;
 
                   pragma Style_Checks (off);
-                  --  Inc (Global.Results, Mold.Filters_Found);
+                  --  Inc (Global.Results, Filters_Found);
                   --  declare
                   --     Idx : constant Natural :=
                   --       Natural'Value ("" & Filter (Filter'Last));
                   --  begin
                   --     if Global.Filters (Idx) /= null then
                   --        Log.Debug ("Applying filter" & Idx'Image);
-                  --        Inc (Global.Results, Mold.Filters_Applied);
+                  --        Inc (Global.Results, Filters_Applied);
                   --        New_Line.Append (Global.Filters (Idx) (Var_Value));
                   --     else
                   --        if Global.Settings.Undefined_Filter_Alert =
-                  --          Mold.Warning
+                  --          Warning
                   --        then
                   --           Log.Warning ("Filter " & Filter & " not found");
-                  --           Inc (Global.Results, Mold.Replacement_Warnings);
+                  --           Inc (Global.Results, Replacement_Warnings);
                   --        end if;
-                  --        if Global.Settings.Undefined_Filter_Alert = Mold.Error
+                  --        if Global.Settings.Undefined_Filter_Alert = Error
                   --        then
                   --           Log.Error ("Filter " & Filter & " not found");
-                  --           Inc (Global.Results, Mold.Replacement_Errors);
+                  --           Inc (Global.Results, Replacement_Errors);
                   --        end if;
                   --        Log.Debug ("Invalid filter" & Idx'Image);
                   --        New_Line.Append (Var_Value);
@@ -316,7 +300,7 @@ package body File is
       --  check extension file to be 'molt'
       --  *TODO - Consider relaxing this, with a flag or permanently
 
-      if Extension /= Mold.Include_File_Extension then
+      if Extension /= Include_File_Extension then
          Success := False;
          Log.Error ("Invalid extension of include file " & File_Name);
          return "";
@@ -471,9 +455,9 @@ package body File is
       Source     : not null String_Access;
       Output_Dir : not null String_Access;
       Variables  : not null Definitions.Variables_Access;
-      Settings   : not null Mold.Settings_Access;
-      Filters    :          Mold.Filters_Access := null;
-      Results    :          Mold.Results_Access := null
+      Settings   : not null Settings_Access;
+      Filters    :          Filters_Access := null;
+      Results    :          Results_Access := null
    )
    return Natural
    --!pp on
@@ -538,11 +522,11 @@ package body File is
             goto Exit_Function;
          end if;
 
-         Inc (Global.Results, Mold.Files_Processed);
+         Inc (Global.Results, Files_Processed);
 
          if Base_File_Name /= Dir.Simple_Name (Dst_File_Name) then
             --  file name has variables successfully replaced
-            Inc (Global.Results, Mold.Files_Renamed);
+            Inc (Global.Results, Files_Renamed);
          end if;
 
          --  open source file
@@ -560,7 +544,7 @@ package body File is
             if Settings.Overwrite_Destination_Files then
                Dir.Delete_File (Dst_File_Name);
                Log.Debug ("  Deleted file " & Dst_File_Name);
-               Inc (Global.Results, Mold.Files_Overwritten);
+               Inc (Global.Results, Files_Overwritten);
             else
                Log.Error ("File " & Dst_File_Name & " already exists");
                Global.Errors := @ + 1;
@@ -600,57 +584,4 @@ package body File is
       end;
    end Replace;
 
-begin
-
-   --                                   .-------..----.
-   --                                   |   3   ||  4 |
-   Variable_Matcher.Compile ("(.*?)({{ *([^/} ]+)(/.*)? *}})");
-   --                         | 1 ||           2           |
-   --                         '---''-----------------------'
-   --  Example:
-   --
-   --              1         2         3
-   --     123456789012345678901234567890123456789
-   --     This is a {{ #foo/0 }} variable example
-   --
-   --                     Matches (0) = ( 1, 22) = "This is a {{ #foo/0 }}"
-   --     Pre_Text     := Matches (1) = ( 1, 10) = "This is a "
-   --     Var_Mold     := Matches (2) = (11, 22) =           "{{ #foo/0 }}"
-   --     Var_All_Name := Matches (3) = (14, 19) =              "#foo"
-   --     Var_Name     := ( remove # if exists ) =               "foo"
-   --     Filter       := Matches (4) = (18, 19) =                  "/0"
-   --  ------------------------------------------------------------------------
-   --
-   --
-   --                             .------.
-   --                             |   3  |
-   File_Matcher.Compile ("(.*?)(__([^_]+?)__)");
-   --                     | 1 ||     2      |
-   --                     '---''------------'
-   --  Example:
-   --
-   --              1         2
-   --     123456789012345678901
-   --     README-__PURPOSE__.md
-   --
-   --                     Matches (0) = ( 1, 18) = "README-__PURPOSE__"
-   --     Pre_Text     := Matches (1) = ( 1,  7) = "README-"
-   --     Var_Mold     := Matches (2) = ( 8, 18) =        "__PURPOSE__"
-   --     Var_All_Name := Matches (3) = (10, 16) =          "PURPOSE"
-   --  ------------------------------------------------------------------------
-   --
-   --
-   Include_Matcher.Compile ("^{{ *" & Mold.Inclusion_Prefix & "([^ ]+) *}}$");
-   --                                                          |  1  |
-   --                                                          '-----'
-   --  Example:
-   --
-   --              1         2
-   --     1234567890123456789012
-   --     {{ include:foo.molt }}
-   --
-   --                     Matches (0) = ( 1, 22) = "{{ include:foo.molt }}"
-   --     Var_Name     := Matches (1) = (12, 19) =            "foo.molt"
-   --  ------------------------------------------------------------------------
-
-end File;
+end Mold_Lib.Impl.File;

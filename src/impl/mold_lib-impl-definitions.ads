@@ -10,11 +10,7 @@ with Ada.Containers.Hashed_Maps; use Ada.Containers;
 with Ada.Strings.Unbounded;      use Ada.Strings.Unbounded;
 with Ada.Strings.Unbounded.Hash;
 
-with Mold_Lib;
-
-package Definitions is
-
-   package Mold renames Mold_Lib;
+package Mold_Lib.Impl.Definitions is
 
    package Variables_Package is new Hashed_Maps
      (Key_Type => Unbounded_String, Element_Type => Unbounded_String,
@@ -27,8 +23,8 @@ package Definitions is
    function Read_Variables
    (
       Vars_File :          String;
-      Settings  : not null Mold.Settings_Access;
-      Results   :          Mold.Results_Access := null;
+      Settings  : not null Settings_Access;
+      Results   :          Results_Access := null;
       Success   : out      Boolean
    )
    return Variables_Map;
@@ -38,4 +34,4 @@ package Definitions is
    --  Variables_Map object.
    --  ------------------------------------------------------------------------
 
-end Definitions;
+end Mold_Lib.Impl.Definitions;

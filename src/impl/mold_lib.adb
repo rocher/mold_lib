@@ -9,10 +9,12 @@
 with Ada.Directories;
 with Simple_Logging.Decorators;
 
-with Definitions;
-with Directory;
-with Dir_Ops; use Dir_Ops;
-with File;
+with Mold_Lib.Impl; use Mold_Lib.Impl;
+
+with Mold_Lib.Impl.Definitions;
+with Mold_Lib.Impl.Directory;
+with Mold_Lib.Impl.File;
+with Mold_Lib_Config;
 with Text_Filters;
 
 package body Mold_Lib is
@@ -21,6 +23,18 @@ package body Mold_Lib is
 
    use all type Dir.File_Kind;
    use all type Log.Levels;
+
+   ----------
+   -- Name --
+   ----------
+
+   function Name return String is (Mold_Lib_Config.Crate_Name);
+
+   -------------
+   -- Version --
+   -------------
+
+   function Version return String is (Mold_Lib_Config.Crate_Version);
 
    ---------------------
    -- Validate_Source --
@@ -46,7 +60,7 @@ package body Mold_Lib is
          --  Source is either a file or directory
 
          if Dir.Kind (Source_Path) = Dir.Ordinary_File then
-            if Dir.Extension (Source_Path) = Mold_File_Extension then
+            if Dir.Extension (Source_Path) = Impl.Mold_File_Extension then
                Log.Debug ("  Valid Source_Path");
             else
                Log.Error
@@ -183,12 +197,12 @@ package body Mold_Lib is
       end if;
 
       declare
-         Variables : aliased Standard.Definitions.Variables_Map;
+         Variables : aliased Impl.Definitions.Variables_Map;
          Success   : Boolean;
          Errors    : Natural;
       begin
          Variables :=
-           Standard.Definitions.Read_Variables
+           Impl.Definitions.Read_Variables
              (Definitions_Path, Used_Settings, Results, Success);
 
          if Success then
@@ -202,16 +216,16 @@ package body Mold_Lib is
 
          if Dir.Kind (Source_Path) = Dir.Ordinary_File then
             Errors :=
-              File.Replace
+              Impl.File.Replace
                 (Source_Path'Unrestricted_Access,
                  Output_Dir_Path'Unrestricted_Access,
                  Variables'Unchecked_Access, Used_Settings, Filters, Results);
          else
             Log.Debug
               ("  File.Set_Running_Directory " & Dir.Current_Directory);
-            File.Set_Running_Directory (Dir.Current_Directory);
+            Mold_Lib.Impl.File.Set_Running_Directory (Dir.Current_Directory);
             Errors :=
-              Directory.Replace
+              Impl.Directory.Replace
                 ("", Source_Path'Unrestricted_Access,
                  Output_Dir_Path'Unrestricted_Access,
                  Variables'Unchecked_Access, Used_Settings, Filters, Results);
