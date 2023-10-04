@@ -1,6 +1,9 @@
+test.log
+*.srctrace
 /obj/
 /bin/
 /alire/
 /config/
+/gnatcov_out/
 /suite/tmp/
 /suite/dir/**/*.txt
