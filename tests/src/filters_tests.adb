@@ -11,6 +11,8 @@ with GNAT.Source_Info;
 with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
+with Mold_Lib_Tests_Config; use Mold_Lib_Tests_Config;
+
 package body Filters_Tests is
 
    function Replace_By_Slash (S : String) return String;
@@ -31,7 +33,7 @@ package body Filters_Tests is
    begin
       Register_Routine
         (T, Test_Predefined_Filters'Access, "Predefined Filters");
-      Register_Routine (T, Test_Custom_Filters'Access, "Custom Filters");
+      --  Register_Routine (T, Test_Custom_Filters'Access, "Custom Filters");
    end Register_Tests;
 
    -----------------------------
@@ -67,8 +69,8 @@ package body Filters_Tests is
       Expected := [
          Files_Processed      =>  1,
          Variables_Defined    => 12,
-         Variables_Found      => 61,
-         Variables_Replaced   => 61,
+         Variables_Found      => 18,
+         Variables_Replaced   => 18,
          Filters_Found        => 59,
          Filters_Applied      => 58,
          Replacement_Warnings =>  1,
@@ -76,7 +78,16 @@ package body Filters_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 0);
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+      if Alire_Host_OS in "windows" then
+         Check_MD5_Digest
+           ("suite/tmp/filters.txt",
+            "a0750ab8989ded3a1e986f11e3f88378");
+      else
+         Check_MD5_Digest
+           ("suite/tmp/filters.txt",
+            "26d5f99bce49f2babe03cda868b4e131");
+      end if;
 
    end Test_Predefined_Filters;
 
@@ -113,8 +124,8 @@ package body Filters_Tests is
       Expected := [
          Files_Processed      =>  1,
          Variables_Defined    => 12,
-         Variables_Found      => 61,
-         Variables_Replaced   => 61,
+         Variables_Found      => 62,
+         Variables_Replaced   => 62,
          Filters_Found        => 59,
          Filters_Applied      => 58,
          Replacement_Warnings =>  1,

@@ -1,4 +1,4 @@
-NN : {{N1/sN/pr-33}}
+NN : {{N1/s///pr-33}}
 N1 : {{N1/pl07/pl 11/pl.22/pr 23/pr_33}}
 N2 : {{N2/pl07/pl 11/pl.22/pr 23/pr_33}}
 N3 : {{N3/pl07/pl 11/pl.22/pr 23/pr_33}}
@@ -8,12 +8,13 @@ N6 : {{N6/pl07/pl 11/pl.22/pr 23/pr_33}}
 N7 : {{N7/pl07/pl 11/pl.22/pr 23/pr_33}}
 N8 : {{N8/pl07/pl 11/pl.22/pr 23/pr_33}}
 N9 : {{N9/pl07/pl 11/pl.22/pr 23/pr_33}}
-N0 : {{N0/pl07/pl 11/pl.22/pr 23/pr_33}}
-NN : {{N0/sN/pl-33}}
+N0 : {{N0/pl07/pl 11/pl.22/pr//23/pr_33}}
+NN : {{N0/s///pl//33}}
 
 No filter                : {{Title}}
 Replace all chars by '-' : {{Title/s-}}
 Replace all chars by '=' : {{Title/s=}}
+Replace all chars    '/' : {{Title/s//}}
 Replace all chars by '/' : {{Title/0}}
 Undefined filter:        : {{Title/1}}
 Replace all chars by '/' : {{Title/2}}

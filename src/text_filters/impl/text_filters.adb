@@ -72,16 +72,20 @@ package body Text_Filters is
       Apply_All_Text_Filters_Loop :
       loop
          Filter_Parsed := Parse (Filter, Tail);
+         Summary.Found := @ + 1;
+
          if Filter_Parsed.Error /= Null_Unbounded_String then
             Log.Error
               ("Text Filter Error: " & To_String (Filter_Parsed.Error));
+            Summary.Errors := @ + 1;
             if Abort_On_Error then
                exit Apply_All_Text_Filters_Loop;
             end if;
+         else
+            Result          := Apply (Filter_Parsed, Result);
+            Filter          := Tail;
+            Summary.Applied := @ + 1;
          end if;
-
-         Result := Apply (Filter_Parsed, Result);
-         Filter := Tail;
 
          Log.Debug ("Filter_Parsed : " & Filter_Parsed'Image);
          Log.Debug ("Tail          : '" & Tail'Image & "'");
