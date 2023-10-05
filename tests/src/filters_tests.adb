@@ -11,8 +11,6 @@ with GNAT.Source_Info;
 with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
-with Mold_Lib_Tests_Config; use Mold_Lib_Tests_Config;
-
 package body Filters_Tests is
 
    function Replace_By_Slash (S : String) return String;
@@ -64,7 +62,7 @@ package body Filters_Tests is
          Toml_File   => "suite/toml/predefined-filters.toml",
          Filters     => Filters'Unchecked_Access,
          Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Debug
+         Log_Level   => Log.Level
       );
       Expected := [
          Files_Processed      =>  1,
@@ -79,15 +77,10 @@ package body Filters_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
-      if Alire_Host_OS in "windows" then
-         Check_MD5_Digest
-           ("suite/tmp/predefined-filters.txt",
-            "746433a25741e050806b17fc58866ae5");
-      else
-         Check_MD5_Digest
-           ("suite/tmp/predefined-filters.txt",
-            "4fe3a5f40d7cd4c591119da81d5df8cb");
-      end if;
+      Check_MD5_Digest
+        ("suite/tmp/predefined-filters.txt",
+         "4fe3a5f40d7cd4c591119da81d5df8cb",
+         "746433a25741e050806b17fc58866ae5");
 
    end Test_Predefined_Filters;
 
