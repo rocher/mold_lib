@@ -58,10 +58,10 @@ package body Filters_Tests is
       --  ----- variable substitution with text filters -----------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/filters.txt.mold",
+         Source      => "suite/mold/predefined-filters.txt.mold",
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
-         Toml_File   => "suite/toml/filters.toml",
+         Toml_File   => "suite/toml/predefined-filters.toml",
          Filters     => Filters'Unchecked_Access,
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
@@ -81,11 +81,11 @@ package body Filters_Tests is
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
       if Alire_Host_OS in "windows" then
          Check_MD5_Digest
-           ("suite/tmp/filters.txt",
+           ("suite/tmp/predefined-filters.txt",
             "a0750ab8989ded3a1e986f11e3f88378");
       else
          Check_MD5_Digest
-           ("suite/tmp/filters.txt",
+           ("suite/tmp/predefined-filters.txt",
             "26d5f99bce49f2babe03cda868b4e131");
       end if;
 
