@@ -13,10 +13,10 @@ project Mold_Lib_Tests is
         when "release" =>
             Compiler_Switches := ("-O2", "-gnatn");
         when "validation" =>
-            Compiler_Switches := ("-O0", "-g", "-pg", "--coverage");
+            Compiler_Switches := ("-O0", "-g", "--coverage");
             Linker_Switches := ("--coverage");
         when "development" =>
-            Compiler_Switches := ("-O0", "-g");
+            Compiler_Switches := ("-O0", "-g", "-pg");
     end case;
 
    package Compiler is
