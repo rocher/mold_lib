@@ -5,11 +5,12 @@ on:
     workflows: [Unit test]
     types:
       - completed
+  workflow_dispatch:
 
 jobs:
     on-success:
         runs-on: ubuntu-latest
-        if: ${{ git.event.workflow_run.conclusion == 'success' }}
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
         defaults:
             run:
               shell: bash
