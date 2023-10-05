@@ -74,7 +74,7 @@ package body Text_Filters is
          Filter_Parsed := Parse (Filter, Tail);
          Summary.Found := @ + 1;
 
-         if Filter_Parsed.Error /= Null_Unbounded_String then
+         if Filter_Parsed.Kind = filter_error then
             Log.Error
               ("Text Filter Error: " & To_String (Filter_Parsed.Error));
             Summary.Errors := @ + 1;

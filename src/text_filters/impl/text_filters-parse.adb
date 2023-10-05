@@ -282,7 +282,8 @@ begin
             end if;
 
          when others =>
-            Text_Filter.Kind := filter_none;
+            Text_Filter.Kind  := filter_error;
+            Text_Filter.Error := UStr ("Unknown filter '" & Kind & "'");
       end case;
    end return;
 end Parse;
