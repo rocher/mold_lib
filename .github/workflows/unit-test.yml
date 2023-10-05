@@ -32,27 +32,12 @@ jobs:
     - name: Get Alire v1.2.2
       uses: alire-project/setup-alire@v2
 
-    - name: Instrument the code
-      run: |
-        cd tests
-        alr gnatcov instrument --level=stmt --dump-trigger=atexit --projects mold_lib --no-subprojects
-
     - name: Build unit tests
       run: |
         cd tests
-        alr build --validation -- --src-subdirs=gnatcov-instr --implicit-with=gnatcov_rts_full
+        alr build --release
 
     - name: Run Mold Lib unit tests
       run: |
         cd tests
         alr exec ./bin/mold_lib_tests
-
-    - name: Run gnatcov on the trace file
-      run: |
-        cd tests
-        alr gnatcov coverage --annotate=xcov --output-dir gnatcov_out --level=stmt --projects mold_lib --no-subprojects *.srctrace
-
-    - name: Upload coverage reports to Codecov
-      uses: alire-project/gnatcov-to-codecovio-action@main
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
