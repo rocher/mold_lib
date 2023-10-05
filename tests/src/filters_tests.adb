@@ -41,14 +41,16 @@ package body Filters_Tests is
    procedure Test_Predefined_Filters (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
       Errors   : Natural;
+      Settings : Mold.Settings_Type := Global_Settings.all;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
+
       --!pp off
-      Filters  : aliased Mold.Filters_Array := [
-        0 => Replace_By_Slash'Access,
-        2 => Replace_By_Slash'Access,
-        others => null
-      ];
+      --  Filters  : aliased Mold.Filters_Array := [
+      --    0 => Replace_By_Slash'Access,
+      --    2 => Replace_By_Slash'Access,
+      --    others => null
+      --  ];
       --!pp on
    begin
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
@@ -60,7 +62,7 @@ package body Filters_Tests is
          Output_Dir  => "suite/tmp/",
          Settings    => Global_Settings,
          Toml_File   => "suite/toml/predefined-filters.toml",
-         Filters     => Filters'Unchecked_Access,
+         Filters     => null,
          Results     => Results'Unchecked_Access,
          Log_Level   => Log.Level
       );
@@ -77,11 +79,45 @@ package body Filters_Tests is
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+
       Check_MD5_Digest
         ("suite/tmp/predefined-filters.txt",
          "4fe3a5f40d7cd4c591119da81d5df8cb",
          "746433a25741e050806b17fc58866ae5");
 
+      --  ----- variable substitution with text filters -----------------------
+      Settings.Abort_On_Error              := False;
+      Settings.Overwrite_Destination_Files := True;
+      Settings.Undefined_Filter_Alert      := Warning;
+      --!pp off
+      Errors := Apply (
+         Source      => "suite/mold/predefined-filters.txt.mold",
+         Output_Dir  => "suite/tmp/",
+         Settings    => Settings'Unrestricted_Access,
+         Toml_File   => "suite/toml/predefined-filters.toml",
+         Filters     => null,
+         Results     => Results'Unchecked_Access,
+         Log_Level   => Log.Level
+      );
+      Expected := [
+         Files_Processed      =>   1,
+         Files_Overwritten    =>   1,
+         Variables_Defined    =>  12,
+         Variables_Found      =>  59,
+         Variables_Replaced   =>  59,
+         Filters_Found        => 111,
+         Filters_Applied      => 110,
+         Replacement_Warnings =>   1,
+         others               =>   0
+      ];
+      --!pp on
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+
+      Check_MD5_Digest
+        ("suite/tmp/predefined-filters.txt",
+         "f0c4271265ed15a2bdf778549d6e2c87",
+         "fc34bdd814dad950148a173c066e198f");
    end Test_Predefined_Filters;
 
    -------------------------
