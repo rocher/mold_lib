@@ -5,10 +5,17 @@
 This is a basic process:
 
 ```sh
-  $ alr clean; alr build --validation
-  $ git clean -dfx suite/
-  $ valgrind --tool=callgrind ./bin/mold_lib_tests
-  $ kcachegrind callgrind.out.*
+   # prepare the environment
+   $ git clean -dfx suite/
+   $ alr clean
+
+   # build the project
+   $ alr build --validation
+   $ git clean -dfx suite/
+
+   #
+   $ valgrind --tool=callgrind ./bin/mold_lib_tests
+   $ kcachegrind callgrind.out.*
 ```
 
 ### Code coverage with `gnatcov`
@@ -19,19 +26,19 @@ the *projects of interests*, as well as other dependencies, which is done
 with:
 
 ```sh
-  # prepare the environment
-  git clean -dfx suite/
-  alr clean
+   # prepare the environment
+   git clean -dfx suite/
+   alr clean
 
-  # instrument the code and build the project
-  alr gnatcov instrument --level=stmt --dump-trigger=atexit --projects mold_lib --no-subprojects
-  alr build --development -- --src-subdirs=gnatcov-instr --implicit-with=gnatcov_rts_full
+   # instrument the code and build the project
+   alr gnatcov instrument --level=stmt --dump-trigger=atexit --projects mold_lib --no-subprojects
+   alr build --development -- --src-subdirs=gnatcov-instr --implicit-with=gnatcov_rts_full
 
-  # run the unit tests
-  ./bin/mold_lib_tests > test.log 2>&1
+   # run the unit tests
+   ./bin/mold_lib_tests > test.log 2>&1
 
-  # summarize gnatcov information
-  alr gnatcov coverage --annotate=xcov --output-dir gnatcov_out --level=stmt --projects mold_lib --no-subprojects *srctrace
+   # summarize gnatcov information
+   alr gnatcov coverage --annotate=xcov --output-dir gnatcov_out --level=stmt --projects mold_lib --no-subprojects *srctrace
 ```
 
 Remember that:
