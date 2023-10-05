@@ -55,7 +55,7 @@ package body Filters_Tests is
    begin
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
-      --  ----- variable substitution with text filters -----------------------
+      --  ----- variable substitution with text filters: abort on error -------
       --!pp off
       Errors := Apply (
          Source      => "suite/mold/predefined-filters.txt.mold",
@@ -64,15 +64,15 @@ package body Filters_Tests is
          Toml_File   => "suite/toml/predefined-filters.toml",
          Filters     => Filters'Unchecked_Access,
          Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Log_Level   => Log.Debug
       );
       Expected := [
          Files_Processed      =>  1,
          Variables_Defined    => 12,
          Variables_Found      => 18,
          Variables_Replaced   => 18,
-         Filters_Found        => 59,
-         Filters_Applied      => 58,
+         Filters_Found        => 67,
+         Filters_Applied      => 66,
          Replacement_Warnings =>  1,
          others               =>  0
       ];
@@ -82,11 +82,11 @@ package body Filters_Tests is
       if Alire_Host_OS in "windows" then
          Check_MD5_Digest
            ("suite/tmp/predefined-filters.txt",
-            "a0750ab8989ded3a1e986f11e3f88378");
+            "746433a25741e050806b17fc58866ae5");
       else
          Check_MD5_Digest
            ("suite/tmp/predefined-filters.txt",
-            "26d5f99bce49f2babe03cda868b4e131");
+            "4fe3a5f40d7cd4c591119da81d5df8cb");
       end if;
 
    end Test_Predefined_Filters;
