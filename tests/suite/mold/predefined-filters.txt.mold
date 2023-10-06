@@ -15,8 +15,8 @@ N0 : {{N0/pl07/pl 11/pl.22/pr//23/pr_33}}        5
 NN : {{N0/s///pl//33}}                           2     54
 
 No filter                : {{Title}}             0
-Replace all chars by '-' : {{Title/s-}}          1
-Replace all chars by '=' : {{Title/s=}}          1
+Replace first i with @   : {{Title/rfi@}}        1
+Replace last i with @    : {{Title/rli@}}        1
 Replace all chars    '/' : {{Title/s//}}         1     57
 Random Transforms        : {{Title/rai1/rlt*/rae3/rat_/ra_^/raa4/ras5/rao0/raf7}} 9, 66
 Non-existent filter      : {{Title/Q}}           1
