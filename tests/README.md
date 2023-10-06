@@ -10,7 +10,7 @@ This is a basic process:
    $ alr clean
 
    # build the project
-   $ alr build --validation
+   $ alr build --development
    $ git clean -dfx suite/
 
    #
@@ -32,7 +32,7 @@ with:
 
    # instrument the code and build the project
    alr gnatcov instrument --level=stmt --dump-trigger=atexit --projects mold_lib --no-subprojects
-   alr build --development -- --src-subdirs=gnatcov-instr --implicit-with=gnatcov_rts_full
+   alr build --validation -- --src-subdirs=gnatcov-instr --implicit-with=gnatcov_rts_full
 
    # run the unit tests
    ./bin/mold_lib_tests > test.log 2>&1
