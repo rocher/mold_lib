@@ -22,9 +22,7 @@ aunit = "^23.0.0"
 gnat = ">=2021 | (>=12 & <2000)"
 gnatcov = "^22.0.1"
 mold_lib = ">=0.2.1"
+simple_logging = "^1.2.0"
 
 [[pins]]
 mold_lib = { path = '..' }
-
-[[depends-on]]
-aaa = "~0.2.6"
