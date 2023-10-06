@@ -1,5 +1,5 @@
 name = "mold_lib_tests"
-version = "0.1.1-dev"
+version = "1.0"
 description = "Mold lib tests"
 
 authors = ["Francesc Rocher"]
