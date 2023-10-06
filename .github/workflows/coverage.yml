@@ -20,6 +20,8 @@ jobs:
         steps:
           - name: Checkout Mold Lib
             uses: actions/checkout@v4
+            with:
+              ref: ${{ github.event.ref }}
 
           - name: Get Alire v1.2.2
             uses: alire-project/setup-alire@v2
