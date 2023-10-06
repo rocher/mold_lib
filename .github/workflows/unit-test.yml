@@ -40,4 +40,4 @@ jobs:
     - name: Run Mold Lib unit tests
       run: |
         cd tests
-        ./bin/mold_lib_tests
+        alr exec ./bin/mold_lib_tests
