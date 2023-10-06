@@ -13,10 +13,9 @@ project Mold_Lib_Tests is
         when "release" =>
             Compiler_Switches := ("-O2", "-gnatn");
         when "validation" =>
-            Compiler_Switches := ("-O0", "-g", "--coverage");
-            Linker_Switches := ("--coverage");
+            Compiler_Switches := ("-O0", "-g");
         when "development" =>
-            Compiler_Switches := ("-O0", "-g", "-pg");
+            Compiler_Switches := ("-O0", "-g", "-pg", "-fprofile-arcs");
     end case;
 
    package Compiler is
