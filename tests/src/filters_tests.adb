@@ -82,8 +82,8 @@ package body Filters_Tests is
 
       Check_MD5_Digest
         ("suite/tmp/predefined-filters.txt",
-         "4fe3a5f40d7cd4c591119da81d5df8cb",
-         "746433a25741e050806b17fc58866ae5");
+         "fc68a74cd44a84261dca20d121dc44d1",
+         "6321b8d6b07333d458faaba5954585dd");
 
       --  ----- variable substitution with text filters -----------------------
       Settings.Abort_On_Error              := False;
@@ -116,8 +116,8 @@ package body Filters_Tests is
 
       Check_MD5_Digest
         ("suite/tmp/predefined-filters.txt",
-         "f0c4271265ed15a2bdf778549d6e2c87",
-         "fc34bdd814dad950148a173c066e198f");
+         "0d929992739b5973fec26faffa591dd7",
+         "e159425237dbb9f936b7e000c480780f");
    end Test_Predefined_Filters;
 
    -------------------------
