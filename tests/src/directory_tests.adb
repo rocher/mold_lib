@@ -54,14 +54,14 @@ package body Directory_Tests is
       Settings.Enable_Defined_Settings     := True;
       Settings.Undefined_Variable_Action   := Empty; --  changed in def file
       Settings.Undefined_Variable_Alert    := None;  --  changed in def file
-      Settings.Abort_On_Error := True;               --  changed in def file
+      Settings.Abort_On_Error              := True;  --  changed in def file
       --!pp off
       Errors := Apply (
-         Source      => "suite/dir",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/dir/mold.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source    => "suite/dir",
+         Settings  => Settings'Unchecked_Access,
+         Toml_File => "suite/dir/mold.toml",
+         Results   => Results'Unchecked_Access,
+         Log_Level => Log.Level
       );
 
       --  FILE NAME                     VARS  RENAMED TO
@@ -141,15 +141,15 @@ package body Directory_Tests is
       Settings.Enable_Defined_Settings     := True;
       Settings.Undefined_Variable_Action   := Empty; --  changed in def file
       Settings.Undefined_Variable_Alert    := None;  --  changed in def file
-      Settings.Abort_On_Error := True;               --  changed in def file
+      Settings.Abort_On_Error              := True;  --  changed in def file
       --!pp off
       Errors := Apply (
-         Source      => "suite/dir",
-         Output_Dir  => "suite/tmp/dir",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/dir/mold.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/dir",
+         Output_Dir => "suite/tmp/dir",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/dir/mold.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
 
       --  FILE NAME                     VARS  RENAMED TO
@@ -166,17 +166,17 @@ package body Directory_Tests is
       --    __a__-__b__-__c__.txt.mold  1736  arcu-bibendum-commodo.txt
 
       Expected := [
-         Files_Processed      =>    7,
-         Files_Renamed        =>    2,
-         Files_Overwritten    =>    0,
-         Variables_Defined    =>    5 + 26 + 100,
-         Variables_Found      =>  100 +  4 +   9 + 2118 + 1950 + 1736,
-         Variables_Undefined  =>    0 +  4 +   9 +    0 +    0 +    0,
-         Variables_Replaced   =>  100 +  0 +   0 + 2118 + 1950 + 1736,
-         Variables_Ignored    =>    0 +  4 +   9 +    0 +    0 +    0,
-         Variables_Emptied    =>    0 +  0 +   0 +    0 +    0 +    0,
-         Replacement_Warnings =>    0 +  4 +   9 +    0 +    0 +    0,
-         others               =>    0
+         Files_Processed      =>   7,
+         Files_Renamed        =>   2,
+         Files_Overwritten    =>   0,
+         Variables_Defined    =>   5 + 26 + 100,
+         Variables_Found      => 100 +  4 +   9 + 2118 + 1950 + 1736,
+         Variables_Undefined  =>   0 +  4 +   9 +    0 +    0 +    0,
+         Variables_Replaced   => 100 +  0 +   0 + 2118 + 1950 + 1736,
+         Variables_Ignored    =>   0 +  4 +   9 +    0 +    0 +    0,
+         Variables_Emptied    =>   0 +  0 +   0 +    0 +    0 +    0,
+         Replacement_Warnings =>   0 +  4 +   9 +    0 +    0 +    0,
+         others               =>   0
       ];
       --!pp on
       Check_Results

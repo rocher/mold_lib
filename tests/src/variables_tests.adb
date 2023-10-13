@@ -50,12 +50,12 @@ package body Variables_Tests is
       --  ----- no variables in the source file -------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/no-vars.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Global_Settings,
-         Toml_File   => "suite/toml/empty.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/no-vars.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Global_Settings,
+         Toml_File  => "suite/toml/empty.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed => 1,
@@ -72,12 +72,12 @@ package body Variables_Tests is
       --  ----- empty definitions file ----------------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/foo.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Global_Settings,
-         Toml_File   => "suite/toml/empty.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/foo.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Global_Settings,
+         Toml_File  => "suite/toml/empty.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed      => 1,
@@ -98,12 +98,12 @@ package body Variables_Tests is
       --  ----- no variable can be replaced -----------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/foo.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Global_Settings,
-         Toml_File   => "suite/toml/bar.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/foo.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Global_Settings,
+         Toml_File  => "suite/toml/bar.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed      => 1,
@@ -139,12 +139,12 @@ package body Variables_Tests is
       --  ----- variable replaced ---------------------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/foo.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Global_Settings,
-         Toml_File   => "suite/toml/foo.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/foo.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Global_Settings,
+         Toml_File  => "suite/toml/foo.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed    => 1,
@@ -165,12 +165,12 @@ package body Variables_Tests is
       --  ----- four variables, two are replaced ------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/foo-bar.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Global_Settings,
-         Toml_File   => "suite/toml/foo.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/foo-bar.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Global_Settings,
+         Toml_File  => "suite/toml/foo.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed      => 1,
@@ -193,12 +193,12 @@ package body Variables_Tests is
       --  ----- all variables replaced ----------------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/foo-bar.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Global_Settings,
-         Toml_File   => "suite/toml/foo-bar.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/foo-bar.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Global_Settings,
+         Toml_File  => "suite/toml/foo-bar.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed    => 1,
@@ -233,12 +233,12 @@ package body Variables_Tests is
       --  ----- all variables replaced ----------------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/lorem-ipsum.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/lorem-ipsum.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/lorem-ipsum.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/lorem-ipsum.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed    =>    1,
@@ -258,12 +258,12 @@ package body Variables_Tests is
       --  ----- no optional variables defined ---------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/lorem-ipsum.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/lorem-ipsum_no-opts1.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/lorem-ipsum.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/lorem-ipsum_no-opts1.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed     =>    1,
@@ -286,12 +286,12 @@ package body Variables_Tests is
       --  ----- some optional variables defined -------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/lorem-ipsum.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/lorem-ipsum_no-opts2.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/lorem-ipsum.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/lorem-ipsum_no-opts2.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed     =>    1,
@@ -316,12 +316,12 @@ package body Variables_Tests is
       Settings.Undefined_Variable_Alert  := Mold.None;
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/lorem-ipsum.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/lorem-ipsum_no-norm1.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/lorem-ipsum.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/lorem-ipsum_no-norm1.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed     =>    1,
@@ -346,12 +346,12 @@ package body Variables_Tests is
       Settings.Undefined_Variable_Alert  := Mold.Warning;
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/lorem-ipsum.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/lorem-ipsum_no-norm1.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/lorem-ipsum.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/lorem-ipsum_no-norm1.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed      =>    1,
@@ -377,12 +377,12 @@ package body Variables_Tests is
       Settings.Undefined_Variable_Alert  := Mold.None;
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/lorem-ipsum.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/lorem-ipsum_no-norm1.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/lorem-ipsum.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/lorem-ipsum_no-norm1.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed     =>    1,
@@ -407,12 +407,12 @@ package body Variables_Tests is
       Settings.Undefined_Variable_Alert  := Mold.Warning;
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/lorem-ipsum.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/lorem-ipsum_no-norm1.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/lorem-ipsum.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/lorem-ipsum_no-norm1.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed      =>    1,
@@ -439,12 +439,12 @@ package body Variables_Tests is
       Settings.Abort_On_Error            := False;
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/lorem-ipsum.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/lorem-ipsum_mix.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/lorem-ipsum.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/lorem-ipsum_mix.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed      =>    1,
@@ -484,12 +484,12 @@ package body Variables_Tests is
       --  ----- multiline paragraphs ------------------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/multiline.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Global_Settings,
-         Toml_File   => "suite/toml/multiline.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/multiline.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Global_Settings,
+         Toml_File  => "suite/toml/multiline.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed    => 1,

@@ -58,13 +58,13 @@ package body Filters_Tests is
       --  ----- variable substitution with text filters: abort on error -------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/predefined-filters.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Global_Settings,
-         Toml_File   => "suite/toml/predefined-filters.toml",
-         Filters     => null,
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/predefined-filters.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Global_Settings,
+         Toml_File  => "suite/toml/predefined-filters.toml",
+         Filters    => null,
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed      =>  1,
@@ -91,13 +91,13 @@ package body Filters_Tests is
       Settings.Undefined_Filter_Alert      := Warning;
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/predefined-filters.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unrestricted_Access,
-         Toml_File   => "suite/toml/predefined-filters.toml",
-         Filters     => null,
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/predefined-filters.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unrestricted_Access,
+         Toml_File  => "suite/toml/predefined-filters.toml",
+         Filters    => null,
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed      =>   1,
@@ -142,13 +142,13 @@ package body Filters_Tests is
       --  ----- variable substitution with text filters -----------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/filters.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Global_Settings,
-         Toml_File   => "suite/toml/filters.toml",
-         Filters     => Filters'Unchecked_Access,
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/filters.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Global_Settings,
+         Toml_File  => "suite/toml/filters.toml",
+         Filters    => Filters'Unchecked_Access,
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed      =>  1,

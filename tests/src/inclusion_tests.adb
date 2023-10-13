@@ -48,12 +48,12 @@ package body Inclusion_Tests is
       --  ----- inclusion of recursive templates ------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/recursion.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Global_Settings,
-         Toml_File   => "suite/toml/foo.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/recursion.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Global_Settings,
+         Toml_File  => "suite/toml/foo.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed   => 1,
@@ -81,12 +81,12 @@ package body Inclusion_Tests is
       --  ----- inclusion of 100 templates ------------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/lorem-ipsum-includes-01.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/lorem-ipsum.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/lorem-ipsum-includes-01.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/lorem-ipsum.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed    =>    1,
@@ -107,12 +107,12 @@ package body Inclusion_Tests is
       --  ----- inclusion of 100 templates ------------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/lorem-ipsum-includes-02.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/lorem-ipsum.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/lorem-ipsum-includes-02.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/lorem-ipsum.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed    =>    1,
@@ -133,12 +133,12 @@ package body Inclusion_Tests is
       --  ----- inclusion of 100 templates ------------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/lorem-ipsum-includes-03.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/lorem-ipsum.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/lorem-ipsum-includes-03.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/lorem-ipsum.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed    =>    1,

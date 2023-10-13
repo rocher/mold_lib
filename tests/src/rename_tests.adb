@@ -48,12 +48,12 @@ package body Rename_Tests is
       Settings.Replacement_In_File_Names := False;
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/no-vars-__foo__.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/foo.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/no-vars-__foo__.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/foo.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed   => 1,
@@ -72,12 +72,12 @@ package body Rename_Tests is
       Settings.Replacement_In_File_Names := False;
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/foo-bar.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/foo-bar.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed   => 1,
@@ -97,12 +97,12 @@ package body Rename_Tests is
       Settings.Replacement_In_File_Names := True;
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/no-vars-__foo__.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/bar.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/no-vars-__foo__.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/bar.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed      => 1,
@@ -123,12 +123,12 @@ package body Rename_Tests is
       Settings.Replacement_In_File_Names := True;
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/lorem-ipsum.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/lorem-ipsum.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed      =>  1,
@@ -164,12 +164,12 @@ package body Rename_Tests is
       --  ----- one variable replaced -----------------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/foo.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/foo.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed      => 1,
@@ -190,12 +190,12 @@ package body Rename_Tests is
       --  ----- one variable replaced -----------------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/bar.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/bar.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed      => 1,
@@ -216,12 +216,12 @@ package body Rename_Tests is
       --  ----- two variables replaced ----------------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Toml_File   => "suite/toml/foo-bar.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/foo-bar.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed   => 1,
