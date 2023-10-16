@@ -114,6 +114,7 @@ package body Mold_Lib.Impl.Variables is
                if not Set_Mold_Setting
                    (To_String (Element.Key), Element.Value.As_String)
                then
+                  Success := False;
                   return Empty_Map;
                end if;
             end if;
