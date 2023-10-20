@@ -13,10 +13,11 @@ jobs:
     info:
         name: Basic Action Information
         runs-on: ubuntu-latest
+        if: ${{ github.event.workflow_run.conclusion }} == 'success'
         steps:
             - name: 'Echo github.event'
               uses: actions/github-script@v6
               with:
                 script: |
-                    echo "github.event.ref: ${{ github.event.ref }}"
-                    echo "github.event.workflow_run.head_branch: ${{ github.event.workflow_run.head_branch }}"
+                    console.log("github.event.ref: ${{github.event.ref}}");
+                    console.log("github.event.workflow_run.head_branch: ${{github.event.workflow_run.head_branch}}");
