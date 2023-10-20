@@ -7,6 +7,7 @@ on:
     branches:
         - main
         - develop
+  workflow_dispatch:
 
 jobs:
     coverage:
@@ -20,7 +21,7 @@ jobs:
           - name: Checkout Mold Lib
             uses: actions/checkout@v4
             with:
-              ref: ${{ github.event.ref }}
+              ref: ${{ github.event.workflow_run.head_branch }}
 
           - name: Get Alire v1.2.2
             uses: alire-project/setup-alire@v2

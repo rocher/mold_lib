@@ -1,5 +1,5 @@
 name = "mold_lib_tests"
-version = "0.1.1-dev"
+version = "1.0.0"
 description = "Mold lib tests"
 
 authors = ["Francesc Rocher"]
@@ -11,22 +11,18 @@ licenses = "MIT"
 
 executables = ["mold_lib_tests"]
 
+[build-profiles]
+"*" = "release"
+
 [build-switches."*"]
 ada_version = ["-gnat2022", "-gnatW8", "-gnatX"]
-
-[build-switches]
-release.optimization = ["-O2", "-gnatn"]
 
 [[depends-on]]
 aunit = "^23.0.0"
 gnat = ">=2021 | (>=12 & <2000)"
-mold_lib = ">=0.1.0-dev"
+gnatcov = "^22.0.1"
+mold_lib = ">=0.2.1"
+simple_logging = "^1.2.0"
 
 [[pins]]
 mold_lib = { path = '..' }
-
-# *NOTE - PROFILING with valgrind
-#       $ alr clean; alr build --validation
-#       $ git clean -dfx suite/
-#       $ valgrind --tool=callgrind ./bin/mold_lib_tests
-#       $ kcachegrind callgrind.out.*

@@ -10,13 +10,13 @@ with Ada.Directories;
 with Ada.Streams;
 with Ada.Streams.Stream_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-
-with AUnit.Assertions; use AUnit.Assertions;
-
 with GNAT.MD5;
 
+with AUnit.Assertions; use AUnit.Assertions;
 with Simple_Logging;
 with Simple_Logging.Decorators;
+
+with Mold_Lib_Tests_Config; use Mold_Lib_Tests_Config;
 
 package body Support is
 
@@ -108,13 +108,20 @@ package body Support is
    -- Check_MD5_Digest --
    ----------------------
 
-   procedure Check_MD5_Digest (File_Name, Digest : String) is
+   procedure Check_MD5_Digest (File_Name, Unix_Digest, DOS_Digest : String) is
       use Ada.Directories;
    begin
       Assert (Exists (File_Name), "File not found: " & File_Name);
-      Assert
-        (MD5_Digest (File_Name) = Digest,
-         "Invalid MD5 digest of file " & File_Name);
+
+      if Alire_Host_OS in "windows" then
+         Assert
+           (MD5_Digest (File_Name) = DOS_Digest,
+            "Invalid MD5 digest of file " & File_Name);
+      else
+         Assert
+           (MD5_Digest (File_Name) = Unix_Digest,
+            "Invalid MD5 digest of file " & File_Name);
+      end if;
    end Check_MD5_Digest;
 
 begin

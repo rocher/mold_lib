@@ -11,12 +11,12 @@ project Mold_Lib_Tests is
     Linker_Switches := ();
     case Mold_Lib_Tests_Config.Build_Profile is
         when "release" =>
-            Compiler_Switches := ("-O2");
+            Compiler_Switches := ("-O2", "-gnatn");
         when "validation" =>
-            Compiler_Switches := ("-g", "--coverage");
+            Compiler_Switches := ("-O0", "-g", "--coverage");
             Linker_Switches := ("--coverage");
         when "development" =>
-            Compiler_Switches := ("-g");
+            Compiler_Switches := ("-O0", "-g", "-pg", "-fprofile-arcs");
     end case;
 
    package Compiler is

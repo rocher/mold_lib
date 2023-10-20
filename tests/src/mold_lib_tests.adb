@@ -8,6 +8,7 @@
 
 with Ada.Command_Line;
 with Ada.Text_IO;
+with GNAT.Exception_Traces;
 
 with AUnit.Run;
 with AUnit.Reporter.Text;
@@ -26,6 +27,8 @@ procedure Mold_Lib_Tests is
 
    use Mold_Lib_Tests_Config;
 begin
+   GNAT.Exception_Traces.Trace_On (GNAT.Exception_Traces.Unhandled_Raise);
+
    Ada.Text_IO.Put_Line
      ("Tests for " & Mold_Lib.Name & " version " & Mold_Lib.Version);
 

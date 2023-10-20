@@ -6,16 +6,9 @@
 --
 -------------------------------------------------------------------------------
 
-with Ada.Directories;
-with Simple_Logging;
+with Mold_Lib.Impl.File;
 
-with Dir_Ops; use Dir_Ops;
-with File;
-
-package body Directory is
-
-   package Dir renames Ada.Directories;
-   package Log renames Simple_Logging;
+package body Mold_Lib.Impl.Directory is
 
    use all type Dir.File_Kind;
 
@@ -24,16 +17,11 @@ package body Directory is
    -------------
 
    --!pp off
-   function Replace
-   (
+   function Replace (
       Sub_Dir    :          String;
       Source     : not null String_Access;
-      Output_Dir : not null String_Access;
-      Variables  : not null Definitions.Variables_Access;
-      Settings   : not null Mold.Settings_Access;
-      Results    :          Mold.Results_Access := null
-   )
-   return Natural
+      Output_Dir : not null String_Access
+   )  return Natural
    --!pp on
 
    is
@@ -43,7 +31,7 @@ package body Directory is
       Element : Dir.Directory_Entry_Type;
    begin
 
-      Log.Debug ("REPLACE in directory");
+      Log.Debug ("BEGIN Impl.Directory.Replace");
       Log.Debug ("  Sub_Dir     : " & Sub_Dir);
       Log.Debug ("  Source      : " & Source.all);
       Log.Debug ("  Output_Dir  : " & Output_Dir.all);
@@ -75,8 +63,8 @@ package body Directory is
                     Errors +
                     Replace
                       (Dir.Compose (Sub_Dir, Name), Name'Unchecked_Access,
-                       Output_Dir, Variables, Settings, Results);
-               elsif Dir.Extension (Name) = Mold.Mold_File_Extension then
+                       Output_Dir);
+               elsif Dir.Extension (Name) = Mold_File_Extension then
                   declare
                      Out_Sub_dir : aliased String :=
                        Path (Output_Dir.all, Sub_Dir);
@@ -84,12 +72,11 @@ package body Directory is
                      Log.Debug ("File replace in element " & Name);
                      Errors :=
                        Errors +
-                       File.Replace
-                         (Name'Unchecked_Access, Out_Sub_dir'Unchecked_Access,
-                          Variables, Settings, Results);
+                       Impl.File.Replace
+                         (Name'Unchecked_Access, Out_Sub_dir'Unchecked_Access);
                   end;
                end if;
-               if Errors > 0 and then Settings.Abort_On_Error then
+               if Errors > 0 and then Args.Settings.Abort_On_Error then
                   goto Exit_Function;
                end if;
             end if;
@@ -99,6 +86,7 @@ package body Directory is
       <<Exit_Function>>
 
       Dir.Set_Directory (CWD);
+      Log.Debug ("END Impl.Directory.Replace");
       return Errors;
 
    exception
@@ -110,4 +98,4 @@ package body Directory is
 
    end Replace;
 
-end Directory;
+end Mold_Lib.Impl.Directory;

@@ -11,8 +11,6 @@ with GNAT.Source_Info;
 with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
-with Mold_Lib_Tests_Config; use Mold_Lib_Tests_Config;
-
 package body Inclusion_Tests is
 
    ----------
@@ -31,7 +29,7 @@ package body Inclusion_Tests is
    begin
       Register_Routine
         (T, Test_Recursive_Inclusion'Access,
-         "Prevent Recursive  Inclusion of Templates");
+         "Prevent Recursive Inclusion of Templates");
       Register_Routine (T, Test_Inclusion'Access, "Inclusion of Templates");
    end Register_Tests;
 
@@ -50,25 +48,17 @@ package body Inclusion_Tests is
       --  ----- inclusion of recursive templates ------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/recursion.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Global_Settings,
-         Definitions => "suite/toml/foo.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/recursion.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Global_Settings,
+         Toml_File  => "suite/toml/foo.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      => 1,
-         Files_Renamed        => 0,
-         Files_Overwritten    => 0,
-         Variables_Defined    => 1,
-         Variables_Found      => 0,
-         Variables_Undefined  => 0,
-         Variables_Replaced   => 0,
-         Variables_Ignored    => 0,
-         Variables_Emptied    => 0,
-         Replacement_Warnings => 0,
-         Replacement_Errors   => 0
+         Files_Processed   => 1,
+         Variables_Defined => 1,
+         others            => 0
       ];
       --!pp on
       Check_Results
@@ -91,111 +81,80 @@ package body Inclusion_Tests is
       --  ----- inclusion of 100 templates ------------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/lorem-ipsum-includes-01.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/lorem-ipsum.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/lorem-ipsum-includes-01.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/lorem-ipsum.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      =>    1,
-         Files_Renamed        =>    0,
-         Files_Overwritten    =>    0,
-         Variables_Defined    =>   26,
-         Variables_Found      => 2118,
-         Variables_Undefined  =>    0,
-         Variables_Replaced   => 2118,
-         Variables_Ignored    =>    0,
-         Variables_Emptied    =>    0,
-         Replacement_Warnings =>    0,
-         Replacement_Errors   =>    0
+         Files_Processed    =>    1,
+         Variables_Defined  =>   26,
+         Variables_Found    => 2118,
+         Variables_Replaced => 2118,
+         others             =>    0
       ];
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS in "windows" then
-         Check_MD5_Digest
-           ("suite/tmp/lorem-ipsum-includes-01.txt",
-            "8880f5a8180491db9710d884c81f4117");
-      else
-         Check_MD5_Digest
-           ("suite/tmp/lorem-ipsum-includes-01.txt",
-            "ff416bfec859c59a3834c46d60250e25");
-      end if;
+
+      Check_MD5_Digest
+        ("suite/tmp/lorem-ipsum-includes-01.txt",
+         "ff416bfec859c59a3834c46d60250e25",
+         "8880f5a8180491db9710d884c81f4117");
 
       --  ----- inclusion of 100 templates ------------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/lorem-ipsum-includes-02.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/lorem-ipsum.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/lorem-ipsum-includes-02.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/lorem-ipsum.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      =>    1,
-         Files_Renamed        =>    0,
-         Files_Overwritten    =>    0,
-         Variables_Defined    =>   26,
-         Variables_Found      => 2118,
-         Variables_Undefined  =>    0,
-         Variables_Replaced   => 2118,
-         Variables_Ignored    =>    0,
-         Variables_Emptied    =>    0,
-         Replacement_Warnings =>    0,
-         Replacement_Errors   =>    0
+         Files_Processed    =>    1,
+         Variables_Defined  =>   26,
+         Variables_Found    => 2118,
+         Variables_Replaced => 2118,
+         others             =>    0
       ];
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS in "windows" then
-         Check_MD5_Digest
-           ("suite/tmp/lorem-ipsum-includes-02.txt",
-            "8880f5a8180491db9710d884c81f4117");
-      else
-         Check_MD5_Digest
-           ("suite/tmp/lorem-ipsum-includes-02.txt",
-            "ff416bfec859c59a3834c46d60250e25");
-      end if;
+
+      Check_MD5_Digest
+        ("suite/tmp/lorem-ipsum-includes-02.txt",
+         "ff416bfec859c59a3834c46d60250e25",
+         "8880f5a8180491db9710d884c81f4117");
 
       --  ----- inclusion of 100 templates ------------------------------------
       --!pp off
       Errors := Apply (
-         Source      => "suite/mold/lorem-ipsum-includes-03.txt.mold",
-         Output_Dir  => "suite/tmp/",
-         Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/toml/lorem-ipsum.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/mold/lorem-ipsum-includes-03.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/lorem-ipsum.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      =>    1,
-         Files_Renamed        =>    0,
-         Files_Overwritten    =>    0,
-         Variables_Defined    =>   26,
-         Variables_Found      => 2118,
-         Variables_Undefined  =>    0,
-         Variables_Replaced   => 2118,
-         Variables_Ignored    =>    0,
-         Variables_Emptied    =>    0,
-         Replacement_Warnings =>    0,
-         Replacement_Errors   =>    0
+         Files_Processed    =>    1,
+         Variables_Defined  =>   26,
+         Variables_Found    => 2118,
+         Variables_Replaced => 2118,
+         others             =>    0
       ];
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS in "windows" then
-         Check_MD5_Digest
-           ("suite/tmp/lorem-ipsum-includes-03.txt",
-            "8880f5a8180491db9710d884c81f4117");
-      else
-         Check_MD5_Digest
-           ("suite/tmp/lorem-ipsum-includes-03.txt",
-            "ff416bfec859c59a3834c46d60250e25");
-      end if;
 
+      Check_MD5_Digest
+        ("suite/tmp/lorem-ipsum-includes-03.txt",
+         "ff416bfec859c59a3834c46d60250e25",
+         "8880f5a8180491db9710d884c81f4117");
    end Test_Inclusion;
 
 end Inclusion_Tests;

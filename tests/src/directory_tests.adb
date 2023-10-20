@@ -11,8 +11,6 @@ with GNAT.Source_Info;
 with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
-with Mold_Lib_Tests_Config; use Mold_Lib_Tests_Config;
-
 package body Directory_Tests is
 
    ----------
@@ -56,14 +54,14 @@ package body Directory_Tests is
       Settings.Enable_Defined_Settings     := True;
       Settings.Undefined_Variable_Action   := Empty; --  changed in def file
       Settings.Undefined_Variable_Alert    := None;  --  changed in def file
-      Settings.Abort_On_Error := True;               --  changed in def file
+      Settings.Abort_On_Error              := True;  --  changed in def file
       --!pp off
       Errors := Apply (
-         Source      => "suite/dir",
-         Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/dir/mold.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source    => "suite/dir",
+         Settings  => Settings'Unchecked_Access,
+         Toml_File => "suite/dir/mold.toml",
+         Results   => Results'Unchecked_Access,
+         Log_Level => Log.Level
       );
 
       --  FILE NAME                     VARS  RENAMED TO
@@ -90,55 +88,37 @@ package body Directory_Tests is
          Variables_Ignored    =>    0 +  4 +   9 +    0 +    0 +    0,
          Variables_Emptied    =>    0 +  0 +   0 +    0 +    0 +    0,
          Replacement_Warnings =>    0 +  4 +   9 +    0 +    0 +    0,
-         Replacement_Errors   =>    0
+         others               =>    0
       ];
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS in "windows" then
-         Check_MD5_Digest
-           ("suite/dir/complex/foo-bar.txt",
-            "25159cb1d5e189c7d7790554edc57256");
-         Check_MD5_Digest
-           ("suite/dir/complex/foo.txt", "6cab9f28a762df56e553fa39883988c0");
-         Check_MD5_Digest
-           ("suite/dir/complex/lorem-ipsum.txt",
-            "8880f5a8180491db9710d884c81f4117");
-         Check_MD5_Digest
-           ("suite/dir/complex/no-vars.txt",
-            "c81d1f24d9f8018b1760478e1ffe8f98");
-         Check_MD5_Digest
-           ("suite/dir/complex/sub-1/commodo-dolor-elementum.txt",
-            "8880f5a8180491db9710d884c81f4117");
-         Check_MD5_Digest
-           ("suite/dir/complex/sub-2/arcu-bibendum-commodo.txt",
-            "8880f5a8180491db9710d884c81f4117");
-         Check_MD5_Digest
-           ("suite/dir/simple/lorem-ipsum-pars.txt",
-            "8880f5a8180491db9710d884c81f4117");
-      else
-         Check_MD5_Digest
-           ("suite/dir/complex/foo-bar.txt",
-            "fb84d565c9a834dd25c8c3f670c2e46a");
-         Check_MD5_Digest
-           ("suite/dir/complex/foo.txt", "4c179dd0c4cc0c668539a25435286258");
-         Check_MD5_Digest
-           ("suite/dir/complex/lorem-ipsum.txt",
-            "ff416bfec859c59a3834c46d60250e25");
-         Check_MD5_Digest
-           ("suite/dir/complex/no-vars.txt",
-            "7ef8e151c0fde9d5fef738709a321300");
-         Check_MD5_Digest
-           ("suite/dir/complex/sub-1/commodo-dolor-elementum.txt",
-            "ff416bfec859c59a3834c46d60250e25");
-         Check_MD5_Digest
-           ("suite/dir/complex/sub-2/arcu-bibendum-commodo.txt",
-            "ff416bfec859c59a3834c46d60250e25");
-         Check_MD5_Digest
-           ("suite/dir/simple/lorem-ipsum-pars.txt",
-            "ff416bfec859c59a3834c46d60250e25");
-      end if;
 
+      Check_MD5_Digest
+        ("suite/dir/complex/foo-bar.txt", "fb84d565c9a834dd25c8c3f670c2e46a",
+         "25159cb1d5e189c7d7790554edc57256");
+      Check_MD5_Digest
+        ("suite/dir/complex/foo.txt", "4c179dd0c4cc0c668539a25435286258",
+         "6cab9f28a762df56e553fa39883988c0");
+      Check_MD5_Digest
+        ("suite/dir/complex/lorem-ipsum.txt",
+         "ff416bfec859c59a3834c46d60250e25",
+         "8880f5a8180491db9710d884c81f4117");
+      Check_MD5_Digest
+        ("suite/dir/complex/no-vars.txt", "7ef8e151c0fde9d5fef738709a321300",
+         "c81d1f24d9f8018b1760478e1ffe8f98");
+      Check_MD5_Digest
+        ("suite/dir/complex/sub-1/commodo-dolor-elementum.txt",
+         "ff416bfec859c59a3834c46d60250e25",
+         "8880f5a8180491db9710d884c81f4117");
+      Check_MD5_Digest
+        ("suite/dir/complex/sub-2/arcu-bibendum-commodo.txt",
+         "ff416bfec859c59a3834c46d60250e25",
+         "8880f5a8180491db9710d884c81f4117");
+      Check_MD5_Digest
+        ("suite/dir/simple/lorem-ipsum-pars.txt",
+         "ff416bfec859c59a3834c46d60250e25",
+         "8880f5a8180491db9710d884c81f4117");
    end Test_In_Place;
 
    ----------------------
@@ -161,15 +141,15 @@ package body Directory_Tests is
       Settings.Enable_Defined_Settings     := True;
       Settings.Undefined_Variable_Action   := Empty; --  changed in def file
       Settings.Undefined_Variable_Alert    := None;  --  changed in def file
-      Settings.Abort_On_Error := True;               --  changed in def file
+      Settings.Abort_On_Error              := True;  --  changed in def file
       --!pp off
       Errors := Apply (
-         Source      => "suite/dir",
-         Output_Dir  => "suite/tmp/dir",
-         Settings    => Settings'Unchecked_Access,
-         Definitions => "suite/dir/mold.toml",
-         Results     => Results'Unchecked_Access,
-         Log_Level   => Log.Level
+         Source     => "suite/dir",
+         Output_Dir => "suite/tmp/dir",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/dir/mold.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
       );
 
       --  FILE NAME                     VARS  RENAMED TO
@@ -186,67 +166,49 @@ package body Directory_Tests is
       --    __a__-__b__-__c__.txt.mold  1736  arcu-bibendum-commodo.txt
 
       Expected := [
-         Files_Processed      =>    7,
-         Files_Renamed        =>    2,
-         Files_Overwritten    =>    0,
-         Variables_Defined    =>    5 + 26 + 100,
-         Variables_Found      =>  100 +  4 +   9 + 2118 + 1950 + 1736,
-         Variables_Undefined  =>    0 +  4 +   9 +    0 +    0 +    0,
-         Variables_Replaced   =>  100 +  0 +   0 + 2118 + 1950 + 1736,
-         Variables_Ignored    =>    0 +  4 +   9 +    0 +    0 +    0,
-         Variables_Emptied    =>    0 +  0 +   0 +    0 +    0 +    0,
-         Replacement_Warnings =>    0 +  4 +   9 +    0 +    0 +    0,
-         Replacement_Errors   =>    0
+         Files_Processed      =>   7,
+         Files_Renamed        =>   2,
+         Files_Overwritten    =>   0,
+         Variables_Defined    =>   5 + 26 + 100,
+         Variables_Found      => 100 +  4 +   9 + 2118 + 1950 + 1736,
+         Variables_Undefined  =>   0 +  4 +   9 +    0 +    0 +    0,
+         Variables_Replaced   => 100 +  0 +   0 + 2118 + 1950 + 1736,
+         Variables_Ignored    =>   0 +  4 +   9 +    0 +    0 +    0,
+         Variables_Emptied    =>   0 +  0 +   0 +    0 +    0 +    0,
+         Replacement_Warnings =>   0 +  4 +   9 +    0 +    0 +    0,
+         others               =>   0
       ];
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
-      if Alire_Host_OS in "windows" then
-         Check_MD5_Digest
-           ("suite/tmp/dir/complex/foo-bar.txt",
-            "25159cb1d5e189c7d7790554edc57256");
-         Check_MD5_Digest
-           ("suite/tmp/dir/complex/foo.txt",
-            "6cab9f28a762df56e553fa39883988c0");
-         Check_MD5_Digest
-           ("suite/tmp/dir/complex/lorem-ipsum.txt",
-            "8880f5a8180491db9710d884c81f4117");
-         Check_MD5_Digest
-           ("suite/tmp/dir/complex/no-vars.txt",
-            "c81d1f24d9f8018b1760478e1ffe8f98");
-         Check_MD5_Digest
-           ("suite/tmp/dir/complex/sub-1/commodo-dolor-elementum.txt",
-            "8880f5a8180491db9710d884c81f4117");
-         Check_MD5_Digest
-           ("suite/tmp/dir/complex/sub-2/arcu-bibendum-commodo.txt",
-            "8880f5a8180491db9710d884c81f4117");
-         Check_MD5_Digest
-           ("suite/tmp/dir/simple/lorem-ipsum-pars.txt",
-            "8880f5a8180491db9710d884c81f4117");
-      else
-         Check_MD5_Digest
-           ("suite/tmp/dir/complex/foo-bar.txt",
-            "fb84d565c9a834dd25c8c3f670c2e46a");
-         Check_MD5_Digest
-           ("suite/tmp/dir/complex/foo.txt",
-            "4c179dd0c4cc0c668539a25435286258");
-         Check_MD5_Digest
-           ("suite/tmp/dir/complex/lorem-ipsum.txt",
-            "ff416bfec859c59a3834c46d60250e25");
-         Check_MD5_Digest
-           ("suite/tmp/dir/complex/no-vars.txt",
-            "7ef8e151c0fde9d5fef738709a321300");
-         Check_MD5_Digest
-           ("suite/tmp/dir/complex/sub-1/commodo-dolor-elementum.txt",
-            "ff416bfec859c59a3834c46d60250e25");
-         Check_MD5_Digest
-           ("suite/tmp/dir/complex/sub-2/arcu-bibendum-commodo.txt",
-            "ff416bfec859c59a3834c46d60250e25");
-         Check_MD5_Digest
-           ("suite/tmp/dir/simple/lorem-ipsum-pars.txt",
-            "ff416bfec859c59a3834c46d60250e25");
-      end if;
 
+      Check_MD5_Digest
+        ("suite/tmp/dir/complex/foo-bar.txt",
+         "fb84d565c9a834dd25c8c3f670c2e46a",
+         "25159cb1d5e189c7d7790554edc57256");
+      Check_MD5_Digest
+        ("suite/tmp/dir/complex/foo.txt", "4c179dd0c4cc0c668539a25435286258",
+         "6cab9f28a762df56e553fa39883988c0");
+      Check_MD5_Digest
+        ("suite/tmp/dir/complex/lorem-ipsum.txt",
+         "ff416bfec859c59a3834c46d60250e25",
+         "8880f5a8180491db9710d884c81f4117");
+      Check_MD5_Digest
+        ("suite/tmp/dir/complex/no-vars.txt",
+         "7ef8e151c0fde9d5fef738709a321300",
+         "c81d1f24d9f8018b1760478e1ffe8f98");
+      Check_MD5_Digest
+        ("suite/tmp/dir/complex/sub-1/commodo-dolor-elementum.txt",
+         "ff416bfec859c59a3834c46d60250e25",
+         "8880f5a8180491db9710d884c81f4117");
+      Check_MD5_Digest
+        ("suite/tmp/dir/complex/sub-2/arcu-bibendum-commodo.txt",
+         "ff416bfec859c59a3834c46d60250e25",
+         "8880f5a8180491db9710d884c81f4117");
+      Check_MD5_Digest
+        ("suite/tmp/dir/simple/lorem-ipsum-pars.txt",
+         "ff416bfec859c59a3834c46d60250e25",
+         "8880f5a8180491db9710d884c81f4117");
    end Test_Destination;
 
 end Directory_Tests;

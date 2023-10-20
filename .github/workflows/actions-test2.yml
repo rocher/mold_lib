@@ -1,0 +1,20 @@
+name: Actions Test-2
+
+on:
+    workflow_run:
+        workflows: [Actions Test-1]
+        types: [completed]
+        branches:
+            - main
+            - develop
+
+jobs:
+    info:
+        name: Basic Action Information
+        runs-on: ubuntu-latest
+        steps:
+            - name: 'Echo github.event'
+              uses: actions/github-script@v6
+              with:
+                script: |
+                    echo "${{ github.event }}"

@@ -1,6 +1,10 @@
+test.log
+*.srctrace
+callgrind*
 /obj/
 /bin/
 /alire/
 /config/
+/gnatcov_out/
 /suite/tmp/
 /suite/dir/**/*.txt
