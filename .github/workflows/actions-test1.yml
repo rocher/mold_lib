@@ -13,3 +13,4 @@ jobs:
               with:
                 script: |
                     console.log("github.event.ref: ${{github.event.ref}}");
+                    console.log("github: ${{github}}");
