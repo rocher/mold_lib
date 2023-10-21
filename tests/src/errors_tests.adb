@@ -191,6 +191,28 @@ package body Errors_Tests is
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
 
+      --  ----- invalid included file extension -------------------------------
+      Settings.Abort_On_Error              := True;
+      Settings.Overwrite_Destination_Files := False;
+      Results                              := [others => 0];
+      --!pp off
+      Errors := Apply (
+         Source     => "suite/dir-error",
+         Output_Dir => "suite/dir-error",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/foo.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed     => 1,
+         Variables_Defined   => 1,
+         others              => 0
+      ];
+      --!pp on
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+
    end File_Errors;
 
    ----------------------
