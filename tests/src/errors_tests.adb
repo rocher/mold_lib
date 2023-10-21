@@ -156,8 +156,24 @@ package body Errors_Tests is
    ----------------------
 
    procedure Directory_Errors (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
+      Errors   : Natural;
+      Results  : aliased Results_Type;
+      Expected : aliased Results_Type;
+      Settings : aliased Settings_Type := Global_Settings.all;
    begin
-      null;
+      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
+
+      --  ----- invalid source path -------------------------------------------
+      Settings.Abort_On_Error := True;
+      --!pp off
+      Errors := Apply (
+         Source     => "suite/dir-error",
+         Output_Dir => "suite/dir-error",
+         Toml_File  => "suite/toml/bat.toml"
+      );
+      --!pp on
+      Check_Errors (Errors, 1);
    end Directory_Errors;
 
    ------------------------
