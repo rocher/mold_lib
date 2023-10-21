@@ -2,6 +2,7 @@ mold-replacement-in-file-names = "true"
 mold-delete-source-files = "false"
 mold-undefined-variable-action = "ignore"
 mold-undefined-variable-alert = "warning"
+mold-undefined-filter-alert = "warning"
 mold-abort-on-error = "true"
 
 a = "arcu"          #    91  {{a}}
