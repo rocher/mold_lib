@@ -6,9 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
-with Ada.Exceptions; use Ada.Exceptions;
-with GNAT.Source_Info;
-
+with Log_Exceptions; use Log_Exceptions;
 with Mold_Lib.Impl.Line;
 with Mold_Lib.Impl.Variables;
 
@@ -141,8 +139,8 @@ package body Mold_Lib.Impl.File is
       end;
 
    exception
-      when Dir.Name_Error =>
-         Log.Debug ("EXCEPTION Dir.Name_Error caught");
+      when E : Dir.Name_Error =>
+         Log_Exception (E);
          return "";
    end Include_Path;
 
@@ -232,9 +230,7 @@ package body Mold_Lib.Impl.File is
 
    exception
       when E : others =>
-         Log.Error
-           ("EXCEPTION " & Exception_Name (E) & " caught in " &
-            GNAT.Source_Info.File & ": " & Exception_Message (E));
+         Log_Exception (E);
          Args.Errors := @ + 1;
 
    end Replace_In_Stream;
@@ -349,12 +345,8 @@ package body Mold_Lib.Impl.File is
          return Args.Errors;
 
       exception
-         --  invalid output directory or file name
-         when Dir.Name_Error =>
-            Log.Error
-              ("EXCEPTION caught in File.Replace:" &
-               " Invalid output directory or file name: '" & Dst_File_Name &
-               "'");
+         when E : Dir.Name_Error | Dir.Use_Error =>
+            Log_Exception (E, "Invalid directory");
             Args.Errors := @ + 1;
             return Args.Errors;
       end;

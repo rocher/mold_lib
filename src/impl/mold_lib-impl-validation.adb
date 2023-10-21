@@ -6,6 +6,8 @@
 --
 -------------------------------------------------------------------------------
 
+with Log_Exceptions; use Log_Exceptions;
+
 package body Mold_Lib.Impl.Validation is
 
    use all type Dir.File_Kind;
@@ -42,8 +44,8 @@ package body Mold_Lib.Impl.Validation is
       end return;
 
    exception
-      when Dir.Name_Error =>
-         Log.Error ("Invalid source file or directory");
+      when E : Dir.Name_Error | Dir.Use_Error =>
+         Log_Exception (E, "Invalid directory");
          Error := True;
          return "";
    end Validate_Source;
@@ -76,8 +78,8 @@ package body Mold_Lib.Impl.Validation is
       end return;
 
    exception
-      when Dir.Name_Error | Dir.Use_Error =>
-         Log.Error ("Invalid output directory " & Output_Dir);
+      when E : Dir.Name_Error | Dir.Use_Error =>
+         Log_Exception (E, "Invalid directory");
          Error := True;
          return "";
    end Validate_Output_Dir;
@@ -106,10 +108,10 @@ package body Mold_Lib.Impl.Validation is
          end if;
       end return;
 
-      pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
    exception
-      when Dir.Name_Error =>
-         Log.Error ("Invalid Toml file " & Toml_File);
+      pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
+      when E : Dir.Name_Error | Dir.Use_Error =>
+         Log_Exception (E, "Invalid directory");
          Error := True;
          return "";
          pragma Annotate (Xcov, Exempt_Off);

@@ -6,6 +6,8 @@
 --
 -------------------------------------------------------------------------------
 
+with Log_Exceptions; use Log_Exceptions;
+
 with TOML;
 with TOML.File_IO;
 
@@ -55,9 +57,9 @@ package body Mold_Lib.Impl.Variables is
                Args.Settings.Undefined_Variable_Action :=
                  Undefined_Variable_Actions'Value (Value);
             exception
-               when Constraint_Error =>
-                  Log.Error
-                    ("Invalid setting value in " & Key & " = " & Value);
+               when E : Constraint_Error =>
+                  Log_Exception
+                    (E, "Invalid setting value " & Key & " = " & Value);
                   Success := False;
             end;
 
@@ -74,9 +76,9 @@ package body Mold_Lib.Impl.Variables is
                   Args.Settings.Undefined_Filter_Alert := Undefined_Alert;
                end if;
             exception
-               when Constraint_Error =>
-                  Log.Error
-                    ("Invalid setting value in " & Key & " = " & Value);
+               when E : Constraint_Error =>
+                  Log_Exception
+                    (E, "Invalid setting value " & Key & " = " & Value);
                   Success := False;
             end;
          else

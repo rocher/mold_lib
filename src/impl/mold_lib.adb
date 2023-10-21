@@ -6,13 +6,12 @@
 --
 -------------------------------------------------------------------------------
 
-with Ada.Exceptions;        use Ada.Exceptions;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-with GNAT.Source_Info;
 
 with Simple_Logging.Decorators;
 
-with Mold_Lib.Impl; use Mold_Lib.Impl;
+with Log_Exceptions; use Log_Exceptions;
+with Mold_Lib.Impl;  use Mold_Lib.Impl;
 with Mold_Lib.Impl.Directory;
 with Mold_Lib.Impl.File;
 with Mold_Lib.Impl.Validation;
@@ -128,14 +127,12 @@ package body Mold_Lib is
       end;
 
    exception
-      when Dir.Name_Error =>  --  raised by Dir.Kind
-         Log.Error ("Invalid source " & Source);
+      when E : Dir.Name_Error | Dir.Use_Error =>  --  raised by Dir.Kind
+         Log_Exception (E, "Invalid source " & Source);
          return 1;
 
       when E : others =>
-         Log.Error
-           ("EXCEPTION " & Exception_Name (E) & " caught in " &
-            GNAT.Source_Info.File & ": " & Exception_Message (E));
+         Log_Exception (E);
          return 1;
 
    end Apply;

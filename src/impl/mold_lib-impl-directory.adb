@@ -6,6 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
+with Log_Exceptions; use Log_Exceptions;
 with Mold_Lib.Impl.File;
 
 package body Mold_Lib.Impl.Directory is
@@ -90,8 +91,8 @@ package body Mold_Lib.Impl.Directory is
       return Errors;
 
    exception
-      when Dir.Name_Error =>
-         Log.Error ("EXCEPTION caught Name_Error");
+      when E : Dir.Name_Error | Dir.Use_Error =>
+         Log_Exception (E, "Invalid directory");
          Dir.Set_Directory (CWD);
          Errors := @ + 1;
          return Errors;
