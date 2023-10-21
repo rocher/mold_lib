@@ -79,9 +79,10 @@ package body Errors_Tests is
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
 
       --  ----- invalid mold settings -----------------------------------------
-      Settings.Abort_On_Error := False;
-      Results                 := [others => 0];
-      Expected                := [Variables_Defined => 0, others => 0];
+      Settings.Abort_On_Error          := False;
+      Settings.Enable_Defined_Settings := True;
+      Results                          := [others => 0];
+      Expected := [Variables_Defined => 0, others => 0];
       for I in 1 .. 8 loop
          Number     := I'Image;
          Number (1) := '0';
