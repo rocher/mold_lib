@@ -83,7 +83,7 @@ package body Errors_Tests is
       Settings.Enable_Defined_Settings := True;
       Results                          := [others => 0];
       Expected := [Variables_Defined => 0, others => 0];
-      for I in 1 .. 8 loop
+      for I in 1 .. 9 loop
          Number     := I'Image;
          Number (1) := '0';
          --!pp off
