@@ -126,6 +126,10 @@ package body Mold_Lib is
       end;
 
    exception
+      when Name_Error =>  --  raised by Dir.Kind
+         Log.Error ("Invalid source " & Source);
+         return 1;
+
       when others =>
          Log.Error
            ("EXCEPTION caught in Mold_Lib.Apply:" &
