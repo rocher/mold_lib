@@ -138,10 +138,13 @@ package body Mold_Lib.Impl.File is
          end if;
       end;
 
+      pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
    exception
-      when E : Dir.Name_Error =>
-         Log_Exception (E);
+      when E : Dir.Name_Error | Dir.Use_Error =>
+         Log_Exception (E, "Invalid include filename");
          return "";
+         pragma Annotate (Xcov, Exempt_Off);
+
    end Include_Path;
 
    -----------------------
