@@ -15,13 +15,10 @@ package body Mold_Lib.Impl.Validation is
    ---------------------
 
    function Validate_Source
-     (Source : String; Error : in out Boolean) return String
+     (Source : String; Error : in out Boolean) return String with
+     Pre => (Error = False)
    is
    begin
-      if Error then
-         return "";
-      end if;
-
       return Source_Path : constant String := Full_Path_Expanded (Source) do
          if Source_Path'Length = 0 or else not Dir.Exists (Source_Path)
            or else Dir.Kind (Source_Path) = Dir.Special_File
