@@ -6,12 +6,15 @@
 --
 -------------------------------------------------------------------------------
 
+with Ada.Directories;
 with GNAT.Source_Info;
 
 with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
 package body Directory_Tests is
+
+   package Dir renames Ada.Directories;
 
    ----------
    -- Name --
@@ -119,6 +122,41 @@ package body Directory_Tests is
         ("suite/dir/simple/lorem-ipsum-pars.txt",
          "ff416bfec859c59a3834c46d60250e25",
          "8880f5a8180491db9710d884c81f4117");
+
+      --  ----- remove source files -------------------------------------------
+      Settings.Replacement_In_File_Names   := False;
+      Settings.Delete_Source_Files         := True;
+      Settings.Overwrite_Destination_Files := True;
+      Settings.Undefined_Variable_Action   := Empty;
+      Settings.Abort_On_Error              := True;
+
+      Dir.Copy_File
+        ("suite/mold/foo.txt.mold", "suite/dir-delete/foo.txt.mold");
+      Dir.Copy_File
+        ("suite/mold/foo-bar.txt.mold", "suite/dir-delete/foo-bar.txt.mold");
+
+      --!pp off
+      Errors := Apply (
+         Source     => "suite/dir-delete",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/foo-bar.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+
+      Expected := [
+         Files_Processed    =>  2,
+         Files_Renamed      =>  0,
+         Files_Deleted      =>  2,
+         Variables_Defined  =>  2,
+         Variables_Found    => 13,
+         Variables_Replaced => 13,
+         others => 0
+      ];
+      --!pp on
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+
    end Test_In_Place;
 
    ----------------------

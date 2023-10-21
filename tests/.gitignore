@@ -9,3 +9,4 @@ callgrind*
 /suite/tmp/
 /suite/dir/**/*.txt
 /suite/dir-error/**/*.txt
+/suite/dir-delete/**/*.txt
