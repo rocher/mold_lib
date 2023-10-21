@@ -166,11 +166,13 @@ package body Errors_Tests is
 
       --  ----- invalid source path -------------------------------------------
       Settings.Abort_On_Error := True;
+      Settings.Delete_Source_Files := False;
       --!pp off
       Errors := Apply (
          Source     => "suite/dir-error",
+         Settings   => Settings'Unrestricted_Access,
          Output_Dir => "suite/dir-error",
-         Toml_File  => "suite/toml/bat.toml"
+         Toml_File  => "suite/toml/bar.toml"
       );
       --!pp on
       Check_Errors (Errors, 1);
