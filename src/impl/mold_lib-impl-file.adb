@@ -231,11 +231,6 @@ package body Mold_Lib.Impl.File is
       Input.Close;
       Log.Debug ("END File.Replace_In_Stream");
 
-   exception
-      when E : others =>
-         Log_Exception (E);
-         Args.Errors := @ + 1;
-
    end Replace_In_Stream;
 
    -------------
@@ -292,12 +287,6 @@ package body Mold_Lib.Impl.File is
          Log.Debug ("  Repl_File_Name : " & Repl_File_Name);
          Log.Debug ("  Real_Out_Dir   : " & Real_Out_Dir);
          Log.Debug ("  Dst_File_Name  : " & Dst_File_Name);
-
-         if Args.Errors > 0 then
-            --  error detected during file name substitution, in the function
-            --  Replace_In_File_Name
-            goto Exit_Function;
-         end if;
 
          Inc_Result (Files_Processed);
 
