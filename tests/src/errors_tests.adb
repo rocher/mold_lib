@@ -47,6 +47,7 @@ package body Errors_Tests is
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
       Settings : aliased Settings_Type := Global_Settings.all;
+      Number   : String (1 .. 2);
    begin
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
@@ -77,25 +78,27 @@ package body Errors_Tests is
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
 
-      --  ----- invalid mold setting ------------------------------------------
+      --  ----- invalid mold settings -----------------------------------------
       Settings.Abort_On_Error := False;
       Results                 := [others => 0];
-      --!pp off
-      Errors := Apply (
-         Source     => "suite/mold/foo.txt.mold",
-         Output_Dir => "suite/tmp",
-         Settings   => Settings'Unchecked_Access,
-         Toml_File  => "suite/toml/invalid-variable-setting.toml",
-         Results    => Results'Unchecked_Access,
-         Log_Level  => Log.Level
-      );
-      Expected := [
-         Variables_Defined => 1,
-         others            => 0
-      ];
-      --!pp on
-      Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+      Expected                := [Variables_Defined => 0, others => 0];
+      for I in 1 .. 8 loop
+         Number     := I'Image;
+         Number (1) := '0';
+         --!pp off
+         Errors := Apply (
+            Source     => "suite/mold/foo.txt.mold",
+            Output_Dir => "suite/tmp",
+            Settings   => Settings'Unchecked_Access,
+            Toml_File  => "suite/toml/invalid-setting-" & Number & ".toml",
+            Results    => Results'Unchecked_Access,
+            Log_Level  => Log.Level
+         );
+         --!pp on
+         Check_Results
+           (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+      end loop;
+
    end Variable_Errors;
 
    -----------------
