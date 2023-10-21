@@ -33,6 +33,8 @@ package body Errors_Tests is
         (T, File_Errors'Access, "Errors during file operations");
       Register_Routine
         (T, Directory_Errors'Access, "Errors during directory operations");
+      Register_Routine
+        (T, Validations_Errors'Access, "Errors during validations operations");
    end Register_Tests;
 
    ---------------------
@@ -153,6 +155,49 @@ package body Errors_Tests is
    -- Directory_Errors --
    ----------------------
 
-   procedure Directory_Errors (T : in out Test_Case'Class) is null;
+   procedure Directory_Errors (T : in out Test_Case'Class) is
+   begin
+      null;
+   end Directory_Errors;
+
+   ------------------------
+   -- Validations_Errors --
+   ------------------------
+
+   procedure Validations_Errors (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
+      Errors : Natural;
+   begin
+      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
+
+      --  ----- invalid source path -------------------------------------------
+      --!pp off
+      Errors := Apply (
+         Source     => "suite/toml/foo.toml",
+         Output_Dir => "suite/invalid_dir",
+         Toml_File  => "suite/toml/foo.toml"
+      );
+      --!pp on
+      Check_Errors (Errors, 1);
+
+      --  ----- invalid directory ---------------------------------------------
+      --!pp off
+      Errors := Apply (
+         Source     => "suite/mold/foo.txt.mold",
+         Output_Dir => "/invalid-dir/",
+         Toml_File  => "suite/toml/foo.toml"
+      );
+      --!pp on
+      Check_Errors (Errors, 1);
+
+      --!pp off
+      Errors := Apply (
+         Source     => "suite/mold/foo.txt.mold",
+         Output_Dir => "/dev/null",
+         Toml_File  => "suite/toml/foo.toml"
+      );
+      --!pp on
+      Check_Errors (Errors, 1);
+   end Validations_Errors;
 
 end Errors_Tests;

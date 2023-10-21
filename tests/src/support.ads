@@ -38,6 +38,13 @@ package Support is
      (Errors : Natural; Results : Mold.Results_Access) return String;
 
    --!pp off
+   procedure Check_Errors
+   (
+      Reported, Expected : Natural;
+      Source             : String := GNAT.Source_Info.File;
+      Line               : Natural := GNAT.Source_Info.Line
+   );
+
    procedure Check_Results
    (
       Errors             : Natural;

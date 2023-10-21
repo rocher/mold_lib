@@ -20,5 +20,6 @@ package Errors_Tests is
    procedure Variable_Errors (T : in out Test_Case'Class);
    procedure File_Errors (T : in out Test_Case'Class);
    procedure Directory_Errors (T : in out Test_Case'Class);
+   procedure Validations_Errors (T : in out Test_Case'Class);
 
 end Errors_Tests;
