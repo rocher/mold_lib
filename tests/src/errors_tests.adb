@@ -180,6 +180,34 @@ package body Errors_Tests is
       --!pp on
       Check_Errors (Errors, 1);
 
+      --!pp off
+      Errors := Apply (
+         Source     => "invalid:source:file",
+         Output_Dir => "suite/invalid_dir",
+         Toml_File  => "suite/toml/foo.toml"
+      );
+      --!pp on
+      Check_Errors (Errors, 1);
+
+      --  ----- invalid toml file ---------------------------------------------
+      --!pp off
+      Errors := Apply (
+         Source     => "suite/mold/foo.txt.mold",
+         Output_Dir => "suite/tmp",
+         Toml_File  => "suite/toml/invalid.toml"
+      );
+      --!pp on
+      Check_Errors (Errors, 1);
+
+      --!pp off
+      Errors := Apply (
+         Source     => "suite/mold/foo.txt.mold",
+         Output_Dir => "suite/tmp",
+         Toml_File  => "/invalid:path/foo.toml"
+      );
+      --!pp on
+      Check_Errors (Errors, 1);
+
       --  ----- invalid directory ---------------------------------------------
       --!pp off
       Errors := Apply (
