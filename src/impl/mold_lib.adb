@@ -6,7 +6,9 @@
 --
 -------------------------------------------------------------------------------
 
+with Ada.Exceptions;        use Ada.Exceptions;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with GNAT.Source_Info;
 
 with Simple_Logging.Decorators;
 
@@ -130,11 +132,10 @@ package body Mold_Lib is
          Log.Error ("Invalid source " & Source);
          return 1;
 
-      when others =>
+      when E : others =>
          Log.Error
-           ("EXCEPTION caught in Mold_Lib.Apply:" &
-            " Please run again with logging Debug enabled" &
-            " and report this error");
+           ("EXCEPTION " & Exception_Name (E) & " caught in " &
+            GNAT.Source_Info.File & ": " & Exception_Message (E));
          return 1;
 
    end Apply;

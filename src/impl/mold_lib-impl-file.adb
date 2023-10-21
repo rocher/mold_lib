@@ -6,6 +6,9 @@
 --
 -------------------------------------------------------------------------------
 
+with Ada.Exceptions; use Ada.Exceptions;
+with GNAT.Source_Info;
+
 with Mold_Lib.Impl.Line;
 with Mold_Lib.Impl.Variables;
 
@@ -228,11 +231,10 @@ package body Mold_Lib.Impl.File is
       Log.Debug ("END File.Replace_In_Stream");
 
    exception
-      when others =>
+      when E : others =>
          Log.Error
-           ("EXCEPTION caught in file.adb: " &
-            " Please run again with logging Debug enabled" &
-            " and report this error");
+           ("EXCEPTION " & Exception_Name (E) & " caught in " &
+            GNAT.Source_Info.File & ": " & Exception_Message (E));
          Args.Errors := @ + 1;
 
    end Replace_In_Stream;
