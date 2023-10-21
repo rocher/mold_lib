@@ -8,3 +8,4 @@ callgrind*
 /gnatcov_out/
 /suite/tmp/
 /suite/dir/**/*.txt
+/suite/dir-error/**/*.txt
