@@ -329,6 +329,7 @@ package body Mold_Lib.Impl.File is
          if Args.Settings.Delete_Source_Files and then Args.Errors = 0 then
             Dir.Delete_File (Source.all);
             Log.Debug ("  Deleted file " & Source.all);
+            Inc_Result (Files_Deleted);
          end if;
 
          <<Exit_Function>>
