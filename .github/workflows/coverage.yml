@@ -47,6 +47,7 @@ jobs:
               alr gnatcov coverage --annotate=xcov --output-dir gnatcov_out --level=stmt --projects mold_lib --no-subprojects *.srctrace
 
           - name: Upload coverage reports to Codecov
-            uses: alire-project/gnatcov-to-codecovio-action@main
-            env:
-              CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+            uses: rocher/gnatcov-to-codecovio-action@main
+            with:
+              token: ${{ secrets.CODECOV_TOKEN }}
+              branch: ${{ github.event.workflow_run.head_branch }}
