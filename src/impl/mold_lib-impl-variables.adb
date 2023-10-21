@@ -39,52 +39,50 @@ package body Mold_Lib.Impl.Variables is
       end Set_Boolean;
 
    begin
-      if Args.Settings.Enable_Defined_Settings then
-         if Key = "mold-replacement-in-file-names" then
-            Set_Boolean (Args.Settings.Replacement_In_File_Names'Access);
+      if Key = "mold-replacement-in-file-names" then
+         Set_Boolean (Args.Settings.Replacement_In_File_Names'Access);
 
-         elsif Key = "mold-delete-source-files" then
-            Set_Boolean (Args.Settings.Delete_Source_Files'Access);
+      elsif Key = "mold-delete-source-files" then
+         Set_Boolean (Args.Settings.Delete_Source_Files'Access);
 
-         elsif Key = "mold-overwrite-destination-files" then
-            Set_Boolean (Args.Settings.Overwrite_Destination_Files'Access);
+      elsif Key = "mold-overwrite-destination-files" then
+         Set_Boolean (Args.Settings.Overwrite_Destination_Files'Access);
 
-         elsif Key = "mold-abort-on-error" then
-            Set_Boolean (Args.Settings.Abort_On_Error'Access);
+      elsif Key = "mold-abort-on-error" then
+         Set_Boolean (Args.Settings.Abort_On_Error'Access);
 
-         elsif Key = "mold-undefined-variable-action" then
-            begin
-               Args.Settings.Undefined_Variable_Action :=
-                 Undefined_Variable_Actions'Value (Value);
-            exception
-               when E : Constraint_Error =>
-                  Log_Exception
-                    (E, "Invalid setting value " & Key & " = " & Value);
-                  Success := False;
-            end;
+      elsif Key = "mold-undefined-variable-action" then
+         begin
+            Args.Settings.Undefined_Variable_Action :=
+              Undefined_Variable_Actions'Value (Value);
+         exception
+            when E : Constraint_Error =>
+               Log_Exception
+                 (E, "Invalid setting value " & Key & " = " & Value);
+               Success := False;
+         end;
 
-         elsif Key = "mold-undefined-variable-alert"
-           or else Key = "mold-undefined-filter-alert"
-         then
-            declare
-               Undefined_Alert : Undefined_Alerts;
-            begin
-               Undefined_Alert := Undefined_Alerts'Value (Value);
-               if Key = "mold-undefined-variable-alert" then
-                  Args.Settings.Undefined_Variable_Alert := Undefined_Alert;
-               else
-                  Args.Settings.Undefined_Filter_Alert := Undefined_Alert;
-               end if;
-            exception
-               when E : Constraint_Error =>
-                  Log_Exception
-                    (E, "Invalid setting value " & Key & " = " & Value);
-                  Success := False;
-            end;
-         else
-            Log.Error ("Invalid setting key in " & Key & " = " & Value);
-            Success := False;
-         end if;
+      elsif Key = "mold-undefined-variable-alert"
+        or else Key = "mold-undefined-filter-alert"
+      then
+         declare
+            Undefined_Alert : Undefined_Alerts;
+         begin
+            Undefined_Alert := Undefined_Alerts'Value (Value);
+            if Key = "mold-undefined-variable-alert" then
+               Args.Settings.Undefined_Variable_Alert := Undefined_Alert;
+            else
+               Args.Settings.Undefined_Filter_Alert := Undefined_Alert;
+            end if;
+         exception
+            when E : Constraint_Error =>
+               Log_Exception
+                 (E, "Invalid setting value " & Key & " = " & Value);
+               Success := False;
+         end;
+      else
+         Log.Error ("Invalid setting key in " & Key & " = " & Value);
+         Success := False;
       end if;
 
       if Success then
@@ -110,7 +108,8 @@ package body Mold_Lib.Impl.Variables is
 
       if Read_Result.Success then
          for Element of Read_Result.Value.Iterate_On_Table loop
-            if Element.Key.Length >= 10
+            if Args.Settings.Enable_Defined_Settings
+              and then Element.Key.Length >= 10
               and then Element.Key.Slice (1, 5) = Defined_Setting_Prefix
             then
                if not Set_Mold_Setting
