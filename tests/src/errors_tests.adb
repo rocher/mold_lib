@@ -217,16 +217,6 @@ package body Errors_Tests is
       );
       --!pp on
       Check_Errors (Errors, 1);
-
-      --  --!pp off
-      --  Errors := Apply (
-      --     Source     => "suite/mold/foo.txt.mold",
-      --     Output_Dir => "/dev/null",
-      --     Toml_File  => "suite/toml/foo.toml"
-      --  );
-      --  --!pp on
-      --  Check_Errors (Errors, 1);
-
    end Validations_Errors;
 
 end Errors_Tests;
