@@ -299,7 +299,8 @@ package body Errors_Tests is
       Errors := Apply (
          Source     => "suite/mold/foo.txt.mold",
          Output_Dir => "/invalid:dir:name/",
-         Toml_File  => "suite/toml/foo.toml"
+         Toml_File  => "suite/toml/foo.toml",
+         Log_Level  => Log.Debug
       );
       --!pp on
       Check_Errors (Errors, 1);
