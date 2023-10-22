@@ -88,7 +88,7 @@ package body Filters_Tests is
       --  ----- variable substitution with text filters -----------------------
       Settings.Abort_On_Error              := False;
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Filter_Alert      := Warning;
+      Settings.Undefined_Filter_Alert      := Error;
       --!pp off
       Errors := Apply (
          Source     => "suite/mold/predefined-filters.txt.mold",
@@ -107,7 +107,7 @@ package body Filters_Tests is
          Variables_Replaced   =>  59,
          Filters_Found        => 111,
          Filters_Applied      => 110,
-         Replacement_Warnings =>   1,
+         Replacement_Errors   =>   1,
          others               =>   0
       ];
       --!pp on
