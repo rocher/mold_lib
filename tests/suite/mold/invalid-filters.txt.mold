@@ -1,6 +1,6 @@
 
-                                 Number of filters      Σ
-                                 ------------------------
+                                 Number of filters
+                           -----------------------
 No parameter             : {{Title/T}}           1
 Invalid parameter        : {{Title/Tz}}          1
 
@@ -8,6 +8,8 @@ No parameters            : {{Title/r}}           1
 One wrong parameter      : {{Title/rz}}          1
 Two wrong parameters     : {{Title/rzs}}         1
 Three wrong parameters   : {{Title/rzsq}}        1
+
+No parameters            : {{Title/s}}           1
 
 No parameters            : {{Title/p}}           1
 Wrong direction          : {{Title/pq}}          1
