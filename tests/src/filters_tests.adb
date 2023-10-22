@@ -32,6 +32,7 @@ package body Filters_Tests is
       Register_Routine
         (T, Test_Predefined_Filters'Access, "Predefined Filters");
       Register_Routine (T, Test_Custom_Filters'Access, "Custom Filters");
+      Register_Routine (T, Test_Invalid_Filters'Access, "Invalid Filters");
    end Register_Tests;
 
    -----------------------------
@@ -230,6 +231,44 @@ package body Filters_Tests is
          "8cf044082091ac4223a9321f41191843");
 
    end Test_Custom_Filters;
+
+   --------------------------
+   -- Test_Invalid_Filters --
+   --------------------------
+
+   procedure Test_Invalid_Filters (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
+      Errors   : Natural;
+      Settings : Mold.Settings_Type := Global_Settings.all;
+      Results  : aliased Results_Type;
+      Expected : aliased Results_Type;
+   begin
+      --  ----- variable substitution with text filters: errors as warnings ---
+      Settings.Undefined_Filter_Alert := Warning;
+      --!pp off
+      Errors := Apply (
+         Source     => "suite/mold/invalid-filters.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Global_Settings,
+         Toml_File  => "suite/toml/custom-filters.toml",
+         Filters    => null,
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed      =>  1,
+         Variables_Defined    =>  2,
+         Variables_Found      => 17,
+         Variables_Replaced   => 17,
+         Filters_Found        => 17,
+         Filters_Applied      =>  0,
+         Replacement_Warnings => 17,
+         others               =>  0
+      ];
+      --!pp on
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 0);
+   end Test_Invalid_Filters;
 
    ----------------------
    -- Replace_By_Slash --
