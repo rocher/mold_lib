@@ -14,10 +14,14 @@ Three wrong parameters   : {{Title/rzsq}}        1
 Sequence: s<CHAR>
 No parameters            : {{Title/s}}           1
 
+Delete: D<CHAR>
+No parameters            : {{Title/D}}           1
+
 Padding: p{l,r}<CHAR><NUM>
 No parameters            : {{Title/p}}           1
 Wrong direction          : {{Title/pq}}          1
 Only two parameters      : {{Title/plw}}         1
+Wrong direction          : {{Title/pzw3}}        1
 Wrong number             : {{Title/plww}}        1
 
 Truncate: W<NUM>
