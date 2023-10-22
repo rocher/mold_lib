@@ -1,0 +1,24 @@
+
+                                 Number of filters      Σ
+                                 ------------------------
+No parameter             : {{Title/T}}           1
+Invalid parameter        : {{Title/Tz}}          1
+
+No parameters            : {{Title/r}}           1
+One wrong parameter      : {{Title/rz}}          1
+Two wrong parameters     : {{Title/rzs}}         1
+Three wrong parameters   : {{Title/rzsq}}        1
+
+No parameters            : {{Title/p}}           1
+Wrong direction          : {{Title/pq}}          1
+Only two parameters      : {{Title/plw}}         1
+Wrong number             : {{Title/plww}}        1
+
+No parameters            : {{Title/W}}           1
+Wrong width              : {{Title/Ww}}          1
+
+No parameters            : {{Title/c}}           1
+Wrong case               : {{Title/cz}}          1
+
+No parameters            : {{Title/n}}           1
+Wrong naming style       : {{Title/nn}}          1
