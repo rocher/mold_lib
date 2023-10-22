@@ -46,7 +46,7 @@ package body Mold_Lib.Impl.Validation is
       pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
    exception
       when E : Dir.Name_Error | Dir.Use_Error =>
-         Log_Exception (E, "Invalid directory");
+         Log_Exception (E);
          Error := True;
          return "";
          pragma Annotate (Xcov, Exempt_Off);
@@ -81,7 +81,7 @@ package body Mold_Lib.Impl.Validation is
 
    exception
       when E : Dir.Name_Error | Dir.Use_Error =>
-         Log_Exception (E, "Invalid directory");
+         Log_Exception (E);
          Error := True;
          return "";
    end Validate_Output_Dir;
@@ -113,7 +113,7 @@ package body Mold_Lib.Impl.Validation is
       pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
    exception
       when E : Dir.Name_Error | Dir.Use_Error =>
-         Log_Exception (E, "Invalid directory");
+         Log_Exception (E);
          Error := True;
          return "";
          pragma Annotate (Xcov, Exempt_Off);

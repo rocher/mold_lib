@@ -141,7 +141,7 @@ package body Mold_Lib.Impl.File is
       pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
    exception
       when E : Dir.Name_Error | Dir.Use_Error =>
-         Log_Exception (E, "Invalid include filename");
+         Log_Exception (E);
          return "";
          pragma Annotate (Xcov, Exempt_Off);
 
@@ -339,7 +339,7 @@ package body Mold_Lib.Impl.File is
 
       exception
          when E : Dir.Name_Error | Dir.Use_Error =>
-            Log_Exception (E, "Invalid file or directory");
+            Log_Exception (E);
             Args.Errors := @ + 1;
             return Args.Errors;
       end;
