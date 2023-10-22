@@ -119,7 +119,8 @@ package body Mold_Lib.Impl.Line is
                      Var_Filtered : constant Unbounded_String :=
                        Text_Filters.Apply
                          (Filters, Var_Value, Output, Results,
-                          Args.Settings.Undefined_Filter_Alert = Error);
+                          Abort_On_Error =>
+                            Args.Settings.Undefined_Filter_Alert = Error);
                   begin
                      Inc_Result (Filters_Found, Results.Found);
                      Inc_Result (Filters_Applied, Results.Applied);
@@ -128,7 +129,9 @@ package body Mold_Lib.Impl.Line is
                      else
                         Inc_Result (Replacement_Warnings, Results.Errors);
                      end if;
-                     if Results.Errors = 0 then
+                     if Results.Errors = 0
+                       or else Args.Settings.Undefined_Filter_Alert = Warning
+                     then
                         New_Line.Append (Var_Filtered);
                      else
                         Args.Errors := @ + Results.Errors;

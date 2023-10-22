@@ -62,7 +62,11 @@ begin
       when filter_style_train_uppercase  => return Style_Train_Uppercase (S);
       --!pp on
 
+         pragma Annotate
+           (Xcov, Exempt_On, "Precondition guarantees no other values");
       when others =>
          return Null_Unbounded_String;
+         pragma Annotate (Xcov, Exempt_On);
+
    end case;
 end Apply;

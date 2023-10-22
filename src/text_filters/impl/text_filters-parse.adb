@@ -279,6 +279,10 @@ begin
                      Text_Filter.Error :=
                        UStr ("Invalid argument '" & Arg & "'in filter 'n'");
                end case;
+            else
+               Text_Filter.Kind  := filter_error;
+               Text_Filter.Error :=
+                 UStr ("Invalid number or arguments in filter 'n'");
             end if;
 
          when others =>

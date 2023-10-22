@@ -42,6 +42,22 @@ package body Support is
       return To_String (Text);
    end Pretty_Print;
 
+   --!pp off
+   procedure Check_Errors
+     (Reported, Expected : Natural;
+      Source             : String := GNAT.Source_Info.File;
+      Line               : Natural := GNAT.Source_Info.Line)
+   --!pp on
+
+   is
+   begin
+      Assert
+        (Reported = Expected,
+         "Incorrect Errors: reported" & Reported'Image & ", expected" &
+         Expected'Image,
+         Source, Line);
+   end Check_Errors;
+
    -------------------
    -- Check_Results --
    -------------------

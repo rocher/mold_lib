@@ -12,4 +12,5 @@ jobs:
               uses: actions/github-script@v6
               with:
                 script: |
-                    echo "${{ github.event }}"
+                    console.log("github.event.ref: ${{github.event.ref}}");
+                    console.log("github: ${{github}}");

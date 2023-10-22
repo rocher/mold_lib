@@ -1,18 +1,15 @@
-name: Coverage
+name: Coverage (Manual)
 
 on:
-  workflow_run:
-    workflows: [Unit test]
-    types: [completed]
-    branches:
-        - main
-        - develop
   workflow_dispatch:
+    inputs:
+        branch:
+            description: 'Branch in which run coverage test'
+            required: true
 
 jobs:
     coverage:
         runs-on: ubuntu-latest
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
         defaults:
             run:
               shell: bash
@@ -21,7 +18,7 @@ jobs:
           - name: Checkout Mold Lib
             uses: actions/checkout@v4
             with:
-              ref: ${{ github.event.workflow_run.head_branch }}
+              ref: ${{ inputs.branch }}
 
           - name: Get Alire v1.2.2
             uses: alire-project/setup-alire@v2
@@ -50,4 +47,4 @@ jobs:
             uses: rocher/gnatcov-to-codecovio-action@main
             with:
               token: ${{ secrets.CODECOV_TOKEN }}
-              branch: ${{ github.event.workflow_run.head_branch }}
+              branch: ${{ inputs.branch }}

@@ -6,6 +6,8 @@
 --
 -------------------------------------------------------------------------------
 
+with Log_Exceptions; use Log_Exceptions;
+
 package body Mold_Lib.Impl.Validation is
 
    use all type Dir.File_Kind;
@@ -15,13 +17,10 @@ package body Mold_Lib.Impl.Validation is
    ---------------------
 
    function Validate_Source
-     (Source : String; Error : in out Boolean) return String
+     (Source : String; Error : in out Boolean) return String with
+     Pre => (Error = False)
    is
    begin
-      if Error then
-         return "";
-      end if;
-
       return Source_Path : constant String := Full_Path_Expanded (Source) do
          if Source_Path'Length = 0 or else not Dir.Exists (Source_Path)
            or else Dir.Kind (Source_Path) = Dir.Special_File
@@ -44,11 +43,13 @@ package body Mold_Lib.Impl.Validation is
          end if;
       end return;
 
+      pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
    exception
-      when Dir.Name_Error =>
-         Log.Error ("Invalid source file or directory");
+      when E : Dir.Name_Error | Dir.Use_Error =>
+         Log_Exception (E);
          Error := True;
          return "";
+         pragma Annotate (Xcov, Exempt_Off);
    end Validate_Source;
 
    -------------------------
@@ -79,8 +80,8 @@ package body Mold_Lib.Impl.Validation is
       end return;
 
    exception
-      when Dir.Name_Error | Dir.Use_Error =>
-         Log.Error ("Invalid output directory " & Output_Dir);
+      when E : Dir.Name_Error | Dir.Use_Error =>
+         Log_Exception (E);
          Error := True;
          return "";
    end Validate_Output_Dir;
@@ -109,11 +110,14 @@ package body Mold_Lib.Impl.Validation is
          end if;
       end return;
 
+      pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
    exception
-      when Dir.Name_Error =>
-         Log.Error ("Invalid Toml file " & Toml_File);
+      when E : Dir.Name_Error | Dir.Use_Error =>
+         Log_Exception (E);
          Error := True;
          return "";
+         pragma Annotate (Xcov, Exempt_Off);
+
    end Validate_Toml_File;
 
    -----------------------

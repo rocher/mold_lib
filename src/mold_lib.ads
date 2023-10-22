@@ -56,6 +56,7 @@ package Mold_Lib is
       Files_Processed,
       Files_Renamed,
       Files_Overwritten,
+      Files_Deleted,
       Variables_Defined,
       Variables_Found,
       Variables_Undefined,

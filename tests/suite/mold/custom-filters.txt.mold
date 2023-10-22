@@ -1,0 +1,16 @@
+
+                                 Number of filters      Σ
+                                 ------------------------
+No filter                : {{Title}}
+Replace all chars by '-' : {{Title/s-}}          1
+Replace all chars by '=' : {{Title/s=}}          1
+Replace all chars    '/' : {{Title/s//}}         1
+Replace all chars by '/' : {{Title/0}}           1
+Same as before:          : {{Title/0}}           1
+Possibly undefined:      : {{Title/2}}           1
+
+Line        : [{{ Line  }}]
+Line/Tl     : [{{ Line/Tl/0}}]                   2
+Line/Tl     : [{{ Line/0/Tl}}]                   2
+Line/Tr     : [{{ Line/Tr/0}}]                   2
+Line/Tr     : [{{ Line/0/Tr}}]                   2

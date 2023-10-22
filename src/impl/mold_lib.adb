@@ -10,7 +10,8 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with Simple_Logging.Decorators;
 
-with Mold_Lib.Impl; use Mold_Lib.Impl;
+with Log_Exceptions; use Log_Exceptions;
+with Mold_Lib.Impl;  use Mold_Lib.Impl;
 with Mold_Lib.Impl.Directory;
 with Mold_Lib.Impl.File;
 with Mold_Lib.Impl.Validation;
@@ -123,16 +124,21 @@ package body Mold_Lib is
 
          Log.Debug ("END Mold_Lib.Apply");
          return Errors;
+
+         pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
+      exception
+         when E : Dir.Name_Error =>  --  raised by Dir.Kind
+            Log_Exception (E, "Invalid source file '" & Source & "'");
+            return 1;
+            pragma Annotate (Xcov, Exempt_Off);
       end;
 
+      pragma Annotate (Xcov, Exempt_On, "Top level exception caught");
    exception
-      when others =>
-         Log.Error
-           ("EXCEPTION caught in Mold_Lib.Apply:" &
-            " Please run again with logging Debug enabled" &
-            " and report this error");
+      when E : others =>
+         Log_Exception (E);
          return 1;
-
+         pragma Annotate (Xcov, Exempt_Off);
    end Apply;
 
 end Mold_Lib;

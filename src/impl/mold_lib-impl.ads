@@ -94,14 +94,6 @@ package Mold_Lib.Impl is
    --  Return the path obtained by the concatenation of the directory A and
    --  the file or directory B: in Unix systems, "A/B"
 
-   function Full_Path (A : String; B : String := "") return String is
-     (Dir.Full_Name
-        (GNAT.Directory_Operations.Format_Pathname
-           (A & GNAT.Directory_Operations.Dir_Separator & B)));
-   --  Return the full path obtained by the concatenation of the directory A
-   --  and the file or directory B: in Unix systems, "/<PATH_TO_A>/A/B". If B
-   --  is the empty string, return the pathname expansion of A.
-
    function Full_Path_Expanded (A : String; B : String := "") return String is
      (Dir.Full_Name
         (GNAT.Directory_Operations.Expand_Path

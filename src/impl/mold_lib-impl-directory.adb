@@ -6,6 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
+with Log_Exceptions; use Log_Exceptions;
 with Mold_Lib.Impl.File;
 
 package body Mold_Lib.Impl.Directory is
@@ -89,12 +90,14 @@ package body Mold_Lib.Impl.Directory is
       Log.Debug ("END Impl.Directory.Replace");
       return Errors;
 
+      pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
    exception
-      when Dir.Name_Error =>
-         Log.Error ("EXCEPTION caught Name_Error");
+      when E : Dir.Name_Error | Dir.Use_Error =>
+         Log_Exception (E);
          Dir.Set_Directory (CWD);
          Errors := @ + 1;
          return Errors;
+         pragma Annotate (Xcov, Exempt_Off);
 
    end Replace;
 

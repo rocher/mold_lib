@@ -6,6 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
+with Log_Exceptions; use Log_Exceptions;
 with Mold_Lib.Impl.Line;
 with Mold_Lib.Impl.Variables;
 
@@ -137,10 +138,13 @@ package body Mold_Lib.Impl.File is
          end if;
       end;
 
+      pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
    exception
-      when Dir.Name_Error =>
-         Log.Debug ("EXCEPTION Dir.Name_Error caught");
+      when E : Dir.Name_Error | Dir.Use_Error =>
+         Log_Exception (E);
          return "";
+         pragma Annotate (Xcov, Exempt_Off);
+
    end Include_Path;
 
    -----------------------
@@ -227,14 +231,6 @@ package body Mold_Lib.Impl.File is
       Input.Close;
       Log.Debug ("END File.Replace_In_Stream");
 
-   exception
-      when others =>
-         Log.Error
-           ("EXCEPTION caught in file.adb: " &
-            " Please run again with logging Debug enabled" &
-            " and report this error");
-         Args.Errors := @ + 1;
-
    end Replace_In_Stream;
 
    -------------
@@ -292,12 +288,6 @@ package body Mold_Lib.Impl.File is
          Log.Debug ("  Real_Out_Dir   : " & Real_Out_Dir);
          Log.Debug ("  Dst_File_Name  : " & Dst_File_Name);
 
-         if Args.Errors > 0 then
-            --  error detected during file name substitution, in the function
-            --  Replace_In_File_Name
-            goto Exit_Function;
-         end if;
-
          Inc_Result (Files_Processed);
 
          if Base_File_Name /= Dir.Simple_Name (Dst_File_Name) then
@@ -339,6 +329,7 @@ package body Mold_Lib.Impl.File is
          if Args.Settings.Delete_Source_Files and then Args.Errors = 0 then
             Dir.Delete_File (Source.all);
             Log.Debug ("  Deleted file " & Source.all);
+            Inc_Result (Files_Deleted);
          end if;
 
          <<Exit_Function>>
@@ -347,12 +338,8 @@ package body Mold_Lib.Impl.File is
          return Args.Errors;
 
       exception
-         --  invalid output directory or file name
-         when Dir.Name_Error =>
-            Log.Error
-              ("EXCEPTION caught in File.Replace:" &
-               " Invalid output directory or file name: '" & Dst_File_Name &
-               "'");
+         when E : Dir.Name_Error | Dir.Use_Error =>
+            Log_Exception (E);
             Args.Errors := @ + 1;
             return Args.Errors;
       end;
