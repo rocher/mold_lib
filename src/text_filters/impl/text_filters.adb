@@ -60,7 +60,9 @@ package body Text_Filters is
    --!pp on
 
    is
-      pragma Unreferenced (Output);
+      pragma Unreferenced
+        (Output);  --  !TODO To be used with paragraph filters
+
       Filter_Parsed : Text_Filter_Parsed;
 
       Result : UString := To_Unbounded_String (Value);
@@ -68,6 +70,8 @@ package body Text_Filters is
       Tail   : UString;
    begin
       Summary := (others => 0);
+
+      Log.Debug ("Abort_On_Error : " & Abort_On_Error'Image);
 
       Apply_All_Text_Filters_Loop :
       loop
@@ -91,7 +95,6 @@ package body Text_Filters is
          Log.Debug ("Tail          : '" & Tail'Image & "'");
          Log.Debug ("Result        : '" & To_String (Result) & "'");
 
-         --  exit when Filter_Parsed.Kind in filter_none | filter_error;
          exit Apply_All_Text_Filters_Loop when Tail = Null_Unbounded_String;
       end loop Apply_All_Text_Filters_Loop;
 
