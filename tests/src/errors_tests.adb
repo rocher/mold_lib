@@ -115,6 +115,23 @@ package body Errors_Tests is
    begin
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
+      --  ----- invalid file name ---------------------------------------------
+      Settings.Abort_On_Error := True;
+      Results                 := [others => 0];
+      --!pp off
+      Errors := Apply (
+         Source     => "invalid:file:name",
+         Output_Dir => "suite/tmp",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/bar.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [ others => 0 ];
+      --!pp on
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+
       --  ----- non-existent file ---------------------------------------------
       Settings.Abort_On_Error := True;
       Results                 := [others => 0];
