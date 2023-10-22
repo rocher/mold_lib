@@ -258,11 +258,11 @@ package body Filters_Tests is
       Expected := [
          Files_Processed      =>  1,
          Variables_Defined    =>  2,
-         Variables_Found      => 17,
-         Variables_Replaced   => 17,
-         Filters_Found        => 17,
+         Variables_Found      => 19,
+         Variables_Replaced   => 19,
+         Filters_Found        => 19,
          Filters_Applied      =>  0,
-         Replacement_Warnings => 17,
+         Replacement_Warnings => 19,
          others               =>  0
       ];
       --!pp on
