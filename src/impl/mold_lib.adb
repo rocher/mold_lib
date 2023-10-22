@@ -124,17 +124,21 @@ package body Mold_Lib is
 
          Log.Debug ("END Mold_Lib.Apply");
          return Errors;
+
+         pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
+      exception
+         when E : Dir.Name_Error =>  --  raised by Dir.Kind
+            Log_Exception (E, "Invalid source file '" & Source & "'");
+            return 1;
+            pragma Annotate (Xcov, Exempt_Off);
       end;
 
+      pragma Annotate (Xcov, Exempt_On, "Top level exception caught");
    exception
-      when E : Dir.Name_Error | Dir.Use_Error =>  --  raised by Dir.Kind
-         Log_Exception (E, "Invalid source " & Source);
-         return 1;
-
       when E : others =>
          Log_Exception (E);
          return 1;
-
+         pragma Annotate (Xcov, Exempt_Off);
    end Apply;
 
 end Mold_Lib;
