@@ -1,26 +1,33 @@
 
                                  Number of filters
                            -----------------------
+Space Trimming: T{l,r,b,s,a}
 No parameter             : {{Title/T}}           1
 Invalid parameter        : {{Title/Tz}}          1
 
+Replace: r{a,f,l}<SRC><DST>
 No parameters            : {{Title/r}}           1
 One wrong parameter      : {{Title/rz}}          1
 Two wrong parameters     : {{Title/rzs}}         1
 Three wrong parameters   : {{Title/rzsq}}        1
 
+Sequence: s<CHAR>
 No parameters            : {{Title/s}}           1
 
+Padding: p{l,r}<CHAR><NUM>
 No parameters            : {{Title/p}}           1
 Wrong direction          : {{Title/pq}}          1
 Only two parameters      : {{Title/plw}}         1
 Wrong number             : {{Title/plww}}        1
 
+Truncate: W<NUM>
 No parameters            : {{Title/W}}           1
 Wrong width              : {{Title/Ww}}          1
 
+Case: c{l,c,u}
 No parameters            : {{Title/c}}           1
 Wrong case               : {{Title/cz}}          1
 
+Naming Style: n{f,c,C,U,s,S,i,A,d,t,T}
 No parameters            : {{Title/n}}           1
 Wrong naming style       : {{Title/nn}}          1
