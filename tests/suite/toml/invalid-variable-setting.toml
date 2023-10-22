@@ -1,4 +1,0 @@
-mold-overwrite-destination-files = "true"
-mold-replacement-in-file-names = "42"
-mold-undefined-filter-alert = "don't know"
-mold-unknown.setting = "false"
