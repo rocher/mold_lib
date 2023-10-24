@@ -35,7 +35,7 @@ package body Text_Filters is
 
    function Apply
      (Filter : Text_Filter_Parsed; S : UString) return UString is separate with
-     Pre => (Filter.Kind /= filter_none and Filter.Kind /= filter_error);
+     Pre => (Filter.Kind /= filter_none and then Filter.Kind /= filter_error);
 
    -----------------------------
    -- Set_Custom_Text_Filters --
