@@ -88,7 +88,6 @@ package body Text_Filters is
             end if;
          else
             Result          := Apply (Filter_Parsed, Result);
-            Filter          := Tail;
             Summary.Applied := @ + 1;
          end if;
 
@@ -97,6 +96,7 @@ package body Text_Filters is
          Log.Debug ("Result        : '" & To_String (Result) & "'");
 
          exit Apply_All_Text_Filters_Loop when Tail = Null_Unbounded_String;
+         Filter := Tail;
       end loop Apply_All_Text_Filters_Loop;
 
       return Result;
