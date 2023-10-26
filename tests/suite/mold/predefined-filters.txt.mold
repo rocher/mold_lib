@@ -19,7 +19,7 @@ Replace first i with @   : {{Title/rfi@}}        1
 Replace last i with @    : {{Title/rli@}}        1
 Replace all chars    '/' : {{Title/s//}}         1     57
 Random Transforms        : {{Title/rai1/rlt*/rae3/rat_/ra_^/raa4/ras5/rao0/raf7}} 9, 66
-Non-existent filter      : {{Title/Q}}           1
+Pad to 20 right          : {{Title/pr*20}}           1
 Pad to 40 right          : {{Title/pr*40}}       1
 Pad to 40 left           : {{Title/pl*40}}       1
 Truncate to 10           : 1234567890
