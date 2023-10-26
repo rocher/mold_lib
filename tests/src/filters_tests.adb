@@ -14,6 +14,7 @@ with Support;  use Support;
 package body Filters_Tests is
 
    function Replace_By_Slash (S : String) return String;
+   function Double_Slash (S : String) return String;
 
    ----------
    -- Name --
@@ -49,7 +50,8 @@ package body Filters_Tests is
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- variable substitution with text filters: errors as warnings ---
-      Settings.Undefined_Filter_Alert := Warning;
+      Settings.Undefined_Action := Ignore;
+      Settings.Undefined_Alert  := Warning;
       --!pp off
       Errors := Apply (
          Source     => "suite/mold/predefined-filters.txt.mold",
@@ -61,14 +63,11 @@ package body Filters_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      =>   1,
-         Variables_Defined    =>  12,
-         Variables_Found      =>  59,
-         Variables_Replaced   =>  59,
-         Filters_Found        => 111,
-         Filters_Applied      => 110,
-         Replacement_Warnings =>   1,
-         others               =>   0
+         Files_Processed    =>  1,
+         Variables_Defined  => 12,
+         Variables_Found    => 59,
+         Variables_Replaced => 59,
+         others             =>  0
       ];
       --!pp on
       Check_Results
@@ -76,75 +75,9 @@ package body Filters_Tests is
 
       Check_MD5_Digest
         ("suite/tmp/predefined-filters.txt",
-         "2ecf84f9f0603d4bb949aa20b9ca4a04",
-         "363a79ee038c075d5b5313c41cdfd8a8");
+         "353c38629937471f0ab7fd35f3fbbf57",
+         "add6d37be204a3e0056be4ede8a0d6f2");
 
-      --  ----- variable substitution with text filters: abort on error -------
-      Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Filter_Alert      := Error;
-      --!pp off
-      Errors := Apply (
-         Source     => "suite/mold/predefined-filters.txt.mold",
-         Output_Dir => "suite/tmp/",
-         Settings   => Global_Settings,
-         Toml_File  => "suite/toml/predefined-filters.toml",
-         Filters    => null,
-         Results    => Results'Unchecked_Access,
-         Log_Level  => Log.Level
-      );
-      Expected := [
-         Files_Processed      =>   1,
-         Files_Overwritten    =>   1,
-         Variables_Defined    =>  12,
-         Variables_Found      =>  59,
-         Variables_Replaced   =>  59,
-         Filters_Found        => 111,
-         Filters_Applied      => 110,
-         Replacement_Warnings =>   1,
-         others               =>   0
-      ];
-      --!pp on
-      Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 0);
-
-      Check_MD5_Digest
-        ("suite/tmp/predefined-filters.txt",
-         "2ecf84f9f0603d4bb949aa20b9ca4a04",
-         "363a79ee038c075d5b5313c41cdfd8a8");
-
-      --  ----- variable substitution with text filters -----------------------
-      Settings.Abort_On_Error              := False;
-      Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Filter_Alert      := Error;
-      --!pp off
-      Errors := Apply (
-         Source     => "suite/mold/predefined-filters.txt.mold",
-         Output_Dir => "suite/tmp/",
-         Settings   => Settings'Unrestricted_Access,
-         Toml_File  => "suite/toml/predefined-filters.toml",
-         Filters    => null,
-         Results    => Results'Unchecked_Access,
-         Log_Level  => Log.Level
-      );
-      Expected := [
-         Files_Processed      =>   1,
-         Files_Overwritten    =>   1,
-         Variables_Defined    =>  12,
-         Variables_Found      =>  59,
-         Variables_Replaced   =>  59,
-         Filters_Found        => 111,
-         Filters_Applied      => 110,
-         Replacement_Errors   =>   1,
-         others               =>   0
-      ];
-      --!pp on
-      Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
-
-      Check_MD5_Digest
-        ("suite/tmp/predefined-filters.txt",
-         "0d929992739b5973fec26faffa591dd7",
-         "e159425237dbb9f936b7e000c480780f");
    end Test_Predefined_Filters;
 
    -------------------------
@@ -154,13 +87,15 @@ package body Filters_Tests is
    procedure Test_Custom_Filters (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
       Errors   : Natural;
-      Settings : aliased Mold.Settings_Type := Global_Settings.all;
+      Settings : Mold.Settings_Type         := Global_Settings.all;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
       --!pp off
       Filters  : aliased Mold.Filters_Array := [
         0 => Replace_By_Slash'Access,
-        2 => Replace_By_Slash'Access,
+        1 => Double_Slash'Access,
+        8 => Double_Slash'Access,
+        9 => Replace_By_Slash'Access,
         others => null
       ];
       --!pp on
@@ -168,6 +103,8 @@ package body Filters_Tests is
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- variable substitution with custom text filters ----------------
+      Settings.Undefined_Action := Ignore;
+      Settings.Undefined_Alert  := Warning;
       --!pp off
       Errors := Apply (
          Source     => "suite/mold/custom-filters.txt.mold",
@@ -179,13 +116,60 @@ package body Filters_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
+         Files_Processed    =>  1,
+         Variables_Defined  =>  2,
+         Variables_Found    => 12,
+         Variables_Replaced => 12,
+         others             =>  0
+      ];
+      --!pp on
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 0);
+
+      Check_MD5_Digest
+        ("suite/tmp/custom-filters.txt", "f92b78616d8d697866bdf9ba1ffe88f1",
+         "9f0424e0e73d383ee16f8e2fbbac73a3");
+   end Test_Custom_Filters;
+
+   --------------------------
+   -- Test_Invalid_Filters --
+   --------------------------
+
+   procedure Test_Invalid_Filters (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
+      Errors   : Natural;
+      Settings : aliased Mold.Settings_Type := Global_Settings.all;
+      Results  : aliased Results_Type;
+      Expected : aliased Results_Type;
+      --!pp off
+      Filters  : aliased Mold.Filters_Array := [
+        3 => Replace_By_Slash'Access,
+        4 => Double_Slash'Access,
+        8 => Double_Slash'Access,
+        9 => Replace_By_Slash'Access,
+        others => null
+      ];
+      --!pp on
+   begin
+      --  ----- variable substitution with text filters: ignore and warn ------
+      Settings.Undefined_Action := Ignore;
+      Settings.Undefined_Alert  := Warning;
+      --!pp off
+      Errors := Apply (
+         Source     => "suite/mold/invalid-filters.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unrestricted_Access,
+         Toml_File  => "suite/toml/custom-filters.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
          Files_Processed      =>  1,
          Variables_Defined    =>  2,
-         Variables_Found      => 12,
-         Variables_Replaced   => 12,
-         Filters_Found        => 14,
-         Filters_Applied      => 14,
-         Replacement_Warnings =>  0,
+         Variables_Found      => 20,
+         Variables_Replaced   =>  0,
+         Variables_Ignored    => 20,
+         Replacement_Warnings => 20,
          others               =>  0
       ];
       --!pp on
@@ -193,14 +177,46 @@ package body Filters_Tests is
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 0);
 
       Check_MD5_Digest
-        ("suite/tmp/custom-filters.txt", "2f9e9715d50353c6e973e4b58b172e23",
-         "8a79d3f0fd546132f48e745f1afca4c5");
+        ("suite/tmp/invalid-filters.txt", "835fc3f56a9e2060cdb1d4ac0a75c401",
+         "835fc3f56a9e2060cdb1d4ac0a75c401");
 
-      --  ----- undefined custom text filter ----------------------------------
+      --  ----- variable substitution with text filters: empty and warn -------
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Filter_Alert      := Warning;
+      Settings.Undefined_Action            := Empty;
+      Settings.Undefined_Alert             := Warning;
       --!pp off
-      Filters (2) := null;
+      Errors := Apply (
+         Source     => "suite/mold/invalid-filters.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unrestricted_Access,
+         Toml_File  => "suite/toml/custom-filters.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed      =>  1,
+         Files_Overwritten    =>  1,
+         Variables_Defined    =>  2,
+         Variables_Found      => 20,
+         Variables_Replaced   =>  0,
+         Variables_Ignored    =>  0,
+         Variables_Emptied    => 20,
+         Replacement_Warnings => 20,
+         others               =>  0
+      ];
+      --!pp on
+      Check_Results
+        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 0);
+
+      Check_MD5_Digest
+        ("suite/tmp/invalid-filters.txt", "cc2e6aa0f37953e2f79eeb635da74c39",
+         "cc2e6aa0f37953e2f79eeb635da74c39");
+
+      --  ----- undefined custom text filter: ignore and warn -----------------
+      Settings.Overwrite_Destination_Files := True;
+      Settings.Undefined_Action            := Ignore;
+      Settings.Undefined_Alert             := Warning;
+      --!pp off
       Errors := Apply (
          Source     => "suite/mold/custom-filters.txt.mold",
          Output_Dir => "suite/tmp/",
@@ -215,10 +231,9 @@ package body Filters_Tests is
          Files_Overwritten    =>  1,
          Variables_Defined    =>  2,
          Variables_Found      => 12,
-         Variables_Replaced   => 12,
-         Filters_Found        => 14,
-         Filters_Applied      => 13,
-         Replacement_Warnings =>  1,
+         Variables_Replaced   =>  8,
+         Variables_Ignored    =>  4,
+         Replacement_Warnings =>  4,
          Replacement_Errors   =>  0,
          others               =>  0
       ];
@@ -227,47 +242,42 @@ package body Filters_Tests is
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 0);
 
       Check_MD5_Digest
-        ("suite/tmp/custom-filters.txt", "0d94f1c07a636326a492f4a62d2d9603",
-         "8cf044082091ac4223a9321f41191843");
+        ("suite/tmp/custom-filters.txt", "b7501d2677f79ecd9f5969dee6574bf3",
+         "b7501d2677f79ecd9f5969dee6574bf3");
 
-   end Test_Custom_Filters;
-
-   --------------------------
-   -- Test_Invalid_Filters --
-   --------------------------
-
-   procedure Test_Invalid_Filters (T : in out Test_Case'Class) is
-      pragma Unreferenced (T);
-      Errors   : Natural;
-      Settings : Mold.Settings_Type := Global_Settings.all;
-      Results  : aliased Results_Type;
-      Expected : aliased Results_Type;
-   begin
-      --  ----- variable substitution with text filters: errors as warnings ---
-      Settings.Undefined_Filter_Alert := Warning;
+      --  ----- undefined custom text filter: empty and error -----------------
+      Settings.Overwrite_Destination_Files := True;
+      Settings.Undefined_Action            := Empty;
+      Settings.Undefined_Alert             := Error;
       --!pp off
       Errors := Apply (
-         Source     => "suite/mold/invalid-filters.txt.mold",
+         Source     => "suite/mold/custom-filters.txt.mold",
          Output_Dir => "suite/tmp/",
-         Settings   => Global_Settings,
+         Settings   => Settings'Unchecked_Access,
          Toml_File  => "suite/toml/custom-filters.toml",
-         Filters    => null,
+         Filters    => Filters'Unchecked_Access,
          Results    => Results'Unchecked_Access,
          Log_Level  => Log.Level
       );
       Expected := [
          Files_Processed      =>  1,
+         Files_Overwritten    =>  1,
          Variables_Defined    =>  2,
-         Variables_Found      => 19,
-         Variables_Replaced   => 19,
-         Filters_Found        => 19,
-         Filters_Applied      =>  0,
-         Replacement_Warnings => 19,
+         Variables_Found      => 12,
+         Variables_Replaced   =>  8,
+         Variables_Ignored    =>  0,
+         Variables_Emptied    =>  4,
+         Replacement_Warnings =>  0,
+         Replacement_Errors   =>  4,
          others               =>  0
       ];
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 0);
+
+      Check_MD5_Digest
+        ("suite/tmp/custom-filters.txt", "6e727f4e4fb46327223feae96e6f74ca",
+         "6e727f4e4fb46327223feae96e6f74ca");
    end Test_Invalid_Filters;
 
    ----------------------
@@ -282,5 +292,18 @@ package body Filters_Tests is
          end loop;
       end return;
    end Replace_By_Slash;
+
+   ------------------
+   -- Double_Slash --
+   ------------------
+
+   function Double_Slash (S : String) return String is
+   begin
+      return Dash : String (1 .. S'Length * 2) do
+         for D of Dash loop
+            D := '/';
+         end loop;
+      end return;
+   end Double_Slash;
 
 end Filters_Tests;

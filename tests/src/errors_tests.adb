@@ -54,7 +54,7 @@ package body Errors_Tests is
       --  ----- undefined variable --------------------------------------------
       Settings.Abort_On_Error              := True;
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Variable_Alert    := Error;
+      Settings.Undefined_Alert             := Error;
       Results                              := [others => 0];
       --!pp off
       Errors := Apply (
