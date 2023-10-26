@@ -64,6 +64,9 @@ package body Mold_Lib.Impl.Line is
             Var_Value : constant String := Impl.Variables.Get_Value (Var_Name);
 
             Variable_Undefined : constant Boolean := (Var_Value = "");
+
+            LIN : constant String := Number'Image;
+            COL : constant String := Matches (2).First'Image;
          begin
 
             --  Log.Debug ("Pre_Text    : '" & Pre_Text & "'");
@@ -77,8 +80,6 @@ package body Mold_Lib.Impl.Line is
             if Variable_Undefined then
                Inc_Result (Variables_Undefined);
                declare
-                  LIN     : constant String := Number'Image;
-                  COL     : constant String := Matches (2).First'Image;
                   Message : constant String :=
                     "Undefined variable '" & Var_Name & "' in " &
                     Args.Source.all & ":" & LIN (2 .. LIN'Last) & ":" &
@@ -93,14 +94,14 @@ package body Mold_Lib.Impl.Line is
                   elsif Is_Optional then
                      Inc_Result (Variables_Emptied);
                   else  --  Is Normal
-                     if Args.Settings.Undefined_Variable_Alert = Warning then
+                     if Args.Settings.Undefined_Alert = Warning then
                         Inc_Result (Replacement_Warnings);
                         Log.Warning (Message);
-                     elsif Args.Settings.Undefined_Variable_Alert = Error then
+                     elsif Args.Settings.Undefined_Alert = Error then
                         Log.Error (Message);
                         Args.Errors := @ + 1;
                      end if;
-                     if Args.Settings.Undefined_Variable_Action = Ignore then
+                     if Args.Settings.Undefined_Action = Ignore then
                         Inc_Result (Variables_Ignored);
                         New_Line.Append (Var_Mold);
                      else
@@ -109,33 +110,46 @@ package body Mold_Lib.Impl.Line is
                   end if;
                end;
             else  --  variable defined
-               Inc_Result (Variables_Replaced);
                if Filters = "" then
+                  Inc_Result (Variables_Replaced);
                   New_Line.Append (Var_Value);
                else
                   Log.Debug ("Applying filters");
                   declare
-                     Results      : Text_Filters.Results_Type;
-                     Var_Filtered : constant Unbounded_String :=
-                       Text_Filters.Apply
-                         (Filters, Var_Value, Output, Results,
-                          Abort_On_Error =>
-                            Args.Settings.Undefined_Filter_Alert = Error);
+                     Var_Filter_Applied : constant Unbounded_String :=
+                       Text_Filters.Apply (Filters, Var_Value, Output);
                   begin
-                     Inc_Result (Filters_Found, Results.Found);
-                     Inc_Result (Filters_Applied, Results.Applied);
-                     if Args.Settings.Undefined_Filter_Alert = Error then
-                        Inc_Result (Replacement_Errors, Results.Errors);
+                     if Var_Filter_Applied = Null_Unbounded_String then
+                        if Args.Settings.Undefined_Action = Ignore then
+                           Inc_Result (Variables_Ignored);
+                           New_Line.Append (Var_Mold);
+                        else
+                           Inc_Result (Variables_Emptied);
+                        end if;
+                        if Args.Settings.Undefined_Alert = Error then
+                           Inc_Result (Replacement_Errors);
+                           Log.Error
+                             ("Invalid text filter '" & Filters & "' in " &
+                              Args.Source.all & ":" & LIN (2 .. LIN'Last) &
+                              ":" & COL (2 .. COL'Last));
+                        else
+                           Inc_Result (Replacement_Warnings);
+                           Log.Warning
+                             ("Invalid text filter '" & Filters & "' in " &
+                              Args.Source.all & ":" & LIN (2 .. LIN'Last) &
+                              ":" & COL (2 .. COL'Last));
+                        end if;
                      else
-                        Inc_Result (Replacement_Warnings, Results.Errors);
+                        Inc_Result (Variables_Replaced);
+                        New_Line.Append (Var_Filter_Applied);
                      end if;
-                     if Results.Errors = 0
-                       or else Args.Settings.Undefined_Filter_Alert = Warning
-                     then
-                        New_Line.Append (Var_Filtered);
-                     else
-                        Args.Errors := @ + Results.Errors;
-                     end if;
+                     --  if Results.Errors = 0
+                     --    or else Args.Settings.Undefined_Alert = Warning
+                     --  then
+                     --     New_Line.Append (Var_Filter_Applied);
+                     --  else
+                     --     Args.Errors := @ + Results.Errors;
+                     --  end if;
                   end;
                end if;
             end if;

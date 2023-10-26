@@ -15,28 +15,14 @@ package Text_Filters is
 
    package IO renames Ada.Text_IO;
 
-   type Results_Type is record
-      Found   : Natural := 0;
-      Applied : Natural := 0;
-      Errors  : Natural := 0;
-   end record;
-   --  This is the summary of results during the application of a text filter
-   --  (or a chain of text filters):
-   --
-   --     Found   : total number of filters found in a sequence
-   --     Applied : number of filters applied
-   --     Errors  : number of errors found
-
    procedure Set_Custom_Text_Filters (Text_Filters : Filters_Access);
    --  Set custom text filters to be applied during the Apply process.
 
    --!pp off
    function Apply (
-      Filters        :     String;
-      Value          :     String;
-      Output         :     IO.File_Type;
-      Summary        : out Results_Type;
-      Abort_On_Error :     Boolean := True
+      Filters          : String;
+      Value            : String;
+      Output           : IO.File_Type
    )  return UString;  --  Ada.Strings.Unbounded.Unbounded_String
    --!pp on
    --
@@ -44,10 +30,11 @@ package Text_Filters is
    --  paragraph-formatting filters. Results contain the summary of the
    --  operation.
    --
-   --  When Abort_On_Error is True, if the process finds an undefined text
-   --  filter or erroneously specified, then the process stops immediately and
-   --  reports an error. Otherwise, the process continues with the remaining
-   --  filters and these erroneous filters are simply skipped but reported as
-   --  errors.
+   --  In the presence of undefined text filters (or erroneously specified),
+   --  the function returns Null_Unbounded_String.
+
+   --  If there are several filters in sequence, e.g. '/Ta/s/0', the filter
+   --  application is "unique". That is, if any of the multiple filters is
+   --  undefined, then no filter is applied.
 
 end Text_Filters;

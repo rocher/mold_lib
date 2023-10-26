@@ -21,20 +21,19 @@ package Mold_Lib is
    --  Error level to assume when undefined things are encountered, e.g.
    --  undefined variable or undefined custom text filter.
 
-   type Undefined_Variable_Actions is (Ignore, Empty);
-   --  Action to perform when an undefined variable is found. 'Ignore' means
-   --  that there is no substitution at all, and the same variable
-   --  substitution will appear (e.g. '{{My_Var}}'). 'Empty' will completely
-   --  remove the variable (empty string).
+   type Undefined_Actions is (Ignore, Empty);
+   --  Action to perform when an undefined variable or text filter is found.
+   --  'Ignore' means that there is no substitution at all, and the same
+   --  variable substitution will appear (e.g. '{{My_Var}}'). 'Empty' will
+   --  completely remove the variable (empty string).
 
    type Settings_Type is record
       Replacement_In_File_Names   : aliased Boolean;
       Delete_Source_Files         : aliased Boolean;
       Overwrite_Destination_Files : aliased Boolean;
       Enable_Defined_Settings     : aliased Boolean;
-      Undefined_Variable_Action   : aliased Undefined_Variable_Actions;
-      Undefined_Variable_Alert    : aliased Undefined_Alerts;
-      Undefined_Filter_Alert      : aliased Undefined_Alerts;
+      Undefined_Action            : aliased Undefined_Actions;
+      Undefined_Alert             : aliased Undefined_Alerts;
       Abort_On_Error              : aliased Boolean;
    end record;
    type Settings_Access is access all Settings_Type;
@@ -46,9 +45,8 @@ package Mold_Lib is
       Delete_Source_Files         => True,
       Overwrite_Destination_Files => False,
       Enable_Defined_Settings     => True,
-      Undefined_Variable_Action   => Ignore,
-      Undefined_Variable_Alert    => Error,
-      Undefined_Filter_Alert      => Warning,
+      Undefined_Action            => Ignore,
+      Undefined_Alert             => Error,
       Abort_On_Error              => True
    );
 
@@ -63,8 +61,6 @@ package Mold_Lib is
       Variables_Replaced,
       Variables_Ignored,
       Variables_Emptied,
-      Filters_Found,
-      Filters_Applied,
       Replacement_Warnings,
       Replacement_Errors
    );
