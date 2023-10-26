@@ -55,9 +55,8 @@ package body Directory_Tests is
       Settings.Delete_Source_Files         := True;  --  changed in def file
       Settings.Overwrite_Destination_Files := True;
       Settings.Enable_Defined_Settings     := True;
-      Settings.Undefined_Variable_Action   := Empty; --  changed in def file
-      Settings.Undefined_Variable_Alert    := None;  --  changed in def file
-      Settings.Undefined_Filter_Alert      := None;  --  changed in def file
+      Settings.Undefined_Action            := Empty; --  changed in def file
+      Settings.Undefined_Alert             := None;  --  changed in def file
       Settings.Abort_On_Error              := True;  --  changed in def file
       --!pp off
       Errors := Apply (
@@ -85,7 +84,7 @@ package body Directory_Tests is
          Files_Processed      =>    7,
          Files_Renamed        =>    2,
          Files_Overwritten    =>    0,
-         Variables_Defined    =>    6 + 26 + 100,
+         Variables_Defined    =>    5 + 26 + 100,
          Variables_Found      =>  100 +  4 +   9 + 2118 + 1950 + 1736,
          Variables_Undefined  =>    0 +  4 +   9 +    0 +    0 +    0,
          Variables_Replaced   =>  100 +  0 +   0 + 2118 + 1950 + 1736,
@@ -128,7 +127,7 @@ package body Directory_Tests is
       Settings.Replacement_In_File_Names   := False;
       Settings.Delete_Source_Files         := True;
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Variable_Action   := Empty;
+      Settings.Undefined_Action            := Empty;
       Settings.Abort_On_Error              := True;
 
       Dir.Copy_File
@@ -177,9 +176,8 @@ package body Directory_Tests is
       Settings.Delete_Source_Files         := True;  --  changed in def file
       Settings.Overwrite_Destination_Files := True;
       Settings.Enable_Defined_Settings     := True;
-      Settings.Undefined_Variable_Action   := Empty; --  changed in def file
-      Settings.Undefined_Variable_Alert    := None;  --  changed in def file
-      Settings.Undefined_Filter_Alert      := None;  --  changed in def file
+      Settings.Undefined_Action            := Empty; --  changed in def file
+      Settings.Undefined_Alert             := None;  --  changed in def file
       Settings.Abort_On_Error              := True;  --  changed in def file
       --!pp off
       Errors := Apply (
@@ -208,7 +206,7 @@ package body Directory_Tests is
          Files_Processed      =>   7,
          Files_Renamed        =>   2,
          Files_Overwritten    =>   0,
-         Variables_Defined    =>   6 + 26 + 100,
+         Variables_Defined    =>   5 + 26 + 100,
          Variables_Found      => 100 +  4 +   9 + 2118 + 1950 + 1736,
          Variables_Undefined  =>   0 +  4 +   9 +    0 +    0 +    0,
          Variables_Replaced   => 100 +  0 +   0 + 2118 + 1950 + 1736,
