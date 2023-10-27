@@ -4,9 +4,9 @@ on:
   workflow_run:
     workflows: [Unit test]
     types: [completed]
-    branches:
-        - main
-        - develop
+#    branches:
+#        - main
+#        - develop
   workflow_dispatch:
 
 jobs:
