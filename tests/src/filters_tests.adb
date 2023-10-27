@@ -178,7 +178,7 @@ package body Filters_Tests is
 
       Check_MD5_Digest
         ("suite/tmp/invalid-filters.txt", "835fc3f56a9e2060cdb1d4ac0a75c401",
-         "835fc3f56a9e2060cdb1d4ac0a75c401");
+         "4648a17d49139ef4ea9249711c8455a6");
 
       --  ----- variable substitution with text filters: empty and warn -------
       Settings.Overwrite_Destination_Files := True;
@@ -210,7 +210,7 @@ package body Filters_Tests is
 
       Check_MD5_Digest
         ("suite/tmp/invalid-filters.txt", "cc2e6aa0f37953e2f79eeb635da74c39",
-         "cc2e6aa0f37953e2f79eeb635da74c39");
+         "d6b7e1fbd7fa6eba943b417e55f56271");
 
       --  ----- undefined custom text filter: ignore and warn -----------------
       Settings.Overwrite_Destination_Files := True;
@@ -243,7 +243,7 @@ package body Filters_Tests is
 
       Check_MD5_Digest
         ("suite/tmp/custom-filters.txt", "b7501d2677f79ecd9f5969dee6574bf3",
-         "b7501d2677f79ecd9f5969dee6574bf3");
+         "a8ab488e7078d006c15347c2c17143c0");
 
       --  ----- undefined custom text filter: empty and error -----------------
       Settings.Overwrite_Destination_Files := True;
@@ -277,7 +277,7 @@ package body Filters_Tests is
 
       Check_MD5_Digest
         ("suite/tmp/custom-filters.txt", "6e727f4e4fb46327223feae96e6f74ca",
-         "6e727f4e4fb46327223feae96e6f74ca");
+         "72a028acdb8b8f85f64de1c5ce776a0d");
    end Test_Invalid_Filters;
 
    ----------------------
