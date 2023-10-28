@@ -312,8 +312,8 @@ package body Variables_Tests is
          "0faaaac0483521b52b19b0832c45855c");
 
       --  ----- undefined variables ignored and no warning --------------------
-      Settings.Undefined_Variable_Action := Mold.Ignore;
-      Settings.Undefined_Variable_Alert  := Mold.None;
+      Settings.Undefined_Action := Mold.Ignore;
+      Settings.Undefined_Alert  := Mold.None;
       --!pp off
       Errors := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
@@ -342,8 +342,8 @@ package body Variables_Tests is
          "0b57373fbc9240bf183adfd5eb3fd82b");
 
       --  ----- undefined variables ignored, warning issued -------------------
-      Settings.Undefined_Variable_Action := Mold.Ignore;
-      Settings.Undefined_Variable_Alert  := Mold.Warning;
+      Settings.Undefined_Action := Mold.Ignore;
+      Settings.Undefined_Alert  := Mold.Warning;
       --!pp off
       Errors := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
@@ -373,8 +373,8 @@ package body Variables_Tests is
          "0b57373fbc9240bf183adfd5eb3fd82b");
 
       --  ----- undefined variables emptied and no warning --------------------
-      Settings.Undefined_Variable_Action := Mold.Empty;
-      Settings.Undefined_Variable_Alert  := Mold.None;
+      Settings.Undefined_Action := Mold.Empty;
+      Settings.Undefined_Alert  := Mold.None;
       --!pp off
       Errors := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
@@ -403,8 +403,8 @@ package body Variables_Tests is
          "171564ce81dfde5ca643e2227e8524b7");
 
       --  ----- undefined variables emptied, warning issued -------------------
-      Settings.Undefined_Variable_Action := Mold.Empty;
-      Settings.Undefined_Variable_Alert  := Mold.Warning;
+      Settings.Undefined_Action := Mold.Empty;
+      Settings.Undefined_Alert  := Mold.Warning;
       --!pp off
       Errors := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
@@ -434,8 +434,8 @@ package body Variables_Tests is
          "171564ce81dfde5ca643e2227e8524b7");
 
       --  ----- undefined mandatory variable, no abort on error ---------------
-      Settings.Undefined_Variable_Action := Mold.Ignore;
-      Settings.Undefined_Variable_Alert  := Mold.Warning;
+      Settings.Undefined_Action := Mold.Ignore;
+      Settings.Undefined_Alert  := Mold.Warning;
       Settings.Abort_On_Error            := False;
       --!pp off
       Errors := Apply (
