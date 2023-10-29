@@ -11,9 +11,6 @@ licenses = "MIT"
 
 executables = ["mold_lib_tests"]
 
-[build-profiles]
-"*" = "release"
-
 [build-switches."*"]
 ada_version = ["-gnat2022", "-gnatW8", "-gnatX"]
 
