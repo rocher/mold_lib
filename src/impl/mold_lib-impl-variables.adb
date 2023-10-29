@@ -51,10 +51,9 @@ package body Mold_Lib.Impl.Variables is
       elsif Key = "mold-abort-on-error" then
          Set_Boolean (Args.Settings.Abort_On_Error'Access);
 
-      elsif Key = "mold-undefined-variable-action" then
+      elsif Key = "mold-undefined-action" then
          begin
-            Args.Settings.Undefined_Variable_Action :=
-              Undefined_Variable_Actions'Value (Value);
+            Args.Settings.Undefined_Action := Undefined_Actions'Value (Value);
          exception
             when E : Constraint_Error =>
                Log_Exception
@@ -62,18 +61,12 @@ package body Mold_Lib.Impl.Variables is
                Success := False;
          end;
 
-      elsif Key = "mold-undefined-variable-alert"
-        or else Key = "mold-undefined-filter-alert"
-      then
+      elsif Key = "mold-undefined-alert" then
          declare
             Undefined_Alert : Undefined_Alerts;
          begin
-            Undefined_Alert := Undefined_Alerts'Value (Value);
-            if Key = "mold-undefined-variable-alert" then
-               Args.Settings.Undefined_Variable_Alert := Undefined_Alert;
-            else
-               Args.Settings.Undefined_Filter_Alert := Undefined_Alert;
-            end if;
+            Undefined_Alert               := Undefined_Alerts'Value (Value);
+            Args.Settings.Undefined_Alert := Undefined_Alert;
          exception
             when E : Constraint_Error =>
                Log_Exception

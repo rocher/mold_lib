@@ -52,11 +52,9 @@ package body Text_Filters is
 
    --!pp off
    function Apply (
-      Filters        :     String;
-      Value          :     String;
-      Output         :     IO.File_Type;
-      Summary        : out Results_Type;
-      Abort_On_Error :     Boolean := True
+      Filters           : String;
+      Value             : String;
+      Output            : IO.File_Type
    )  return UString
    --!pp on
 
@@ -64,34 +62,23 @@ package body Text_Filters is
       pragma Unreferenced
         (Output);  --  !TODO To be used with paragraph filters
 
-      Filter_Parsed : Text_Filter_Parsed;
-
-      Result : UString := To_Unbounded_String (Value);
-      Filter : UString := To_Unbounded_String (Filters);
-      Tail   : UString;
+      Parsing : Text_Filter_Parsed;
+      Result  : UString := To_Unbounded_String (Value);
+      Filter  : UString := To_Unbounded_String (Filters);
+      Tail    : UString;
    begin
-      Summary := (others => 0);
-
-      Log.Debug ("Abort_On_Error : " & Abort_On_Error'Image);
-
       Apply_All_Text_Filters_Loop :
       loop
-         Filter_Parsed := Parse (Filter, Tail);
-         Summary.Found := @ + 1;
+         Parsing := Parse (Filter, Tail);
 
-         if Filter_Parsed.Kind = filter_error then
-            Log.Error
-              ("Text Filter Error: " & To_String (Filter_Parsed.Error));
-            Summary.Errors := @ + 1;
-            if Abort_On_Error then
-               exit Apply_All_Text_Filters_Loop;
-            end if;
+         if Parsing.Kind = filter_error then
+            Result := Null_Unbounded_String;
+            exit Apply_All_Text_Filters_Loop;
          else
-            Result          := Apply (Filter_Parsed, Result);
-            Summary.Applied := @ + 1;
+            Result := Apply (Parsing, Result);
          end if;
 
-         Log.Debug ("Filter_Parsed : " & Filter_Parsed'Image);
+         Log.Debug ("Filter_Parsed : " & Parsing'Image);
          Log.Debug ("Tail          : '" & Tail'Image & "'");
          Log.Debug ("Result        : '" & To_String (Result) & "'");
 

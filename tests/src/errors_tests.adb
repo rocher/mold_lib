@@ -54,7 +54,7 @@ package body Errors_Tests is
       --  ----- undefined variable --------------------------------------------
       Settings.Abort_On_Error              := True;
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Variable_Alert    := Error;
+      Settings.Undefined_Alert             := Error;
       Results                              := [others => 0];
       --!pp off
       Errors := Apply (
@@ -127,7 +127,7 @@ package body Errors_Tests is
          Results    => Results'Unchecked_Access,
          Log_Level  => Log.Level
       );
-      Expected := [ others => 0 ];
+      Expected := [others => 0];
       --!pp on
       Check_Results
         (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
@@ -226,8 +226,6 @@ package body Errors_Tests is
    procedure Directory_Errors (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
       Errors   : Natural;
-      Results  : aliased Results_Type;
-      Expected : aliased Results_Type;
       Settings : aliased Settings_Type := Global_Settings.all;
    begin
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
