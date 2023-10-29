@@ -56,7 +56,7 @@ package body Filters_Tests is
       Errors := Apply (
          Source     => "suite/mold/predefined-filters.txt.mold",
          Output_Dir => "suite/tmp/",
-         Settings   => Global_Settings,
+         Settings   => Settings'Unrestricted_Access,
          Toml_File  => "suite/toml/predefined-filters.toml",
          Filters    => null,
          Results    => Results'Unchecked_Access,
@@ -109,7 +109,7 @@ package body Filters_Tests is
       Errors := Apply (
          Source     => "suite/mold/custom-filters.txt.mold",
          Output_Dir => "suite/tmp/",
-         Settings   => Global_Settings,
+         Settings   => Settings'Unrestricted_Access,
          Toml_File  => "suite/toml/custom-filters.toml",
          Filters    => Filters'Unchecked_Access,
          Results    => Results'Unchecked_Access,
