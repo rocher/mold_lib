@@ -18,8 +18,8 @@ package Mold_Lib is
    package Log renames Simple_Logging;
 
    type Undefined_Alerts is (None, Warning, Error);
-   --  Error level to assume when undefined things are encountered, e.g.
-   --  undefined variable or undefined custom text filter.
+   --  Error level to assume when undefined variables or text filters are
+   --  encountered during the variable substitution process.
 
    type Undefined_Actions is (Ignore, Empty);
    --  Action to perform when an undefined variable or text filter is found.
@@ -28,26 +28,24 @@ package Mold_Lib is
    --  completely remove the variable (empty string).
 
    type Settings_Type is record
-      Replacement_In_File_Names   : aliased Boolean;
+      Replacement_In_Filenames    : aliased Boolean;
       Delete_Source_Files         : aliased Boolean;
       Overwrite_Destination_Files : aliased Boolean;
       Enable_Defined_Settings     : aliased Boolean;
       Undefined_Action            : aliased Undefined_Actions;
       Undefined_Alert             : aliased Undefined_Alerts;
-      Abort_On_Error              : aliased Boolean;
    end record;
    type Settings_Access is access all Settings_Type;
    --  Settings to configure the behavior of mold. Refer to the documentation
    --  for more information.
 
    Default_Settings : constant Settings_Type := (
-      Replacement_In_File_Names   => True,
-      Delete_Source_Files         => True,
-      Overwrite_Destination_Files => False,
+      Replacement_In_Filenames    => True,
+      Delete_Source_Files         => False,
+      Overwrite_Destination_Files => True,
       Enable_Defined_Settings     => True,
       Undefined_Action            => Ignore,
-      Undefined_Alert             => Error,
-      Abort_On_Error              => True
+      Undefined_Alert             => Warning
    );
 
    type Results_Fields is (
@@ -61,8 +59,7 @@ package Mold_Lib is
       Variables_Replaced,
       Variables_Ignored,
       Variables_Emptied,
-      Replacement_Warnings,
-      Replacement_Errors
+      Warnings
    );
    type Results_Type   is array (Results_Fields) of Natural;
    type Results_Access is access all Results_Type;
@@ -82,10 +79,8 @@ package Mold_Lib is
    --  (0 .. 9) pointers to functions.
 
    function Name return String;
-   --  Return create name.
 
    function Version return String;
-   --  Return crate version.
 
    function Apply (
       Source     : String          := ".";
@@ -95,7 +90,7 @@ package Mold_Lib is
       Filters    : Filters_Access  := null;
       Results    : Results_Access  := null;
       Log_Level  : Log.Levels      := Log.Info
-   )  return Natural;
+   )  return Boolean;
    --  Given Source, a file or directory, a TOML file with a set of variables
    --  defined in it, this function applies variable replacement and template
    --  inclusion in Source file. Or, recursively, in all '.mold' files in the
@@ -105,8 +100,6 @@ package Mold_Lib is
    --  Default_Settings, and Results can be a pointer to a Results_Type object
    --  if detailed information about the process is required.
    --
-   --  Return the number of errors detected, including those detected during
-   --  the replacement process. If Abort_On_Error is False, the number of
-   --  errors can be arbitrarily big.
+   --  Return True if the process ends successfully (no errors detected).
 
 end Mold_Lib;

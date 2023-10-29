@@ -9,7 +9,7 @@
 package Mold_Lib.Impl.File is
 
    function Replace
-     (Source, Output_Dir : not null String_Access) return Natural;
+     (Source, Output_Dir : not null String_Access) return Boolean;
    --  In the given Source file name, replace all occurrences of mold
    --  variables with the value defined in the Variables map. Behaves
    --  according to the Settings given and updates the Results object.
@@ -19,8 +19,6 @@ package Mold_Lib.Impl.File is
    --  the "mold" extension, "README.md", even when there are no variables to
    --  replace.
    --
-   --  Return the number of errors detected, including those detected during
-   --  the replacement process. If Abort_On_Error is False, the number of
-   --  errors can be arbitrarily big.
+   --  Return True if the process end successfully (no error detected).
 
 end Mold_Lib.Impl.File;

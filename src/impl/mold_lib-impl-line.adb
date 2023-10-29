@@ -17,8 +17,15 @@ package body Mold_Lib.Impl.Line is
    -- Replace --
    -------------
 
-   function Replace
-     (Line : String; Number : Natural; Output : IO.File_Type) return String
+   --!pp off
+   function Replace (
+      Line    :     String;
+      Number  :     Natural;
+      Output  :     IO.File_Type;
+      Success : out Boolean
+   ) return String
+   --!pp on
+
    is
       Matches     : Reg.Match_Array (0 .. 4);
       New_Line    : Unbounded_String := To_Unbounded_String ("");
@@ -87,19 +94,18 @@ package body Mold_Lib.Impl.Line is
                begin
                   if Is_Mandatory then
                      Inc_Result (Variables_Ignored);
-                     Inc_Result (Replacement_Errors);
                      New_Line.Append (Var_Mold);
                      Log.Error (Message);
-                     Args.Errors := @ + 1;
+                     Success := False;
                   elsif Is_Optional then
                      Inc_Result (Variables_Emptied);
                   else  --  Is Normal
                      if Args.Settings.Undefined_Alert = Warning then
-                        Inc_Result (Replacement_Warnings);
+                        Inc_Result (Warnings);
                         Log.Warning (Message);
                      elsif Args.Settings.Undefined_Alert = Error then
                         Log.Error (Message);
-                        Args.Errors := @ + 1;
+                        Success := False;
                      end if;
                      if Args.Settings.Undefined_Action = Ignore then
                         Inc_Result (Variables_Ignored);
@@ -127,13 +133,13 @@ package body Mold_Lib.Impl.Line is
                            Inc_Result (Variables_Emptied);
                         end if;
                         if Args.Settings.Undefined_Alert = Error then
-                           Inc_Result (Replacement_Errors);
                            Log.Error
                              ("Invalid text filter '" & Filters & "' in " &
                               Args.Source.all & ":" & LIN (2 .. LIN'Last) &
                               ":" & COL (2 .. COL'Last));
-                        else
-                           Inc_Result (Replacement_Warnings);
+                           Success := False;
+                        elsif Args.Settings.Undefined_Alert = Warning then
+                           Inc_Result (Warnings);
                            Log.Warning
                              ("Invalid text filter '" & Filters & "' in " &
                               Args.Source.all & ":" & LIN (2 .. LIN'Last) &
@@ -143,17 +149,14 @@ package body Mold_Lib.Impl.Line is
                         Inc_Result (Variables_Replaced);
                         New_Line.Append (Var_Filter_Applied);
                      end if;
-                     --  if Results.Errors = 0
-                     --    or else Args.Settings.Undefined_Alert = Warning
-                     --  then
-                     --     New_Line.Append (Var_Filter_Applied);
-                     --  else
-                     --     Args.Errors := @ + Results.Errors;
-                     --  end if;
                   end;
                end if;
             end if;
          end;
+
+         if not Success then
+            return "";
+         end if;
 
          Current := Matches (0).Last + 1;
       end loop;

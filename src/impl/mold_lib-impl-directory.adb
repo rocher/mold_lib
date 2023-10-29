@@ -22,11 +22,11 @@ package body Mold_Lib.Impl.Directory is
       Sub_Dir    :          String;
       Source     : not null String_Access;
       Output_Dir : not null String_Access
-   )  return Natural
+   )  return Boolean
    --!pp on
 
    is
-      Errors  : Natural         := 0;
+      Success : Boolean;
       CWD     : constant String := Dir.Current_Directory;
       Result  : Dir.Search_Type;
       Element : Dir.Directory_Entry_Type;
@@ -60,8 +60,7 @@ package body Mold_Lib.Impl.Directory is
             then
                if Element.Kind = Dir.Directory then
                   Log.Debug ("Directory replace in element " & Name);
-                  Errors :=
-                    Errors +
+                  Success :=
                     Replace
                       (Dir.Compose (Sub_Dir, Name), Name'Unchecked_Access,
                        Output_Dir);
@@ -71,13 +70,12 @@ package body Mold_Lib.Impl.Directory is
                        Path (Output_Dir.all, Sub_Dir);
                   begin
                      Log.Debug ("File replace in element " & Name);
-                     Errors :=
-                       Errors +
+                     Success :=
                        Impl.File.Replace
                          (Name'Unchecked_Access, Out_Sub_dir'Unchecked_Access);
                   end;
                end if;
-               if Errors > 0 and then Args.Settings.Abort_On_Error then
+               if not Success then
                   goto Exit_Function;
                end if;
             end if;
@@ -88,15 +86,14 @@ package body Mold_Lib.Impl.Directory is
 
       Dir.Set_Directory (CWD);
       Log.Debug ("END Impl.Directory.Replace");
-      return Errors;
+      return Success;
 
       pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
    exception
       when E : Dir.Name_Error | Dir.Use_Error =>
          Log_Exception (E);
          Dir.Set_Directory (CWD);
-         Errors := @ + 1;
-         return Errors;
+         return False;
          pragma Annotate (Xcov, Exempt_Off);
 
    end Replace;
