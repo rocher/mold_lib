@@ -2,7 +2,6 @@ mold-replacement-in-file-names = "true"
 mold-delete-source-files = "false"
 mold-undefined-action = "ignore"
 mold-undefined-alert = "warning"
-mold-abort-on-error = "true"
 
 a = "arcu"          #    91  {{a}}
 b = "bibendum"      #    37  {{#b}}

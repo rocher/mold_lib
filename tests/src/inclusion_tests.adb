@@ -39,7 +39,7 @@ package body Inclusion_Tests is
 
    procedure Test_Recursive_Inclusion (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
    begin
@@ -47,7 +47,7 @@ package body Inclusion_Tests is
 
       --  ----- inclusion of recursive templates ------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/recursion.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Global_Settings,
@@ -62,7 +62,7 @@ package body Inclusion_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
    end Test_Recursive_Inclusion;
 
    --------------------
@@ -71,7 +71,7 @@ package body Inclusion_Tests is
 
    procedure Test_Inclusion (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
       Settings : aliased Settings_Type := Global_Settings.all;
@@ -80,7 +80,7 @@ package body Inclusion_Tests is
 
       --  ----- inclusion of 100 templates ------------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/lorem-ipsum-includes-01.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -97,7 +97,7 @@ package body Inclusion_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/lorem-ipsum-includes-01.txt",
@@ -106,7 +106,7 @@ package body Inclusion_Tests is
 
       --  ----- inclusion of 100 templates ------------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/lorem-ipsum-includes-02.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -123,7 +123,7 @@ package body Inclusion_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/lorem-ipsum-includes-02.txt",
@@ -132,7 +132,7 @@ package body Inclusion_Tests is
 
       --  ----- inclusion of 100 templates ------------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/lorem-ipsum-includes-03.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -149,7 +149,7 @@ package body Inclusion_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/lorem-ipsum-includes-03.txt",

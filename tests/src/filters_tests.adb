@@ -42,7 +42,7 @@ package body Filters_Tests is
 
    procedure Test_Predefined_Filters (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Settings : Mold.Settings_Type := Global_Settings.all;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
@@ -53,7 +53,7 @@ package body Filters_Tests is
       Settings.Undefined_Action := Ignore;
       Settings.Undefined_Alert  := Warning;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/predefined-filters.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unrestricted_Access,
@@ -71,7 +71,7 @@ package body Filters_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 0);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/predefined-filters.txt",
@@ -86,7 +86,7 @@ package body Filters_Tests is
 
    procedure Test_Custom_Filters (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Settings : Mold.Settings_Type         := Global_Settings.all;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
@@ -106,7 +106,7 @@ package body Filters_Tests is
       Settings.Undefined_Action := Ignore;
       Settings.Undefined_Alert  := Warning;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/custom-filters.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unrestricted_Access,
@@ -124,7 +124,7 @@ package body Filters_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 0);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/custom-filters.txt", "f92b78616d8d697866bdf9ba1ffe88f1",
@@ -137,7 +137,7 @@ package body Filters_Tests is
 
    procedure Test_Invalid_Filters (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Settings : aliased Mold.Settings_Type := Global_Settings.all;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
@@ -155,7 +155,7 @@ package body Filters_Tests is
       Settings.Undefined_Action := Ignore;
       Settings.Undefined_Alert  := Warning;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/invalid-filters.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unrestricted_Access,
@@ -164,17 +164,17 @@ package body Filters_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      =>  1,
-         Variables_Defined    =>  2,
-         Variables_Found      => 20,
-         Variables_Replaced   =>  0,
-         Variables_Ignored    => 20,
-         Replacement_Warnings => 20,
-         others               =>  0
+         Files_Processed    =>  1,
+         Variables_Defined  =>  2,
+         Variables_Found    => 20,
+         Variables_Replaced =>  0,
+         Variables_Ignored  => 20,
+         Warnings           => 20,
+         others             =>  0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 0);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/invalid-filters.txt", "835fc3f56a9e2060cdb1d4ac0a75c401",
@@ -185,7 +185,7 @@ package body Filters_Tests is
       Settings.Undefined_Action            := Empty;
       Settings.Undefined_Alert             := Warning;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/invalid-filters.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unrestricted_Access,
@@ -194,19 +194,19 @@ package body Filters_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      =>  1,
-         Files_Overwritten    =>  1,
-         Variables_Defined    =>  2,
-         Variables_Found      => 20,
-         Variables_Replaced   =>  0,
-         Variables_Ignored    =>  0,
-         Variables_Emptied    => 20,
-         Replacement_Warnings => 20,
-         others               =>  0
+         Files_Processed    =>  1,
+         Files_Overwritten  =>  1,
+         Variables_Defined  =>  2,
+         Variables_Found    => 20,
+         Variables_Replaced =>  0,
+         Variables_Ignored  =>  0,
+         Variables_Emptied  => 20,
+         Warnings           => 20,
+         others             =>  0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 0);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/invalid-filters.txt", "cc2e6aa0f37953e2f79eeb635da74c39",
@@ -217,7 +217,7 @@ package body Filters_Tests is
       Settings.Undefined_Action            := Ignore;
       Settings.Undefined_Alert             := Warning;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/custom-filters.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -227,19 +227,18 @@ package body Filters_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      =>  1,
-         Files_Overwritten    =>  1,
-         Variables_Defined    =>  2,
-         Variables_Found      => 12,
-         Variables_Replaced   =>  8,
-         Variables_Ignored    =>  4,
-         Replacement_Warnings =>  4,
-         Replacement_Errors   =>  0,
-         others               =>  0
+         Files_Processed    =>  1,
+         Files_Overwritten  =>  1,
+         Variables_Defined  =>  2,
+         Variables_Found    => 12,
+         Variables_Replaced =>  8,
+         Variables_Ignored  =>  4,
+         Warnings           =>  4,
+         others             =>  0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 0);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/custom-filters.txt", "b7501d2677f79ecd9f5969dee6574bf3",
@@ -250,7 +249,7 @@ package body Filters_Tests is
       Settings.Undefined_Action            := Empty;
       Settings.Undefined_Alert             := Error;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/custom-filters.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -260,20 +259,19 @@ package body Filters_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      =>  1,
-         Files_Overwritten    =>  1,
-         Variables_Defined    =>  2,
-         Variables_Found      => 12,
-         Variables_Replaced   =>  8,
-         Variables_Ignored    =>  0,
-         Variables_Emptied    =>  4,
-         Replacement_Warnings =>  0,
-         Replacement_Errors   =>  4,
-         others               =>  0
+         Files_Processed    =>  1,
+         Files_Overwritten  =>  1,
+         Variables_Defined  =>  2,
+         Variables_Found    => 12,
+         Variables_Replaced =>  8,
+         Variables_Ignored  =>  0,
+         Variables_Emptied  =>  4,
+         Warnings           =>  0,
+         others             =>  0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 0);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/custom-filters.txt", "6e727f4e4fb46327223feae96e6f74ca",

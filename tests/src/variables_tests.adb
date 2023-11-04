@@ -41,7 +41,7 @@ package body Variables_Tests is
 
    procedure Test_No_Substitution (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Results  : aliased Mold.Results_Type;
       Expected : aliased Mold.Results_Type;
    begin
@@ -49,7 +49,7 @@ package body Variables_Tests is
 
       --  ----- no variables in the source file -------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/no-vars.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Global_Settings,
@@ -63,7 +63,7 @@ package body Variables_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/no-vars.txt", "7ef8e151c0fde9d5fef738709a321300",
@@ -71,7 +71,7 @@ package body Variables_Tests is
 
       --  ----- empty definitions file ----------------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/foo.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Global_Settings,
@@ -80,16 +80,16 @@ package body Variables_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      => 1,
-         Variables_Ignored    => 9,
-         Variables_Found      => 9,
-         Variables_Undefined  => 9,
-         Replacement_Warnings => 9,
-         others               => 0
+         Files_Processed     => 1,
+         Variables_Ignored   => 9,
+         Variables_Found     => 9,
+         Variables_Undefined => 9,
+         Warnings            => 9,
+         others              => 0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/foo.txt", "4c179dd0c4cc0c668539a25435286258",
@@ -97,7 +97,7 @@ package body Variables_Tests is
 
       --  ----- no variable can be replaced -----------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/foo.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Global_Settings,
@@ -106,18 +106,18 @@ package body Variables_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      => 1,
-         Files_Overwritten    => 1,
-         Variables_Defined    => 1,
-         Variables_Found      => 9,
-         Variables_Undefined  => 9,
-         Variables_Ignored    => 9,
-         Replacement_Warnings => 9,
-         others               => 0
+         Files_Processed     => 1,
+         Files_Overwritten   => 1,
+         Variables_Defined   => 1,
+         Variables_Found     => 9,
+         Variables_Undefined => 9,
+         Variables_Ignored   => 9,
+         Warnings            => 9,
+         others              => 0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/foo.txt", "4c179dd0c4cc0c668539a25435286258",
@@ -130,7 +130,7 @@ package body Variables_Tests is
 
    procedure Test_Basic_Substitution (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Results  : aliased Mold.Results_Type;
       Expected : aliased Mold.Results_Type;
    begin
@@ -138,7 +138,7 @@ package body Variables_Tests is
 
       --  ----- variable replaced ---------------------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/foo.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Global_Settings,
@@ -156,7 +156,7 @@ package body Variables_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/foo.txt", "3d22c1e66750c3e7925e643cfbe9e327",
@@ -164,7 +164,7 @@ package body Variables_Tests is
 
       --  ----- four variables, two are replaced ------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/foo-bar.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Global_Settings,
@@ -173,18 +173,18 @@ package body Variables_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      => 1,
-         Variables_Defined    => 1,
-         Variables_Found      => 4,
-         Variables_Undefined  => 2,
-         Variables_Replaced   => 2,
-         Variables_Ignored    => 2,
-         Replacement_Warnings => 2,
-         others               => 0
+         Files_Processed     => 1,
+         Variables_Defined   => 1,
+         Variables_Found     => 4,
+         Variables_Undefined => 2,
+         Variables_Replaced  => 2,
+         Variables_Ignored   => 2,
+         Warnings            => 2,
+         others              => 0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/foo-bar.txt", "9fe90f7706a6c0de1155e8e340fafed7",
@@ -192,7 +192,7 @@ package body Variables_Tests is
 
       --  ----- all variables replaced ----------------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/foo-bar.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Global_Settings,
@@ -210,7 +210,7 @@ package body Variables_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/foo-bar.txt", "5b6c9393c2233d09b1517bc8c3ca9de1",
@@ -223,7 +223,7 @@ package body Variables_Tests is
 
    procedure Test_Modal_Substitution (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Results  : aliased Mold.Results_Type;
       Expected : aliased Mold.Results_Type;
       Settings : aliased Mold.Settings_Type := Global_Settings.all;
@@ -232,7 +232,7 @@ package body Variables_Tests is
 
       --  ----- all variables replaced ----------------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -249,7 +249,7 @@ package body Variables_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/lorem-ipsum.txt", "ff416bfec859c59a3834c46d60250e25",
@@ -257,7 +257,7 @@ package body Variables_Tests is
 
       --  ----- no optional variables defined ---------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -277,7 +277,7 @@ package body Variables_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/lorem-ipsum.txt", "fee4ce163f4e85103e42ab27a49ee381",
@@ -285,7 +285,7 @@ package body Variables_Tests is
 
       --  ----- some optional variables defined -------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -305,7 +305,7 @@ package body Variables_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/lorem-ipsum.txt", "1ed55361c952f1e572a156c07a3c2f3d",
@@ -315,7 +315,7 @@ package body Variables_Tests is
       Settings.Undefined_Action := Mold.Ignore;
       Settings.Undefined_Alert  := Mold.None;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -335,7 +335,7 @@ package body Variables_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/lorem-ipsum.txt", "239eacc9eb868d2d3559a8ee4b903bb1",
@@ -345,7 +345,7 @@ package body Variables_Tests is
       Settings.Undefined_Action := Mold.Ignore;
       Settings.Undefined_Alert  := Mold.Warning;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -354,19 +354,19 @@ package body Variables_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      =>    1,
-         Files_Overwritten    =>    1,
-         Variables_Defined    =>   24,
-         Variables_Found      => 2118,
-         Variables_Undefined  =>  294,
-         Variables_Replaced   => 1824,
-         Variables_Ignored    =>  294,
-         Replacement_Warnings =>  294,
-         others               =>    0
+         Files_Processed     =>    1,
+         Files_Overwritten   =>    1,
+         Variables_Defined   =>   24,
+         Variables_Found     => 2118,
+         Variables_Undefined =>  294,
+         Variables_Replaced  => 1824,
+         Variables_Ignored   =>  294,
+         Warnings            =>  294,
+         others              =>    0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/lorem-ipsum.txt", "239eacc9eb868d2d3559a8ee4b903bb1",
@@ -376,7 +376,7 @@ package body Variables_Tests is
       Settings.Undefined_Action := Mold.Empty;
       Settings.Undefined_Alert  := Mold.None;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -396,7 +396,7 @@ package body Variables_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/lorem-ipsum.txt", "a497437f9f4ebc6b42ec0f9aa33dba3d",
@@ -406,7 +406,7 @@ package body Variables_Tests is
       Settings.Undefined_Action := Mold.Empty;
       Settings.Undefined_Alert  := Mold.Warning;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -415,30 +415,29 @@ package body Variables_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      =>    1,
-         Files_Overwritten    =>    1,
-         Variables_Defined    =>   24,
-         Variables_Found      => 2118,
-         Variables_Undefined  =>  294,
-         Variables_Replaced   => 1824,
-         Variables_Emptied    =>  294,
-         Replacement_Warnings =>  294,
-         others               =>    0
+         Files_Processed     =>    1,
+         Files_Overwritten   =>    1,
+         Variables_Defined   =>   24,
+         Variables_Found     => 2118,
+         Variables_Undefined =>  294,
+         Variables_Replaced  => 1824,
+         Variables_Emptied   =>  294,
+         Warnings            =>  294,
+         others              =>    0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/lorem-ipsum.txt", "a497437f9f4ebc6b42ec0f9aa33dba3d",
          "171564ce81dfde5ca643e2227e8524b7");
 
-      --  ----- undefined mandatory variable, no abort on error ---------------
+      --  ----- undefined mandatory variable ----------------------------------
       Settings.Undefined_Action := Mold.Ignore;
       Settings.Undefined_Alert  := Mold.Warning;
-      Settings.Abort_On_Error            := False;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -447,21 +446,20 @@ package body Variables_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      =>    1,
-         Files_Overwritten    =>    1,
-         Variables_Defined    =>   18,
-         Variables_Found      => 2118,
-         Variables_Undefined  =>  591,
-         Variables_Replaced   => 1527,
-         Variables_Ignored    =>  405,
-         Variables_Emptied    =>  186,
-         Replacement_Warnings =>  315,
-         Replacement_Errors   =>   90,
-         others               =>    0
+         Files_Processed     =>    1,
+         Files_Overwritten   =>    1,
+         Variables_Defined   =>   18,
+         Variables_Found     => 2118,
+         Variables_Undefined =>  591,
+         Variables_Replaced  => 1527,
+         Variables_Ignored   =>  405,
+         Variables_Emptied   =>  186,
+         Warnings            =>  315,
+         others              =>    0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 90);
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/lorem-ipsum.txt", "caa552768a9819fff5eb93f4096189c3",
@@ -475,7 +473,7 @@ package body Variables_Tests is
 
    procedure Test_Multiline (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Results  : aliased Mold.Results_Type;
       Expected : aliased Mold.Results_Type;
    begin
@@ -483,7 +481,7 @@ package body Variables_Tests is
 
       --  ----- multiline paragraphs ------------------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/multiline.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Global_Settings,
@@ -500,7 +498,7 @@ package body Variables_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/multiline.txt", "cfafd88cdde135c6e27e9917e5a74504",

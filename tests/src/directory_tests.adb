@@ -43,7 +43,7 @@ package body Directory_Tests is
 
    procedure Test_In_Place (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
       Settings : aliased Settings_Type := Global_Settings.all;
@@ -51,15 +51,14 @@ package body Directory_Tests is
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- all variables replaced ----------------------------------------
-      Settings.Replacement_In_File_Names   := False; --  changed in def file
+      Settings.Replacement_In_Filenames    := False; --  changed in def file
       Settings.Delete_Source_Files         := True;  --  changed in def file
       Settings.Overwrite_Destination_Files := True;
       Settings.Enable_Defined_Settings     := True;
       Settings.Undefined_Action            := Empty; --  changed in def file
       Settings.Undefined_Alert             := None;  --  changed in def file
-      Settings.Abort_On_Error              := True;  --  changed in def file
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source    => "suite/dir",
          Settings  => Settings'Unchecked_Access,
          Toml_File => "suite/dir/mold.toml",
@@ -84,18 +83,18 @@ package body Directory_Tests is
          Files_Processed      =>    7,
          Files_Renamed        =>    2,
          Files_Overwritten    =>    0,
-         Variables_Defined    =>    5 + 26 + 100,
+         Variables_Defined    =>    4 + 26 + 100,
          Variables_Found      =>  100 +  4 +   9 + 2118 + 1950 + 1736,
          Variables_Undefined  =>    0 +  4 +   9 +    0 +    0 +    0,
          Variables_Replaced   =>  100 +  0 +   0 + 2118 + 1950 + 1736,
          Variables_Ignored    =>    0 +  4 +   9 +    0 +    0 +    0,
          Variables_Emptied    =>    0 +  0 +   0 +    0 +    0 +    0,
-         Replacement_Warnings =>    0 +  4 +   9 +    0 +    0 +    0,
+         Warnings             =>    0 +  4 +   9 +    0 +    0 +    0,
          others               =>    0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/dir/complex/foo-bar.txt", "fb84d565c9a834dd25c8c3f670c2e46a",
@@ -124,11 +123,10 @@ package body Directory_Tests is
          "8880f5a8180491db9710d884c81f4117");
 
       --  ----- remove source files -------------------------------------------
-      Settings.Replacement_In_File_Names   := False;
+      Settings.Replacement_In_Filenames    := False;
       Settings.Delete_Source_Files         := True;
       Settings.Overwrite_Destination_Files := True;
       Settings.Undefined_Action            := Empty;
-      Settings.Abort_On_Error              := True;
 
       Dir.Copy_File
         ("suite/mold/foo.txt.mold", "suite/dir-delete/foo.txt.mold");
@@ -136,7 +134,7 @@ package body Directory_Tests is
         ("suite/mold/foo-bar.txt.mold", "suite/dir-delete/foo-bar.txt.mold");
 
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/dir-delete",
          Settings   => Settings'Unchecked_Access,
          Toml_File  => "suite/toml/foo-bar.toml",
@@ -155,7 +153,7 @@ package body Directory_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
    end Test_In_Place;
 
    ----------------------
@@ -164,7 +162,7 @@ package body Directory_Tests is
 
    procedure Test_Destination (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
       Settings : aliased Settings_Type := Global_Settings.all;
@@ -172,15 +170,14 @@ package body Directory_Tests is
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- all variables replaced ----------------------------------------
-      Settings.Replacement_In_File_Names   := False; --  changed in def file
+      Settings.Replacement_In_Filenames    := False; --  changed in def file
       Settings.Delete_Source_Files         := True;  --  changed in def file
       Settings.Overwrite_Destination_Files := True;
       Settings.Enable_Defined_Settings     := True;
       Settings.Undefined_Action            := Empty; --  changed in def file
       Settings.Undefined_Alert             := None;  --  changed in def file
-      Settings.Abort_On_Error              := True;  --  changed in def file
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/dir",
          Output_Dir => "suite/tmp/dir",
          Settings   => Settings'Unchecked_Access,
@@ -203,21 +200,21 @@ package body Directory_Tests is
       --    __a__-__b__-__c__.txt.mold  1736  arcu-bibendum-commodo.txt
 
       Expected := [
-         Files_Processed      =>   7,
-         Files_Renamed        =>   2,
-         Files_Overwritten    =>   0,
-         Variables_Defined    =>   5 + 26 + 100,
-         Variables_Found      => 100 +  4 +   9 + 2118 + 1950 + 1736,
-         Variables_Undefined  =>   0 +  4 +   9 +    0 +    0 +    0,
-         Variables_Replaced   => 100 +  0 +   0 + 2118 + 1950 + 1736,
-         Variables_Ignored    =>   0 +  4 +   9 +    0 +    0 +    0,
-         Variables_Emptied    =>   0 +  0 +   0 +    0 +    0 +    0,
-         Replacement_Warnings =>   0 +  4 +   9 +    0 +    0 +    0,
-         others               =>   0
+         Files_Processed     =>   7,
+         Files_Renamed       =>   2,
+         Files_Overwritten   =>   0,
+         Variables_Defined   =>   4 + 26 + 100,
+         Variables_Found     => 100 +  4 +   9 + 2118 + 1950 + 1736,
+         Variables_Undefined =>   0 +  4 +   9 +    0 +    0 +    0,
+         Variables_Replaced  => 100 +  0 +   0 + 2118 + 1950 + 1736,
+         Variables_Ignored   =>   0 +  4 +   9 +    0 +    0 +    0,
+         Variables_Emptied   =>   0 +  0 +   0 +    0 +    0 +    0,
+         Warnings            =>   0 +  4 +   9 +    0 +    0 +    0,
+         others              =>   0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/dir/complex/foo-bar.txt",
