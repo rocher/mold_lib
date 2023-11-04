@@ -13,6 +13,7 @@ project Mold_Lib_Tests is
         when "validation" =>
             Compiler_Switches := ("--coverage");
             Linker_Switches := ("--coverage");
+        when "development" | "release" => null;
     end case;
 
    package Compiler is
