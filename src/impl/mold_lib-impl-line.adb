@@ -32,6 +32,7 @@ package body Mold_Lib.Impl.Line is
       Current     : Natural          := Line'First;
       Has_Matches : Boolean          := False;
    begin
+      Success := True;
 
       loop
          Variable_Matcher.Match (Line, Matches, Current);

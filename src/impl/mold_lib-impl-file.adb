@@ -181,6 +181,7 @@ package body Mold_Lib.Impl.File is
                     Impl.Line.Replace (Line, Line_Number, Output, Success);
                begin
                   if not Success then
+                     --  error logged in Impl.Line.Replace
                      goto Exit_Function;
                   end if;
                   Output.Put_Line (New_Line);

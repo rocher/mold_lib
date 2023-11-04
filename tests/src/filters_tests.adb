@@ -259,23 +259,23 @@ package body Filters_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed    =>  1,
-         Files_Overwritten  =>  1,
-         Variables_Defined  =>  2,
-         Variables_Found    => 12,
-         Variables_Replaced =>  8,
-         Variables_Ignored  =>  0,
-         Variables_Emptied  =>  4,
-         Warnings           =>  0,
-         others             =>  0
+         Files_Processed    => 1,
+         Files_Overwritten  => 1,
+         Variables_Defined  => 2,
+         Variables_Found    => 5,
+         Variables_Replaced => 4,
+         Variables_Ignored  => 0,
+         Variables_Emptied  => 1,
+         Warnings           => 0,
+         others             => 0
       ];
       --!pp on
       Check_Results
-        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
-        ("suite/tmp/custom-filters.txt", "6e727f4e4fb46327223feae96e6f74ca",
-         "72a028acdb8b8f85f64de1c5ce776a0d");
+        ("suite/tmp/custom-filters.txt", "bdce571efb81ad49f828420b0ca7f28c",
+         "85808c4e764d9f8041f78196ed682444");
    end Test_Invalid_Filters;
 
    ----------------------

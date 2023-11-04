@@ -446,24 +446,24 @@ package body Variables_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed     =>    1,
-         Files_Overwritten   =>    1,
-         Variables_Defined   =>   18,
-         Variables_Found     => 2118,
-         Variables_Undefined =>  591,
-         Variables_Replaced  => 1527,
-         Variables_Ignored   =>  405,
-         Variables_Emptied   =>  186,
-         Warnings            =>  315,
-         others              =>    0
+         Files_Processed     =>  1,
+         Files_Overwritten   =>  1,
+         Variables_Defined   => 18,
+         Variables_Found     =>  5,
+         Variables_Undefined =>  2,
+         Variables_Replaced  =>  3,
+         Variables_Ignored   =>  2,
+         Variables_Emptied   =>  0,
+         Warnings            =>  1,
+         others              =>  0
       ];
       --!pp on
       Check_Results
         (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
-        ("suite/tmp/lorem-ipsum.txt", "caa552768a9819fff5eb93f4096189c3",
-         "87b82554bef807a9a230edd986473700");
+        ("suite/tmp/lorem-ipsum.txt", "4e0158f382f6db7d8229fd795d51ed3c",
+         "6541a8bf51611ddc51f123a8da124ea3");
 
    end Test_Modal_Substitution;
 
