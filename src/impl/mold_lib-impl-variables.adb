@@ -123,6 +123,13 @@ package body Mold_Lib.Impl.Variables is
 
       Success := Read_Result.Success;
       return Vars;
+
+   exception
+      when E : Constraint_Error =>
+         Log_Exception (E);
+         Success := False;
+         return Empty_Map;
+
    end Read;
 
    ---------------
