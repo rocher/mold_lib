@@ -267,7 +267,7 @@ package body Errors_Tests is
    begin
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
-      --  ----- invalid source file (not .mold extension) ----------------------
+      --  ----- invalid source file (not .mold extension) ---------------------
       --!pp off
       Success := Apply (
          Source     => "suite/toml/foo.toml",
