@@ -110,11 +110,13 @@ package body Mold_Lib.Impl.Validation is
          end if;
       end return;
 
+      pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
    exception
       when E : Dir.Name_Error | Dir.Use_Error =>
          Log_Exception (E);
          Error := True;
          return "";
+         pragma Annotate (Xcov, Exempt_Off);
 
    end Validate_Toml_File;
 
