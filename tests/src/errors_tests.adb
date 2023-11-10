@@ -182,9 +182,9 @@ package body Errors_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed     => 1,
-         Variables_Defined   => 1,
-         others              => 0
+         Files_Processed   => 1,
+         Variables_Defined => 1,
+         others            => 0
       ];
       --!pp on
       Check_Results
@@ -204,7 +204,7 @@ package body Errors_Tests is
       );
       Expected := [
          Variables_Defined => 1,
-         others => 0
+         others            => 0
       ];
       --!pp on
       Check_Results
