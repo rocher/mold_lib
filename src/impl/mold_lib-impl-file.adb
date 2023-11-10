@@ -287,6 +287,7 @@ package body Mold_Lib.Impl.File is
          Log.Debug ("  Real_Out_Dir  : " & Real_Out_Dir);
          Log.Debug ("  Dst_Filename  : " & Dst_Filename);
 
+         Log.Detail ("processing file " & Source.all);
          Inc_Result (Files_Processed);
 
          if Base_Filename /= Dir.Simple_Name (Dst_Filename) then
