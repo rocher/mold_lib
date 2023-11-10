@@ -190,12 +190,12 @@ package body Errors_Tests is
       Check_Results
         (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
 
-      --  ----- invalid included file extension -------------------------------
+      --  ----- destination file already exists, not overwriting --------------
       Settings.Overwrite_Destination_Files := False;
       Results                              := [others => 0];
       --!pp off
       Success := Apply (
-         Source     => "suite/dir-error",
+         Source     => "suite/dir-error/first-file.txt.mold",
          Output_Dir => "suite/dir-error",
          Settings   => Settings'Unchecked_Access,
          Toml_File  => "suite/toml/foo.toml",
