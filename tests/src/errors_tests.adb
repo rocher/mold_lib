@@ -302,7 +302,7 @@ package body Errors_Tests is
       Success := Apply (
          Source     => "suite/mold/foo.txt.mold",
          Output_Dir => "suite/tmp",
-         Toml_File  => "/invalid:path/foo.toml"
+         Toml_File  => "/dev/null/invalid:path/foo.toml"
       );
       --!pp on
       Check_Success (Success, False);
