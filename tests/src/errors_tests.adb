@@ -267,7 +267,7 @@ package body Errors_Tests is
    begin
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
-      --  ----- invalid source path -------------------------------------------
+      --  ----- invalid source file (not .mold extension) ----------------------
       --!pp off
       Success := Apply (
          Source     => "suite/toml/foo.toml",
@@ -277,6 +277,7 @@ package body Errors_Tests is
       --!pp on
       Check_Success (Success, False);
 
+      --  ----- invalid source filename ---------------------------------------
       --!pp off
       Success := Apply (
          Source     => "invalid:source:file",
@@ -286,7 +287,7 @@ package body Errors_Tests is
       --!pp on
       Check_Success (Success, False);
 
-      --  ----- invalid toml file ---------------------------------------------
+      --  ----- invalid toml filename (non-existent) --------------------------
       --!pp off
       Success := Apply (
          Source     => "suite/mold/foo.txt.mold",
@@ -296,6 +297,7 @@ package body Errors_Tests is
       --!pp on
       Check_Success (Success, False);
 
+      --  ----- invalid toml file (invalid path) ------------------------------
       --!pp off
       Success := Apply (
          Source     => "suite/mold/foo.txt.mold",
@@ -305,7 +307,7 @@ package body Errors_Tests is
       --!pp on
       Check_Success (Success, False);
 
-      --  ----- invalid directory ---------------------------------------------
+      --  ----- invalid directory name ----------------------------------------
       --!pp off
       Success := Apply (
          Source     => "suite/mold/foo.txt.mold",
