@@ -8,8 +8,14 @@
 
 package Mold_Lib.Impl.Line is
 
-   function Replace
-     (Line : String; Number : Natural; Output : IO.File_Type) return String;
+   --!pp off
+   function Replace (
+      Line    :     String;
+      Number  :     Natural;
+      Output  :     IO.File_Type;
+      Success : out Boolean
+   ) return String;
+   --!pp on
    --  Replace all defined variables that appear in Line number Number of
    --  source file, applying all text filters. Return Line with all variable
    --  substitutions made. Some predefined, paragraph-level text filters write

@@ -17,13 +17,12 @@ package Support is
    --!pp off
    Default_Test_Settings : aliased constant Mold.Settings_Type :=
    (
-      Replacement_In_File_Names    => True,
+      Replacement_In_Filenames     => True,
       Delete_Source_Files          => False,   --  Do not remove source files
       Overwrite_Destination_Files  => True,    --  Overwrite destination files
       Enable_Defined_Settings      => True,
       Undefined_Action             => Mold.Ignore,
-      Undefined_Alert              => Mold.Warning,
-      Abort_On_Error               => True
+      Undefined_Alert              => Mold.Warning
    );
    --!pp on
 
@@ -34,21 +33,20 @@ package Support is
    --  to remove source files, except in tests prepared for this.
 
    function Pretty_Print
-     (Errors : Natural; Results : Mold.Results_Access) return String;
+     (Success : Boolean; Results : Mold.Results_Access) return String;
 
    --!pp off
-   procedure Check_Errors
+   procedure Check_Success
    (
-      Reported, Expected : Natural;
+      Reported, Expected : Boolean;
       Source             : String := GNAT.Source_Info.File;
       Line               : Natural := GNAT.Source_Info.Line
    );
 
-   procedure Check_Results
-   (
-      Errors             : Natural;
+   procedure Check_Results (
+      Success            : Boolean;
+      Expected_Success   : Boolean;
       Reported, Expected : Mold.Results_Access;
-      Expected_Errors    : Natural := 0;
       Source             : String  := GNAT.Source_Info.File;
       Line               : Natural := GNAT.Source_Info.Line
    );

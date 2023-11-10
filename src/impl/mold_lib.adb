@@ -49,7 +49,7 @@ package body Mold_Lib is
       Filters    : Filters_Access  := null;
       Results    : Results_Access  := null;
       Log_Level  : Log.Levels      := Log.Info
-   )  return Natural
+   )  return Boolean
    --!pp on
 
    is
@@ -70,12 +70,11 @@ package body Mold_Lib is
           (Source, Output_Dir, Toml_File, Valid_Source_Path, Valid_Output_Path,
            Valid_Toml_Path)
       then
-         return 1;
+         return False;
       end if;
 
       declare
          Success     : Boolean;
-         Errors      : Natural;
          Variables   : aliased Variables_Map;
          Source_Path : aliased String := To_String (Valid_Source_Path);
          Output_Path : aliased String := To_String (Valid_Output_Path);
@@ -97,7 +96,7 @@ package body Mold_Lib is
             Log.Debug ("  Toml_Path loaded");
          else
             Log.Error ("Cannot load toml file " & Toml_File);
-            return 1;
+            return False;
          end if;
 
          Log.Debug ("BEGIN Mold_Lib.Apply");
@@ -109,27 +108,27 @@ package body Mold_Lib is
          Log.Debug ("Global Settings:" & Args.Settings.all'Image);
 
          if Dir.Kind (Source_Path) = Dir.Ordinary_File then
-            Errors :=
+            Success :=
               Impl.File.Replace
                 (Source_Path'Unrestricted_Access,
                  Output_Path'Unrestricted_Access);
          else
             Log.Debug
               ("  File.Set_Running_Directory " & Dir.Current_Directory);
-            Errors :=
+            Success :=
               Impl.Directory.Replace
                 ("", Source_Path'Unrestricted_Access,
                  Output_Path'Unrestricted_Access);
          end if;
 
          Log.Debug ("END Mold_Lib.Apply");
-         return Errors;
+         return Success;
 
          pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
       exception
          when E : Dir.Name_Error =>  --  raised by Dir.Kind
             Log_Exception (E, "Invalid source file '" & Source & "'");
-            return 1;
+            return False;
             pragma Annotate (Xcov, Exempt_Off);
       end;
 
@@ -137,7 +136,7 @@ package body Mold_Lib is
    exception
       when E : others =>
          Log_Exception (E);
-         return 1;
+         return False;
          pragma Annotate (Xcov, Exempt_Off);
    end Apply;
 

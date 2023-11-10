@@ -43,7 +43,7 @@ package body Errors_Tests is
 
    procedure Variable_Errors (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
       Settings : aliased Settings_Type := Global_Settings.all;
@@ -52,12 +52,11 @@ package body Errors_Tests is
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- undefined variable --------------------------------------------
-      Settings.Abort_On_Error              := True;
       Settings.Overwrite_Destination_Files := True;
       Settings.Undefined_Alert             := Error;
       Results                              := [others => 0];
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/foo.txt.mold",
          Output_Dir => "suite/tmp",
          Settings   => Settings'Unchecked_Access,
@@ -76,10 +75,9 @@ package body Errors_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       --  ----- invalid mold settings -----------------------------------------
-      Settings.Abort_On_Error          := False;
       Settings.Enable_Defined_Settings := True;
       Results                          := [others => 0];
       Expected := [Variables_Defined => 0, others => 0];
@@ -87,7 +85,7 @@ package body Errors_Tests is
          Number     := I'Image;
          Number (1) := '0';
          --!pp off
-         Errors := Apply (
+         Success := Apply (
             Source     => "suite/mold/foo.txt.mold",
             Output_Dir => "suite/tmp",
             Settings   => Settings'Unchecked_Access,
@@ -97,7 +95,8 @@ package body Errors_Tests is
          );
          --!pp on
          Check_Results
-           (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+           (Success, False, Results'Unchecked_Access,
+            Expected'Unchecked_Access);
       end loop;
 
    end Variable_Errors;
@@ -108,7 +107,7 @@ package body Errors_Tests is
 
    procedure File_Errors (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
       Settings : aliased Settings_Type := Global_Settings.all;
@@ -116,10 +115,9 @@ package body Errors_Tests is
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- non-existent file ---------------------------------------------
-      Settings.Abort_On_Error := True;
-      Results                 := [others => 0];
+      Results  := [others => 0];
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/unknown-file.mold",
          Output_Dir => "suite/tmp",
          Settings   => Settings'Unchecked_Access,
@@ -130,13 +128,12 @@ package body Errors_Tests is
       Expected := [others => 0];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       --  ----- non-existent include file -------------------------------------
-      Settings.Abort_On_Error := True;
-      Results                 := [others => 0];
+      Results  := [others => 0];
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/invalid-include.mold",
          Output_Dir => "suite/tmp",
          Settings   => Settings'Unchecked_Access,
@@ -151,13 +148,12 @@ package body Errors_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       --  ----- invalid included file name ------------------------------------
-      Settings.Abort_On_Error := True;
-      Results                 := [others => 0];
+      Results  := [others => 0];
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/invalid-include-name.mold",
          Output_Dir => "suite/tmp",
          Settings   => Settings'Unchecked_Access,
@@ -172,13 +168,12 @@ package body Errors_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       --  ----- invalid included file extension -------------------------------
-      Settings.Abort_On_Error := True;
-      Results                 := [others => 0];
+      Results  := [others => 0];
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/invalid-include-ext.mold",
          Output_Dir => "suite/tmp",
          Settings   => Settings'Unchecked_Access,
@@ -193,15 +188,14 @@ package body Errors_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
 
-      --  ----- invalid included file extension -------------------------------
-      Settings.Abort_On_Error              := True;
+      --  ----- destination file already exists, not overwriting --------------
       Settings.Overwrite_Destination_Files := False;
       Results                              := [others => 0];
       --!pp off
-      Errors := Apply (
-         Source     => "suite/dir-error",
+      Success := Apply (
+         Source     => "suite/dir-error/first-file.txt.mold",
          Output_Dir => "suite/dir-error",
          Settings   => Settings'Unchecked_Access,
          Toml_File  => "suite/toml/foo.toml",
@@ -215,7 +209,7 @@ package body Errors_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access, 1);
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
 
    end File_Errors;
 
@@ -225,23 +219,22 @@ package body Errors_Tests is
 
    procedure Directory_Errors (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Settings : aliased Settings_Type := Global_Settings.all;
    begin
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- invalid source path -------------------------------------------
-      Settings.Abort_On_Error      := True;
       Settings.Delete_Source_Files := False;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/dir-error",
          Settings   => Settings'Unrestricted_Access,
          Output_Dir => "suite/dir-error",
          Toml_File  => "suite/toml/bar.toml"
       );
       --!pp on
-      Check_Errors (Errors, 1);
+      Check_Success (Success, False);
    end Directory_Errors;
 
    ------------------------
@@ -250,58 +243,58 @@ package body Errors_Tests is
 
    procedure Validations_Errors (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors : Natural;
+      Success : Boolean;
    begin
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- invalid source path -------------------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/toml/foo.toml",
          Output_Dir => "suite/invalid_dir",
          Toml_File  => "suite/toml/foo.toml"
       );
       --!pp on
-      Check_Errors (Errors, 1);
+      Check_Success (Success, False);
 
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "invalid:source:file",
          Output_Dir => "suite/invalid_dir",
          Toml_File  => "suite/toml/foo.toml"
       );
       --!pp on
-      Check_Errors (Errors, 1);
+      Check_Success (Success, False);
 
       --  ----- invalid toml file ---------------------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/foo.txt.mold",
          Output_Dir => "suite/tmp",
          Toml_File  => "suite/toml/invalid.toml"
       );
       --!pp on
-      Check_Errors (Errors, 1);
+      Check_Success (Success, False);
 
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/foo.txt.mold",
          Output_Dir => "suite/tmp",
          Toml_File  => "/invalid:path/foo.toml"
       );
       --!pp on
-      Check_Errors (Errors, 1);
+      Check_Success (Success, False);
 
       --  ----- invalid directory ---------------------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/foo.txt.mold",
          Output_Dir => "/dev/null/invalid:dir:name/",
          Toml_File  => "suite/toml/foo.toml",
          Log_Level  => Log.Debug
       );
       --!pp on
-      Check_Errors (Errors, 1);
+      Check_Success (Success, False);
    end Validations_Errors;
 
 end Errors_Tests;

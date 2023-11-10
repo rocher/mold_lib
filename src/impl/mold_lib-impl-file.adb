@@ -15,17 +15,17 @@ package body Mold_Lib.Impl.File is
    use all type Dir.File_Kind;
    use all type Reg.Match_Location;
 
-   --------------------------
-   -- Replace_In_File_Name --
-   --------------------------
+   -------------------------
+   -- Replace_In_Filename --
+   -------------------------
 
-   function Replace_In_File_Name (Name : String) return String is
+   function Replace_In_Filename (Name : String) return String is
       Matches     : Reg.Match_Array (0 .. 3);
       New_Name    : Unbounded_String := To_Unbounded_String ("");
       Current     : Natural          := Name'First;
       Has_Matches : Boolean          := False;
    begin
-      Log.Debug ("BEGIN Impl.File.Replace_In_File_Name");
+      Log.Debug ("BEGIN Impl.File.Replace_In_Filename");
 
       loop
          File_Matcher.Match (Name, Matches, Current);
@@ -58,7 +58,7 @@ package body Mold_Lib.Impl.File is
                Log.Warning
                  ("  Undefined variable " & Var_Name &
                   " in file name substitution");
-               Inc_Result (Replacement_Warnings);
+               Inc_Result (Warnings);
             else
                New_Name.Append (Var_Value);
             end if;
@@ -70,26 +70,26 @@ package body Mold_Lib.Impl.File is
       if Has_Matches then
          New_Name.Append (Name (Current .. Name'Last));
          Log.Debug ("  Renamed file " & Name & " to " & To_String (New_Name));
-         Log.Debug ("END Replace_In_File_Name");
+         Log.Debug ("END Replace_In_Filename");
          return To_String (New_Name);
       else
          Log.Debug ("  No replacement done");
-         Log.Debug ("END Replace_In_File_Name");
+         Log.Debug ("END Replace_In_Filename");
          return Name;
       end if;
-   end Replace_In_File_Name;
+   end Replace_In_Filename;
 
    ------------------
    -- Include_Path --
    ------------------
 
    function Include_Path
-     (File_Name : String; Success : out Boolean) return String
+     (Filename : String; Success : in out Boolean) return String
    is
-      Extension : constant String := Dir.Extension (File_Name);
+      Extension : constant String := Dir.Extension (Filename);
    begin
       Log.Debug ("BEGIN Impl.File.Include_Path");
-      Log.Debug ("  File_Name : " & File_Name);
+      Log.Debug ("  Filename  : " & Filename);
       Log.Debug ("  Extension : " & Extension);
 
       --  check extension file to be 'molt'
@@ -97,29 +97,28 @@ package body Mold_Lib.Impl.File is
 
       if Extension /= Include_File_Extension then
          Success := False;
-         Log.Error ("Invalid extension of include file " & File_Name);
+         Log.Error ("Invalid extension of include file " & Filename);
          return "";
       end if;
 
-      --  check whether File_Name exists or not: it can be a relative path to
+      --  check whether Filename exists or not: it can be a relative path to
       --  the currently processed file (e.g. lib/templates/foo.molt), or an
       --  absolute path to a library or repository of templates (e.g.
       --  /usr/share/molt/bar.molt)
 
-      if Dir.Exists (File_Name)
-        and then Dir.Kind (File_Name) = Dir.Ordinary_File
+      if Dir.Exists (Filename) and then Dir.Kind (Filename) = Dir.Ordinary_File
       then
          Success := True;
-         Log.Debug ("  Including file " & File_Name);
+         Log.Debug ("  Including file " & Filename);
          Log.Debug ("END Include_Path");
-         return File_Name;
+         return Filename;
       end if;
 
       Log.Debug ("  Trying to include from running directory");
 
       declare
          File_Path : constant String :=
-           Full_Path_Expanded (To_String (Args.Running_Directory), File_Name);
+           Full_Path_Expanded (To_String (Args.Running_Directory), Filename);
       begin
          Log.Debug ("  File_Path : " & File_Path);
 
@@ -152,16 +151,17 @@ package body Mold_Lib.Impl.File is
    -----------------------
 
    --!pp off
-   procedure Replace_In_Stream
+   function Replace_In_Stream
    (
       Input : in out Ada.Text_IO.File_Type;
       Output : Ada.Text_IO.File_Type
-   )
+   ) return Boolean
    with
      Pre  => (Input.Is_Open and then Output.Is_Open),
      Post => (not Input.Is_Open and then Output.Is_Open)
    --!pp on
    is
+      Success     : Boolean;
       Line_Number : Natural := 0;
       Matches     : Reg.Match_Array (0 .. 1);
    begin
@@ -178,10 +178,11 @@ package body Mold_Lib.Impl.File is
                --  variable substitution
                declare
                   New_Line : constant String :=
-                    Impl.Line.Replace (Line, Line_Number, Output);
+                    Impl.Line.Replace (Line, Line_Number, Output, Success);
                begin
-                  if Args.Errors > 0 and then Args.Settings.Abort_On_Error then
-                     goto Exit_Procedure;
+                  if not Success then
+                     --  error logged in Impl.Line.Replace
+                     goto Exit_Function;
                   end if;
                   Output.Put_Line (New_Line);
                end;
@@ -193,43 +194,41 @@ package body Mold_Lib.Impl.File is
                   Inc_Name : constant String :=
                     Line (Matches (1).First .. Matches (1).Last);
 
-                  Is_Valid : Boolean;
                   Inc_Path : constant String :=
-                    Include_Path (Inc_Name, Is_Valid);
+                    Include_Path (Inc_Name, Success);
                   Inc_File : File_Type;
                begin
 
-                  if not Is_Valid then
+                  if not Success then
                      Log.Error ("Cannot find include file '" & Inc_Name & "'");
-                     Args.Errors := @ + 1;
-                     goto Exit_Procedure;
+                     goto Exit_Function;
                   end if;
 
                   if Args.Included_Files.Contains
                       (To_Unbounded_String (Inc_Path))
                   then
                      Log.Error ("Circular inclusion of file " & Inc_Path);
-                     Args.Errors := @ + 1;
-                     goto Exit_Procedure;
+                     Success := False;
+                     goto Exit_Function;
                   else
-                     Log.Debug ("  Including file " & Inc_Path & " ...");
+                     Log.Detail ("including file " & Inc_Path);
                   end if;
 
                   Args.Included_Files.Append (To_Unbounded_String (Inc_Path));
 
                   Inc_File.Open (In_File, Inc_Path);
-                  Replace_In_Stream (Inc_File, Output);
+                  Success := Replace_In_Stream (Inc_File, Output);
 
                   Args.Included_Files.Delete_Last;
-                  Log.Debug ("  ...  file included");
                end;
             end if;
          end;
       end loop For_Each_Line;
 
-      <<Exit_Procedure>>
+      <<Exit_Function>>
       Input.Close;
       Log.Debug ("END File.Replace_In_Stream");
+      return Success;
 
    end Replace_In_Stream;
 
@@ -238,11 +237,11 @@ package body Mold_Lib.Impl.File is
    -------------
 
    function Replace
-     (Source, Output_Dir : not null String_Access) return Natural
+     (Source, Output_Dir : not null String_Access) return Boolean
    is
+      Success : Boolean;
    begin
       Args.Source         := Source;
-      Args.Errors         := 0;
       Args.Included_Files := Inclusion_Package.Empty_List;
 
       declare
@@ -250,49 +249,51 @@ package body Mold_Lib.Impl.File is
          Dir_Name : constant String := Dir.Containing_Directory (Source.all);
 
          --  base file name: no path & no mold extension
-         Base_File_Name : constant String := Dir.Base_Name (Source.all);
+         Base_Filename : constant String := Dir.Base_Name (Source.all);
 
          --  "preparation" file name: source dir + base file name
-         Prep_File_Name : constant String :=
-           Dir.Compose (Dir_Name, Base_File_Name);
+         Prep_Filename : constant String :=
+           Dir.Compose (Dir_Name, Base_Filename);
 
          --  "Replaced" file name: variable substitution in "preparation" file
          --  name, if enabled
-         Repl_File_Name : constant String :=
-           (if Args.Settings.Replacement_In_File_Names then
-              Replace_In_File_Name (Prep_File_Name)
-            else Prep_File_Name);
+         Repl_Filename : constant String :=
+           (if Args.Settings.Replacement_In_Filenames then
+              Replace_In_Filename (Prep_Filename)
+            else Prep_Filename);
 
          --  real output directory: the Output_Dir, if different from "", or
          --  the result directory after variable substitution, if enabled, in
          --  the path of the source file name
          Real_Out_Dir : constant String :=
            (if Output_Dir.all'Length > 0 then Output_Dir.all
-            else Dir.Containing_Directory (Repl_File_Name));
+            else Dir.Containing_Directory (Repl_Filename));
 
          --  destination file name: composition of the real output dir and the
          --  source file name after variable substitution, if enabled
-         Dst_File_Name : constant String :=
-           Dir.Compose (Real_Out_Dir, Dir.Simple_Name (Repl_File_Name));
+         Dst_Filename : constant String :=
+           Dir.Compose (Real_Out_Dir, Dir.Simple_Name (Repl_Filename));
 
          Src_File : IO.File_Type;
          Dst_File : IO.File_Type;
 
       begin
          Log.Debug ("BEGIN Impl.File.Replace");
-         Log.Debug ("  Dir_Name       : " & Dir_Name);
-         Log.Debug ("  Src_File_Name  : " & Source.all);
-         Log.Debug ("  Base_File_Name : " & Base_File_Name);
-         Log.Debug ("  Prep_File_Name : " & Prep_File_Name);
-         Log.Debug ("  Repl_File_Name : " & Repl_File_Name);
-         Log.Debug ("  Real_Out_Dir   : " & Real_Out_Dir);
-         Log.Debug ("  Dst_File_Name  : " & Dst_File_Name);
+         Log.Debug ("  Dir_Name      : " & Dir_Name);
+         Log.Debug ("  Src_Filename  : " & Source.all);
+         Log.Debug ("  Base_Filename : " & Base_Filename);
+         Log.Debug ("  Prep_Filename : " & Prep_Filename);
+         Log.Debug ("  Repl_Filename : " & Repl_Filename);
+         Log.Debug ("  Real_Out_Dir  : " & Real_Out_Dir);
+         Log.Debug ("  Dst_Filename  : " & Dst_Filename);
 
+         Log.Detail ("processing file " & Source.all);
          Inc_Result (Files_Processed);
 
-         if Base_File_Name /= Dir.Simple_Name (Dst_File_Name) then
-            --  file name has variables successfully replaced
+         if Base_Filename /= Dir.Simple_Name (Dst_Filename) then
+            --  filename has variables successfully replaced
             Inc_Result (Files_Renamed);
+            Log.Detail ("renamed destination file " & Dst_Filename);
          end if;
 
          --  open source file
@@ -303,45 +304,45 @@ package body Mold_Lib.Impl.File is
 
          if not Dir.Exists (Real_Out_Dir) then
             Dir.Create_Path (Real_Out_Dir);
-            Log.Debug ("  Created dir " & Real_Out_Dir);
+            Log.Detail ("created directory " & Real_Out_Dir);
          end if;
 
-         if Dir.Exists (Dst_File_Name) then
+         if Dir.Exists (Dst_Filename) then
             if Args.Settings.Overwrite_Destination_Files then
-               Dir.Delete_File (Dst_File_Name);
-               Log.Debug ("  Deleted file " & Dst_File_Name);
+               Dir.Delete_File (Dst_Filename);
                Inc_Result (Files_Overwritten);
+               Log.Detail ("deleted destination file " & Dst_Filename);
             else
-               Log.Error ("File " & Dst_File_Name & " already exists");
-               Args.Errors := @ + 1;
+               Log.Error
+                 ("Destination file " & Dst_Filename & " already exists");
+               Success := False;
                goto Exit_Function;
             end if;
          end if;
 
-         Dst_File.Create (Name => Dst_File_Name);
-         Log.Debug ("  Created file " & Dst_File_Name);
+         Dst_File.Create (Name => Dst_Filename);
+         Log.Detail ("created destination file " & Dst_Filename);
 
          --  perform variable substitution from Src to Dst
-         Replace_In_Stream (Src_File, Dst_File);
+         Success := Replace_In_Stream (Src_File, Dst_File);
 
          --  close Src file, and delete it when specified
          Dst_File.Close;
          if Args.Settings.Delete_Source_Files and then Args.Errors = 0 then
             Dir.Delete_File (Source.all);
-            Log.Debug ("  Deleted file " & Source.all);
             Inc_Result (Files_Deleted);
+            Log.Detail ("deleted source file " & Source.all);
          end if;
 
          <<Exit_Function>>
          Args.Included_Files.Clear;
          Log.Debug ("END Impl.File.Replace");
-         return Args.Errors;
+         return Success;
 
       exception
          when E : Dir.Name_Error | Dir.Use_Error =>
             Log_Exception (E);
-            Args.Errors := @ + 1;
-            return Args.Errors;
+            return False;
       end;
    end Replace;
 

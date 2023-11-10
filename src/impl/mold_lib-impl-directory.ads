@@ -13,12 +13,10 @@ package Mold_Lib.Impl.Directory is
       Sub_Dir    :          String;
       Source     : not null String_Access;
       Output_Dir : not null String_Access
-   )  return Natural;
+   )  return Boolean;
    --  Recursively apply variable replacement to all mold files (with
    --  extension "mold") in all sub-directories, starting at directory Source.
    --
-   --  Return the number of errors detected, including those detected during
-   --  the replacement process. If Abort_On_Error is False, the number of
-   --  errors can be arbitrarily big.
+   --  Return True if the process end successfully (no error detected).
 
 end Mold_Lib.Impl.Directory;

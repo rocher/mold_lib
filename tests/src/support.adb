@@ -25,12 +25,12 @@ package body Support is
    ------------------
 
    function Pretty_Print
-     (Errors : Natural; Results : Mold.Results_Access) return String
+     (Success : Boolean; Results : Mold.Results_Access) return String
    is
       Fill : constant String  := "           ";
       Text : Unbounded_String := To_Unbounded_String ("");
    begin
-      Text.Append (ASCII.LF & "    Errors:" & Errors'Image);
+      Text.Append (ASCII.LF & "    Success:" & Success'Image);
       Text.Append (ASCII.LF & "    Results:" & ASCII.LF);
 
       for Field in Mold.Results_Fields loop
@@ -43,8 +43,8 @@ package body Support is
    end Pretty_Print;
 
    --!pp off
-   procedure Check_Errors
-     (Reported, Expected : Natural;
+   procedure Check_Success
+     (Reported, Expected : Boolean;
       Source             : String := GNAT.Source_Info.File;
       Line               : Natural := GNAT.Source_Info.Line)
    --!pp on
@@ -53,32 +53,32 @@ package body Support is
    begin
       Assert
         (Reported = Expected,
-         "Incorrect Errors: reported" & Reported'Image & ", expected" &
+         "Incorrect Success: reported " & Reported'Image & ", expected " &
          Expected'Image,
          Source, Line);
-   end Check_Errors;
+   end Check_Success;
 
    -------------------
    -- Check_Results --
    -------------------
 
    --!pp off
-   procedure Check_Results
-     (Errors             : Natural;
+   procedure Check_Results (
+      Success            : Boolean;
+      Expected_Success   : Boolean;
       Reported, Expected : Mold.Results_Access;
-      Expected_Errors    : Natural := 0;
       Source             : String  := GNAT.Source_Info.File;
       Line               : Natural := GNAT.Source_Info.Line)
    --!pp on
 
    is
    begin
-      Simple_Logging.Detail (Pretty_Print (Errors, Reported));
+      Simple_Logging.Detail (Pretty_Print (Success, Expected));
 
       Assert
-        (Errors = Expected_Errors,
-         "Incorrect Errors: reported" & Errors'Image & ", expected" &
-         Expected_Errors'Image,
+        (Success = Expected_Success,
+         "Incorrect Success: reported " & Success'Image & ", expected " &
+         Expected_Success'Image,
          Source, Line);
 
       for Field in Mold.Results_Fields loop

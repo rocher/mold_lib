@@ -40,16 +40,13 @@ package body Mold_Lib.Impl.Variables is
 
    begin
       if Key = "mold-replacement-in-file-names" then
-         Set_Boolean (Args.Settings.Replacement_In_File_Names'Access);
+         Set_Boolean (Args.Settings.Replacement_In_Filenames'Access);
 
       elsif Key = "mold-delete-source-files" then
          Set_Boolean (Args.Settings.Delete_Source_Files'Access);
 
       elsif Key = "mold-overwrite-destination-files" then
          Set_Boolean (Args.Settings.Overwrite_Destination_Files'Access);
-
-      elsif Key = "mold-abort-on-error" then
-         Set_Boolean (Args.Settings.Abort_On_Error'Access);
 
       elsif Key = "mold-undefined-action" then
          begin
@@ -79,7 +76,7 @@ package body Mold_Lib.Impl.Variables is
       end if;
 
       if Success then
-         Log.Info ("Setting applied " & Key & " = " & Value);
+         Log.Detail ("setting applied " & Key & " = " & Value);
       end if;
 
       return Success;
@@ -121,11 +118,18 @@ package body Mold_Lib.Impl.Variables is
             Inc_Result (Variables_Defined);
          end loop;
       else
-         Log.Debug ("Error reading variables file");
+         Log.Error ("Cannot load variables file");
       end if;
 
       Success := Read_Result.Success;
       return Vars;
+
+   exception
+      when E : Constraint_Error =>
+         Log_Exception (E);
+         Success := False;
+         return Empty_Map;
+
    end Read;
 
    ---------------

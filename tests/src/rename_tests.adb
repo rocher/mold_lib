@@ -37,7 +37,7 @@ package body Rename_Tests is
 
    procedure Test_No_Renaming (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
       Settings : aliased Settings_Type := Global_Settings.all;
@@ -45,9 +45,9 @@ package body Rename_Tests is
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- file renaming disabled ----------------------------------------
-      Settings.Replacement_In_File_Names := False;
+      Settings.Replacement_In_Filenames := False;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/no-vars-__foo__.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -62,16 +62,16 @@ package body Rename_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/no-vars-__foo__.txt", "7ef8e151c0fde9d5fef738709a321300",
          "c81d1f24d9f8018b1760478e1ffe8f98");
 
       --  ----- file renaming disabled ----------------------------------------
-      Settings.Replacement_In_File_Names := False;
+      Settings.Replacement_In_Filenames := False;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -86,7 +86,7 @@ package body Rename_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/no-vars-__foo__-__bar__.txt",
@@ -94,9 +94,9 @@ package body Rename_Tests is
          "c81d1f24d9f8018b1760478e1ffe8f98");
 
       --  ----- variable in source file name is undefined ---------------------
-      Settings.Replacement_In_File_Names := True;
+      Settings.Replacement_In_Filenames := True;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/no-vars-__foo__.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -105,24 +105,24 @@ package body Rename_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      => 1,
-         Files_Overwritten    => 1,
-         Variables_Defined    => 1,
-         Replacement_Warnings => 1,
-         others               => 0
+         Files_Processed   => 1,
+         Files_Overwritten => 1,
+         Variables_Defined => 1,
+         Warnings          => 1,
+         others            => 0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/no-vars-__foo__.txt", "7ef8e151c0fde9d5fef738709a321300",
          "c81d1f24d9f8018b1760478e1ffe8f98");
 
       --  ----- variable in source file name is undefined ---------------------
-      Settings.Replacement_In_File_Names := True;
+      Settings.Replacement_In_Filenames := True;
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -131,15 +131,15 @@ package body Rename_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      =>  1,
-         Files_Overwritten    =>  1,
-         Variables_Defined    => 26,
-         Replacement_Warnings =>  2,
-         others               =>  0
+         Files_Processed   =>  1,
+         Files_Overwritten =>  1,
+         Variables_Defined => 26,
+         Warnings          =>  2,
+         others            =>  0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/no-vars-__foo__.txt", "7ef8e151c0fde9d5fef738709a321300",
@@ -152,18 +152,18 @@ package body Rename_Tests is
 
    procedure Test_Basic_Renaming (T : in out Test_Case'Class) is
       pragma Unreferenced (T);
-      Errors   : Natural;
+      Success  : Boolean;
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
       Settings : aliased Settings_Type := Global_Settings.all;
    begin
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
-      Settings.Replacement_In_File_Names := True;
+      Settings.Replacement_In_Filenames := True;
 
       --  ----- one variable replaced -----------------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -172,15 +172,15 @@ package body Rename_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      => 1,
-         Files_Renamed        => 1,
-         Variables_Defined    => 1,
-         Replacement_Warnings => 1,
-         others               => 0
+         Files_Processed   => 1,
+         Files_Renamed     => 1,
+         Variables_Defined => 1,
+         Warnings          => 1,
+         others            => 0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/no-vars-foo-__bar__.txt",
@@ -189,7 +189,7 @@ package body Rename_Tests is
 
       --  ----- one variable replaced -----------------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -198,15 +198,15 @@ package body Rename_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed      => 1,
-         Files_Renamed        => 1,
-         Variables_Defined    => 1,
-         Replacement_Warnings => 1,
-         others               => 0
+         Files_Processed   => 1,
+         Files_Renamed     => 1,
+         Variables_Defined => 1,
+         Warnings          => 1,
+         others            => 0
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/no-vars-__foo__-bar.txt",
@@ -215,7 +215,7 @@ package body Rename_Tests is
 
       --  ----- two variables replaced ----------------------------------------
       --!pp off
-      Errors := Apply (
+      Success := Apply (
          Source     => "suite/mold/no-vars-__foo__-__bar__.txt.mold",
          Output_Dir => "suite/tmp/",
          Settings   => Settings'Unchecked_Access,
@@ -231,7 +231,7 @@ package body Rename_Tests is
       ];
       --!pp on
       Check_Results
-        (Errors, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
         ("suite/tmp/no-vars-foo-bar.txt", "7ef8e151c0fde9d5fef738709a321300",
