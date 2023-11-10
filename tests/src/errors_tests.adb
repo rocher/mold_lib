@@ -190,6 +190,26 @@ package body Errors_Tests is
       Check_Results
         (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
 
+      --  ----- invalid toml file (format) ------------------------------------
+      Settings.Overwrite_Destination_Files := True;
+      Results                              := [others => 0];
+      --!pp off
+      Success := Apply (
+         Source     => "suite/mold/foo-bar.txt.mold",
+         Output_Dir => "suite/tmp",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/invalid-file.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Variables_Defined => 1,
+         others => 0
+      ];
+      --!pp on
+      Check_Results
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
+
       --  ----- destination file already exists, not overwriting --------------
       Settings.Overwrite_Destination_Files := False;
       Results                              := [others => 0];
