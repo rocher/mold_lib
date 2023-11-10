@@ -26,12 +26,17 @@ jobs:
           - name: Get Alire v1.2.2
             uses: alire-project/setup-alire@v2
 
+          - name: Build unit tests of plain code
+            run: |
+              cd tests
+              alr build --validation
+
           - name: Instrument the code
             run: |
               cd tests
               alr gnatcov instrument --level=stmt --dump-trigger=atexit --projects mold_lib --no-subprojects
 
-          - name: Build unit tests
+          - name: Build unit test of instrumented code
             run: |
               cd tests
               alr build --validation -- --src-subdirs=gnatcov-instr --implicit-with=gnatcov_rts_full
