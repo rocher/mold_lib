@@ -339,10 +339,13 @@ package body Mold_Lib.Impl.File is
          Log.Debug ("END Impl.File.Replace");
          return Success;
 
+         pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
       exception
          when E : Dir.Name_Error | Dir.Use_Error =>
             Log_Exception (E);
             return False;
+            pragma Annotate (Xcov, Exempt_Off);
+
       end;
    end Replace;
 

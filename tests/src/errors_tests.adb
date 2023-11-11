@@ -182,9 +182,29 @@ package body Errors_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed     => 1,
-         Variables_Defined   => 1,
-         others              => 0
+         Files_Processed   => 1,
+         Variables_Defined => 1,
+         others            => 0
+      ];
+      --!pp on
+      Check_Results
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
+
+      --  ----- invalid toml file (format) ------------------------------------
+      Settings.Overwrite_Destination_Files := True;
+      Results                              := [others => 0];
+      --!pp off
+      Success := Apply (
+         Source     => "suite/mold/foo-bar.txt.mold",
+         Output_Dir => "suite/tmp",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/invalid-file.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Variables_Defined => 1,
+         others            => 0
       ];
       --!pp on
       Check_Results
@@ -247,7 +267,7 @@ package body Errors_Tests is
    begin
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
-      --  ----- invalid source path -------------------------------------------
+      --  ----- invalid source file (not .mold extension) ---------------------
       --!pp off
       Success := Apply (
          Source     => "suite/toml/foo.toml",
@@ -257,6 +277,7 @@ package body Errors_Tests is
       --!pp on
       Check_Success (Success, False);
 
+      --  ----- invalid source filename ---------------------------------------
       --!pp off
       Success := Apply (
          Source     => "invalid:source:file",
@@ -266,7 +287,7 @@ package body Errors_Tests is
       --!pp on
       Check_Success (Success, False);
 
-      --  ----- invalid toml file ---------------------------------------------
+      --  ----- invalid toml filename (non-existent) --------------------------
       --!pp off
       Success := Apply (
          Source     => "suite/mold/foo.txt.mold",
@@ -276,6 +297,7 @@ package body Errors_Tests is
       --!pp on
       Check_Success (Success, False);
 
+      --  ----- invalid toml file (invalid path) ------------------------------
       --!pp off
       Success := Apply (
          Source     => "suite/mold/foo.txt.mold",
@@ -285,7 +307,7 @@ package body Errors_Tests is
       --!pp on
       Check_Success (Success, False);
 
-      --  ----- invalid directory ---------------------------------------------
+      --  ----- invalid directory name ----------------------------------------
       --!pp off
       Success := Apply (
          Source     => "suite/mold/foo.txt.mold",
