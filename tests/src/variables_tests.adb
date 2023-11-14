@@ -51,7 +51,7 @@ package body Variables_Tests is
          Settings   => Global_Settings,
          Toml_File  => "suite/toml/vars-def-1.toml",
          Results    => Results'Unchecked_Access,
-         Log_Level  => Log.Level
+         Log_Level  => Log.Debug
       );
       Expected := [
          Files_Processed    => 1,
