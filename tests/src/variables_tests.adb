@@ -54,16 +54,19 @@ package body Variables_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed => 1,
-         others          => 0
+         Files_Processed    => 1,
+         Variables_Defined  => 4,
+         Variables_Found    => 2,
+         Variables_Replaced => 2,
+         others             => 0
       ];
       --!pp on
       Check_Results
         (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
-        ("suite/tmp/no-vars.txt", "7ef8e151c0fde9d5fef738709a321300",
-         "c81d1f24d9f8018b1760478e1ffe8f98");
+        ("suite/tmp/vars-def-1.txt", "3a1f86f00d7f3c412130c9f8b8329c74",
+         "c403d6318220fc26784e41e6461855e8");
    end Test_Variables_Definition;
 
    --------------------------
