@@ -18,7 +18,7 @@ package Mold_Lib is
    package Log renames Simple_Logging;
 
    type Undefined_Alerts is (None, Warning, Error);
-   --  Error level to assume when undefined variables or text filters are
+   --  Error level assumed when undefined variables or text filters are
    --  encountered during the variable substitution process.
 
    type Undefined_Actions is (Ignore, Empty);
@@ -29,6 +29,7 @@ package Mold_Lib is
 
    type Settings_Type is record
       Replacement_In_Filenames    : aliased Boolean;
+      Replacement_In_Variables    : aliased Boolean;
       Delete_Source_Files         : aliased Boolean;
       Overwrite_Destination_Files : aliased Boolean;
       Enable_Defined_Settings     : aliased Boolean;
@@ -41,6 +42,7 @@ package Mold_Lib is
 
    Default_Settings : constant Settings_Type := (
       Replacement_In_Filenames    => True,
+      Replacement_In_Variables    => True,
       Delete_Source_Files         => False,
       Overwrite_Destination_Files => True,
       Enable_Defined_Settings     => True,

@@ -9,7 +9,7 @@
 with Mold_Lib.Impl.Variables;
 with Text_Filters;
 
-package body Mold_Lib.Impl.Line is
+package body Mold_Lib.Impl.Text is
 
    use all type Reg.Match_Location;
 
@@ -19,23 +19,25 @@ package body Mold_Lib.Impl.Line is
 
    --!pp off
    function Replace (
-      Line    :     String;
-      Number  :     Natural;
-      Output  :     IO.File_Type;
-      Success : out Boolean
+      Text    :     String;
+      Entity  :     Entity_Kind;
+      Line    :     Natural;
+      Name    :     String;
+      Success : out Boolean;
+      Output  :     IO.File_Access := null  --  RFU
    ) return String
    --!pp on
 
    is
       Matches     : Reg.Match_Array (0 .. 4);
-      New_Line    : Unbounded_String := To_Unbounded_String ("");
-      Current     : Natural          := Line'First;
+      New_Text    : Unbounded_String := To_Unbounded_String ("");
+      Current     : Natural          := Text'First;
       Has_Matches : Boolean          := False;
    begin
       Success := True;
 
       loop
-         Variable_Matcher.Match (Line, Matches, Current);
+         Variable_Matcher.Match (Text, Matches, Current);
          exit when Matches (0) = Reg.No_Match;
 
          Has_Matches := True;
@@ -43,13 +45,13 @@ package body Mold_Lib.Impl.Line is
 
          declare
             Pre_Text : constant String :=
-              Line (Matches (1).First .. Matches (1).Last);
+              Text (Matches (1).First .. Matches (1).Last);
 
             Var_Mold : constant String :=
-              Line (Matches (2).First .. Matches (2).Last);
+              Text (Matches (2).First .. Matches (2).Last);
 
             Var_All_Name : constant String :=
-              Line (Matches (3).First .. Matches (3).Last);
+              Text (Matches (3).First .. Matches (3).Last);
 
             Is_Mandatory : constant Boolean :=
               (Var_All_Name (Var_All_Name'First) =
@@ -66,14 +68,14 @@ package body Mold_Lib.Impl.Line is
 
             Filters : constant String :=
               (if Matches (4).First > 0 then
-                 Line (Matches (4).First .. Matches (4).Last)
+                 Text (Matches (4).First .. Matches (4).Last)
                else "");
 
             Var_Value : constant String := Impl.Variables.Get_Value (Var_Name);
 
             Variable_Undefined : constant Boolean := (Var_Value = "");
 
-            LIN : constant String := Number'Image;
+            LIN : constant String := Line'Image;
             COL : constant String := Matches (2).First'Image;
          begin
 
@@ -83,19 +85,21 @@ package body Mold_Lib.Impl.Line is
             --  Log.Debug ("Var_Name    : '" & Var_Name & "'");
             --  Log.Debug ("Filters     : '" & Filters & "'");
 
-            New_Line.Append (Pre_Text);
+            New_Text.Append (Pre_Text);
 
             if Variable_Undefined then
                Inc_Result (Variables_Undefined);
                declare
                   Message : constant String :=
                     "Undefined variable '" & Var_Name & "' in " &
-                    Args.Source.all & ":" & LIN (2 .. LIN'Last) & ":" &
-                    COL (2 .. COL'Last);
+                    (if Entity = file then
+                       "file " & Args.Source.all & ":" & LIN (2 .. LIN'Last) &
+                       ":" & COL (2 .. COL'Last)
+                     else "variable '" & Name & "'");
                begin
                   if Is_Mandatory then
                      Inc_Result (Variables_Ignored);
-                     New_Line.Append (Var_Mold);
+                     New_Text.Append (Var_Mold);
                      Log.Error (Message);
                      Success := False;
                   elsif Is_Optional then
@@ -110,26 +114,35 @@ package body Mold_Lib.Impl.Line is
                      end if;
                      if Args.Settings.Undefined_Action = Ignore then
                         Inc_Result (Variables_Ignored);
-                        New_Line.Append (Var_Mold);
+                        New_Text.Append (Var_Mold);
                      else
                         Inc_Result (Variables_Emptied);
                      end if;
                   end if;
                end;
-            else  --  variable defined
+            else
+               --  variable defined
+
+               if Entity = variable and then Var_Name = Name then
+                  --  Error: found recursive definition of variable
+                  Log.Error
+                    ("Recursive definition of variable '" & Name & "'");
+                  Success := False;
+               end if;
+
                if Filters = "" then
                   Inc_Result (Variables_Replaced);
-                  New_Line.Append (Var_Value);
+                  New_Text.Append (Var_Value);
                else
                   Log.Debug ("Applying filters");
                   declare
                      Var_Filter_Applied : constant Unbounded_String :=
-                       Text_Filters.Apply (Filters, Var_Value, Output);
+                       Text_Filters.Apply (Filters, Var_Value, Output.all);
                   begin
                      if Var_Filter_Applied = Null_Unbounded_String then
                         if Args.Settings.Undefined_Action = Ignore then
                            Inc_Result (Variables_Ignored);
-                           New_Line.Append (Var_Mold);
+                           New_Text.Append (Var_Mold);
                         else
                            Inc_Result (Variables_Emptied);
                         end if;
@@ -148,7 +161,7 @@ package body Mold_Lib.Impl.Line is
                         end if;
                      else
                         Inc_Result (Variables_Replaced);
-                        New_Line.Append (Var_Filter_Applied);
+                        New_Text.Append (Var_Filter_Applied);
                      end if;
                   end;
                end if;
@@ -163,11 +176,11 @@ package body Mold_Lib.Impl.Line is
       end loop;
 
       if Has_Matches then
-         New_Line.Append (Line (Current .. Line'Last));
-         return To_String (New_Line);
+         New_Text.Append (Text (Current .. Text'Last));
+         return To_String (New_Text);
       else
-         return Line;
+         return Text;
       end if;
    end Replace;
 
-end Mold_Lib.Impl.Line;
+end Mold_Lib.Impl.Text;

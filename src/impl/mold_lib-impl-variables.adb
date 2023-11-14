@@ -6,10 +6,11 @@
 --
 -------------------------------------------------------------------------------
 
-with Log_Exceptions; use Log_Exceptions;
-
 with TOML;
 with TOML.File_IO;
+
+with Log_Exceptions; use Log_Exceptions;
+with Mold_Lib.Impl.Text;
 
 package body Mold_Lib.Impl.Variables is
 
@@ -41,6 +42,9 @@ package body Mold_Lib.Impl.Variables is
    begin
       if Key = "mold-replacement-in-file-names" then
          Set_Boolean (Args.Settings.Replacement_In_Filenames'Access);
+
+      elsif Key = "mold-replacement-in-variables" then
+         Set_Boolean (Args.Settings.Replacement_In_Variables'Access);
 
       elsif Key = "mold-delete-source-files" then
          Set_Boolean (Args.Settings.Delete_Source_Files'Access);
@@ -131,6 +135,63 @@ package body Mold_Lib.Impl.Variables is
          return Empty_Map;
 
    end Read;
+
+   ------------------------
+   -- Apply_Substitution --
+   ------------------------
+
+   function Apply_Substitution (Variable : String) return Boolean is
+      Success   : Boolean;
+      Value     : constant String := Get_Value (Variable);
+      New_Value : constant String :=
+        Impl.Text.Replace
+          (Get_Value (Variable), Impl.Text.variable, 0, Variable, Success);
+   begin
+      if Success and then Value /= New_Value then
+         Args.Variables.Replace
+           (To_Unbounded_String (Variable), To_Unbounded_String (New_Value));
+      end if;
+
+      return Success;
+   end Apply_Substitution;
+
+   ---------------------------------
+   -- Apply_Variable_Substitution --
+   ---------------------------------
+
+   function Apply_Variable_Substitution
+     (Variables : in out Variables_Map) return Boolean
+   is
+      use Variables_Package;
+      Loops       : Natural := 0;
+      Has_Changes : Boolean;
+   begin
+      loop
+         Loops := Loops + 1;
+         for Variable of Variables loop
+            declare
+               Success   : Boolean;
+               Var_Name  : constant String := To_String (Variable);
+               Value     : constant String := Get_Value (Var_Name);
+               New_Value : constant String :=
+                 Impl.Text.Replace
+                   (Value, Impl.Text.variable, 0, Var_Name, Success);
+            begin
+               if not Success then
+                  return False;
+               end if;
+               if Value /= New_Value then
+                  Has_Changes := True;
+                  Variables.Replace
+                    (Variable, To_Unbounded_String (New_Value));
+               end if;
+            end;
+         end loop;
+         exit when not Has_Changes or else Loops = 3;
+      end loop;
+
+      return True;
+   end Apply_Variable_Substitution;
 
    ---------------
    -- Get_Value --
