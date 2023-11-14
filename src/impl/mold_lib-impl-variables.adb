@@ -143,20 +143,28 @@ package body Mold_Lib.Impl.Variables is
    function Apply_Variable_Substitution
      (Variables : in out Variables_Map) return Boolean
    is
-      use Variables_Package;
+      use all type Variables_Package.Cursor;
+
       Loops       : Natural := 0;
+      Cursor      : Variables_Package.Cursor;
       Has_Changes : Boolean;
    begin
+      if Variables.Length = 0 then
+         return True;
+      end if;
+
       loop
-         Loops := Loops + 1;
-         for Variable of Variables loop
+         Loops       := Loops + 1;
+         Cursor      := Variables.First;
+         Has_Changes := False;
+         loop
             declare
                Success   : Boolean;
-               Var_Name  : constant String := To_String (Variable);
-               Value     : constant String := Get_Value (Var_Name);
+               Var_Name  : constant String := To_String (Cursor.Key);
+               Value : constant String := Get_Value (To_String (Cursor.Key));
                New_Value : constant String :=
                  Impl.Text.Replace
-                   (Value, Impl.Text.variable, 0, Var_Name, Success);
+                   (Value, Impl.Text.variable, Loops, Var_Name, Success);
             begin
                if not Success then
                   return False;
@@ -164,11 +172,15 @@ package body Mold_Lib.Impl.Variables is
                if Value /= New_Value then
                   Has_Changes := True;
                   Variables.Replace
-                    (Variable, To_Unbounded_String (New_Value));
+                    (Cursor.Key, To_Unbounded_String (New_Value));
                end if;
+               Log.Debug
+                 (Var_Name & " --> '" & Value & "' --> '" & New_Value & "'");
             end;
+            Cursor := Cursor.Next;
+            exit when Cursor = Variables_Package.No_Element;
          end loop;
-         exit when not Has_Changes or else Loops = 3;
+         exit when not Has_Changes or else Loops = 6;
       end loop;
 
       return True;

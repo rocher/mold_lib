@@ -33,6 +33,17 @@ package body Mold_Lib.Impl.Text is
       New_Text    : Unbounded_String := To_Unbounded_String ("");
       Current     : Natural          := Text'First;
       Has_Matches : Boolean          := False;
+
+      procedure Local_Inc_Result
+        (Field : Results_Fields; Amount : Natural := 1)
+      is
+      --  Local version of Inc_Result to increment only results when Entity
+      --  is a file
+      begin
+         if Entity = file then
+            Inc_Result (Field, Amount);
+         end if;
+      end Local_Inc_Result;
    begin
       Success := True;
 
@@ -41,7 +52,7 @@ package body Mold_Lib.Impl.Text is
          exit when Matches (0) = Reg.No_Match;
 
          Has_Matches := True;
-         Inc_Result (Variables_Found);
+         Local_Inc_Result (Variables_Found);
 
          declare
             Pre_Text : constant String :=
@@ -88,7 +99,7 @@ package body Mold_Lib.Impl.Text is
             New_Text.Append (Pre_Text);
 
             if Variable_Undefined then
-               Inc_Result (Variables_Undefined);
+               Local_Inc_Result (Variables_Undefined);
                declare
                   Message : constant String :=
                     "Undefined variable '" & Var_Name & "' in " &
@@ -98,25 +109,25 @@ package body Mold_Lib.Impl.Text is
                      else "variable '" & Name & "'");
                begin
                   if Is_Mandatory then
-                     Inc_Result (Variables_Ignored);
+                     Local_Inc_Result (Variables_Ignored);
                      New_Text.Append (Var_Mold);
                      Log.Error (Message);
                      Success := False;
                   elsif Is_Optional then
-                     Inc_Result (Variables_Emptied);
+                     Local_Inc_Result (Variables_Emptied);
                   else  --  Is Normal
                      if Args.Settings.Undefined_Alert = Warning then
-                        Inc_Result (Warnings);
+                        Local_Inc_Result (Warnings);
                         Log.Warning (Message);
                      elsif Args.Settings.Undefined_Alert = Error then
                         Log.Error (Message);
                         Success := False;
                      end if;
                      if Args.Settings.Undefined_Action = Ignore then
-                        Inc_Result (Variables_Ignored);
+                        Local_Inc_Result (Variables_Ignored);
                         New_Text.Append (Var_Mold);
                      else
-                        Inc_Result (Variables_Emptied);
+                        Local_Inc_Result (Variables_Emptied);
                      end if;
                   end if;
                end;
@@ -124,27 +135,34 @@ package body Mold_Lib.Impl.Text is
                --  variable defined
 
                if Entity = variable and then Var_Name = Name then
-                  --  Error: found recursive definition of variable
-                  Log.Error
-                    ("Recursive definition of variable '" & Name & "'");
+                  if Line = 1 then
+                     --  Error: found recursive definition of variable
+                     Log.Error
+                       ("Recursive definition of variable '" & Name & "'");
+                  else
+                     --  Error: found cyclic definition of variable
+                     Log.Error
+                       ("Cyclic definition (loop" & Line'Image &
+                        ") of variable '" & Name & "'");
+                  end if;
                   Success := False;
                end if;
 
                if Filters = "" then
-                  Inc_Result (Variables_Replaced);
+                  Local_Inc_Result (Variables_Replaced);
                   New_Text.Append (Var_Value);
                else
                   Log.Debug ("Applying filters");
                   declare
                      Var_Filter_Applied : constant Unbounded_String :=
-                       Text_Filters.Apply (Filters, Var_Value, Output.all);
+                       Text_Filters.Apply (Filters, Var_Value, Output);
                   begin
                      if Var_Filter_Applied = Null_Unbounded_String then
                         if Args.Settings.Undefined_Action = Ignore then
-                           Inc_Result (Variables_Ignored);
+                           Local_Inc_Result (Variables_Ignored);
                            New_Text.Append (Var_Mold);
                         else
-                           Inc_Result (Variables_Emptied);
+                           Local_Inc_Result (Variables_Emptied);
                         end if;
                         if Args.Settings.Undefined_Alert = Error then
                            Log.Error
@@ -153,14 +171,17 @@ package body Mold_Lib.Impl.Text is
                               ":" & COL (2 .. COL'Last));
                            Success := False;
                         elsif Args.Settings.Undefined_Alert = Warning then
-                           Inc_Result (Warnings);
+                           Local_Inc_Result (Warnings);
                            Log.Warning
                              ("Invalid text filter '" & Filters & "' in " &
                               Args.Source.all & ":" & LIN (2 .. LIN'Last) &
                               ":" & COL (2 .. COL'Last));
                         end if;
                      else
-                        Inc_Result (Variables_Replaced);
+                        if Entity = file then
+                           --  do not count replacements in variables
+                           Local_Inc_Result (Variables_Replaced);
+                        end if;
                         New_Text.Append (Var_Filter_Applied);
                      end if;
                   end;
