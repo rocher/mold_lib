@@ -136,25 +136,6 @@ package body Mold_Lib.Impl.Variables is
 
    end Read;
 
-   ------------------------
-   -- Apply_Substitution --
-   ------------------------
-
-   function Apply_Substitution (Variable : String) return Boolean is
-      Success   : Boolean;
-      Value     : constant String := Get_Value (Variable);
-      New_Value : constant String :=
-        Impl.Text.Replace
-          (Get_Value (Variable), Impl.Text.variable, 0, Variable, Success);
-   begin
-      if Success and then Value /= New_Value then
-         Args.Variables.Replace
-           (To_Unbounded_String (Variable), To_Unbounded_String (New_Value));
-      end if;
-
-      return Success;
-   end Apply_Substitution;
-
    ---------------------------------
    -- Apply_Variable_Substitution --
    ---------------------------------
