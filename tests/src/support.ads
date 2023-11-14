@@ -18,6 +18,7 @@ package Support is
    Default_Test_Settings : aliased constant Mold.Settings_Type :=
    (
       Replacement_In_Filenames     => True,
+      Replacement_In_Variables     => True,
       Delete_Source_Files          => False,   --  Do not remove source files
       Overwrite_Destination_Files  => True,    --  Overwrite destination files
       Enable_Defined_Settings      => True,
