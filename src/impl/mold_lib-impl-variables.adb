@@ -180,7 +180,10 @@ package body Mold_Lib.Impl.Variables is
             Cursor := Cursor.Next;
             exit when Cursor = Variables_Package.No_Element;
          end loop;
-         exit when not Has_Changes or else Loops = 6;
+
+         exit when not Has_Changes or else Loops = 10;
+         --  This magic number 10 has been obtained experimentally with a
+         --  cycle of length = 1000 variables.
       end loop;
 
       return True;
