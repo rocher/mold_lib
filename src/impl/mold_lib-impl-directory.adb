@@ -26,7 +26,10 @@ package body Mold_Lib.Impl.Directory is
    --!pp on
 
    is
-      Success : Boolean         := True;
+      Success : Boolean := True;
+      --  return True if no replacement has been made; non-regular files found
+      --  or no mold files in the current directory
+
       CWD     : constant String := Dir.Current_Directory;
       Result  : Dir.Search_Type;
       Element : Dir.Directory_Entry_Type;
