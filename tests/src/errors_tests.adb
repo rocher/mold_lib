@@ -99,6 +99,66 @@ package body Errors_Tests is
             Expected'Unchecked_Access);
       end loop;
 
+      --  ----- recursive variable definition ---------------------------------
+      Settings.Overwrite_Destination_Files := True;
+      Settings.Undefined_Alert             := Error;
+      Results                              := [others => 0];
+      --!pp off
+      Success := Apply (
+         Source     => "suite/mold/foo.txt.mold",
+         Output_Dir => "suite/tmp",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/vars-def-2.toml.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         others => 0
+      ];
+      --!pp on
+      Check_Results
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
+
+      --  ----- cyclic variable definition ------------------------------------
+      Settings.Overwrite_Destination_Files := True;
+      Settings.Undefined_Alert             := Error;
+      Results                              := [others => 0];
+      --!pp off
+      Success := Apply (
+         Source     => "suite/mold/foo.txt.mold",
+         Output_Dir => "suite/tmp",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/vars-def-3.toml.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         others => 0
+      ];
+      --!pp on
+      Check_Results
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
+
+      --  ----- invalid filter in variable definition -------------------------
+      Settings.Overwrite_Destination_Files := True;
+      Settings.Undefined_Alert             := Error;
+      Results                              := [others => 0];
+      --!pp off
+      Success := Apply (
+         Source     => "suite/mold/foo.txt.mold",
+         Output_Dir => "suite/tmp",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/vars-def-4.toml.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         others => 0
+      ];
+      --!pp on
+      Check_Results
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
+
    end Variable_Errors;
 
    -----------------
