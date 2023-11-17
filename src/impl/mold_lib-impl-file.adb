@@ -84,7 +84,7 @@ package body Mold_Lib.Impl.File is
    ------------------
 
    function Include_Path
-     (Filename : String; Success : in out Boolean) return String
+     (Filename : String; Success : out Boolean) return String
    is
       Extension : constant String := Dir.Extension (Filename);
    begin
