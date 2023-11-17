@@ -26,11 +26,13 @@ package body Mold_Lib.Impl.Directory is
    --!pp on
 
    is
-      Success : Boolean;
+      Success : Boolean         := True;
       CWD     : constant String := Dir.Current_Directory;
       Result  : Dir.Search_Type;
       Element : Dir.Directory_Entry_Type;
    begin
+
+      Log.Detail ("processing directory " & Source.all);
 
       Log.Debug ("BEGIN Impl.Directory.Replace");
       Log.Debug ("  Sub_Dir     : " & Sub_Dir);
