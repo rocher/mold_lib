@@ -108,12 +108,13 @@ package body Errors_Tests is
          Source     => "suite/mold/foo.txt.mold",
          Output_Dir => "suite/tmp",
          Settings   => Settings'Unchecked_Access,
-         Toml_File  => "suite/toml/vars-def-2.toml.toml",
+         Toml_File  => "suite/toml/vars-def-2.toml",
          Results    => Results'Unchecked_Access,
          Log_Level  => Log.Level
       );
       Expected := [
-         others => 0
+         Variables_Defined => 1,
+         others            => 0
       ];
       --!pp on
       Check_Results
@@ -128,12 +129,13 @@ package body Errors_Tests is
          Source     => "suite/mold/foo.txt.mold",
          Output_Dir => "suite/tmp",
          Settings   => Settings'Unchecked_Access,
-         Toml_File  => "suite/toml/vars-def-3.toml.toml",
+         Toml_File  => "suite/toml/vars-def-3.toml",
          Results    => Results'Unchecked_Access,
          Log_Level  => Log.Level
       );
       Expected := [
-         others => 0
+         Variables_Defined => 100,
+         others            =>   0
       ];
       --!pp on
       Check_Results
@@ -148,12 +150,13 @@ package body Errors_Tests is
          Source     => "suite/mold/foo.txt.mold",
          Output_Dir => "suite/tmp",
          Settings   => Settings'Unchecked_Access,
-         Toml_File  => "suite/toml/vars-def-4.toml.toml",
+         Toml_File  => "suite/toml/vars-def-4.toml",
          Results    => Results'Unchecked_Access,
          Log_Level  => Log.Level
       );
       Expected := [
-         others => 0
+         Variables_Defined => 4,
+         others            => 0
       ];
       --!pp on
       Check_Results
