@@ -40,7 +40,7 @@ package body Mold_Lib.Impl.Variables is
       end Set_Boolean;
 
    begin
-      if Key = "mold-replacement-in-file-names" then
+      if Key = "mold-replacement-in-filenames" then
          Set_Boolean (Args.Settings.Replacement_In_Filenames'Access);
 
       elsif Key = "mold-replacement-in-variables" then

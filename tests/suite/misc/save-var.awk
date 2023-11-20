@@ -1,7 +1,7 @@
 BEGIN {
     par_num = 0;
     par_txt = "";
-    file_name = "suite/toml/lorem-ipsum-100-vars.toml"
+    filename = "suite/toml/lorem-ipsum-100-vars.toml"
 }
 
 {
@@ -14,12 +14,12 @@ BEGIN {
         }
     }
     else {
-        printf ("par%02d = '''%s'''\n\n", par_num, par_txt) >> file_name;
+        printf ("par%02d = '''%s'''\n\n", par_num, par_txt) >> filename;
         par_num += 1;
         par_txt = "";
     }
 }
 
 END {
-    printf ("par%02d = '''%s'''\n", par_num, par_txt) >> file_name;
+    printf ("par%02d = '''%s'''\n", par_num, par_txt) >> filename;
 }

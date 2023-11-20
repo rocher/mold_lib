@@ -53,6 +53,6 @@ package Support is
    );
    --!pp on
 
-   procedure Check_MD5_Digest (File_Name, Unix_Digest, DOS_Digest : String);
+   procedure Check_MD5_Digest (Filename, Unix_Digest, DOS_Digest : String);
 
 end Support;

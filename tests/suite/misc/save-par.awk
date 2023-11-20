@@ -14,14 +14,14 @@ BEGIN {
         }
     }
     else {
-        file_name = sprintf (fnm, par_num);
-        printf ("%s\n", par_txt) >> file_name;
+        filename = sprintf (fnm, par_num);
+        printf ("%s\n", par_txt) >> filename;
         par_num += 1;
         par_txt = "";
     }
 }
 
 END {
-    file_name = sprintf (fnm, par_num);
-    printf ("%s\n", par_txt) >> file_name;
+    filename = sprintf (fnm, par_num);
+    printf ("%s\n", par_txt) >> filename;
 }
