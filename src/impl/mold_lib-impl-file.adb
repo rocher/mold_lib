@@ -329,7 +329,7 @@ package body Mold_Lib.Impl.File is
 
          --  close Src file, and delete it when specified
          Dst_File.Close;
-         if Args.Settings.Delete_Source_Files and then Args.Errors = 0 then
+         if Args.Settings.Delete_Source_Files then
             Dir.Delete_File (Source.all);
             Inc_Result (Files_Deleted);
             Log.Detail ("deleted source file " & Source.all);

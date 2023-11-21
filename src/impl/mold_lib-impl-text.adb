@@ -40,7 +40,7 @@ package body Mold_Lib.Impl.Text is
       --  Local version of Inc_Result to increment only results when Entity
       --  is a file
       begin
-         if Entity = file then
+         if Entity in file .. memory then
             Inc_Result (Field, Amount);
          end if;
       end Local_Inc_Result;

@@ -9,8 +9,6 @@
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Hashed_Maps; use Ada.Containers;
 with Ada.Directories;
-with Ada.Strings.Unbounded;      use Ada.Strings.Unbounded;
-with Ada.Strings.Unbounded.Hash;
 with Ada.Text_IO;
 with GNAT.Directory_Operations;
 with GNAT.Regpat;
@@ -33,15 +31,6 @@ package Mold_Lib.Impl is
    Include_File_Extension       : constant String    := "molt";
    Defined_Setting_Prefix       : constant String    := "mold-";
 
-   --  VARIABLES FOR DEFINED SETTINGS -----------------------------------------
-
-   package Variables_Package is new Hashed_Maps
-     (Key_Type => Unbounded_String, Element_Type => Unbounded_String,
-      Hash => Ada.Strings.Unbounded.Hash, Equivalent_Keys => "=", "=" => "=");
-
-   subtype Variables_Map is Variables_Package.Map;
-   type Variables_Access is access all Variables_Map;
-
    --  TRACKING INCLUDED FILES ------------------------------------------------
 
    package Inclusion_Package is new Doubly_Linked_Lists
@@ -59,7 +48,6 @@ package Mold_Lib.Impl is
       Settings          : Settings_Access;
       Filters           : Filters_Access;
       Results           : Results_Access;
-      Errors            : Natural;
       Included_Files    : Inclusion_List;
    end record;
    --  Arguments used during the variable substitution process:

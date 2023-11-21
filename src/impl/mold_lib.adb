@@ -14,6 +14,7 @@ with Log_Exceptions; use Log_Exceptions;
 with Mold_Lib.Impl;  use Mold_Lib.Impl;
 with Mold_Lib.Impl.Directory;
 with Mold_Lib.Impl.File;
+with Mold_Lib.Impl.Text;
 with Mold_Lib.Impl.Validation;
 with Mold_Lib.Impl.Variables;
 with Mold_Lib_Config;
@@ -145,6 +146,35 @@ package body Mold_Lib is
          Log_Exception (E);
          return False;
          pragma Annotate (Xcov, Exempt_Off);
+   end Apply;
+
+   -----------
+   -- Apply --
+   -----------
+
+   --!pp off
+   function Apply (
+      Template  : String;
+      Variables : not null Variables_Access;
+      Settings  : Settings_Access := null;
+      Filters   : Filters_Access  := null;
+      Results   : Results_Access  := null;
+      Log_Level : Log.Levels      := Log.Info
+   ) return String
+   --!pp on
+
+   is
+      Success : Boolean;
+   begin
+      Impl.Args.Variables := Variables;
+      Impl.Args.Settings  := Settings;
+      Impl.Args.Results   := Results;
+      if Impl.Args.Results /= null then
+         Impl.Args.Results.all := [others => 0];
+      end if;
+
+      return
+        Impl.Text.Replace (Template, Impl.Text.memory, 0, "memory", Success);
    end Apply;
 
 end Mold_Lib;

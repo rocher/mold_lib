@@ -10,12 +10,23 @@
 --  Please visit  https://rocher.github.io/mold  for a complete reference.
 --
 
+with Ada.Containers.Hashed_Maps; use Ada.Containers;
+with Ada.Strings.Unbounded;      use Ada.Strings.Unbounded;
+with Ada.Strings.Unbounded.Hash;
+
 with Custom_Text_Filters;
 with Simple_Logging;
 
 package Mold_Lib is
 
    package Log renames Simple_Logging;
+
+   package Variables_Package is new Hashed_Maps
+     (Key_Type => Unbounded_String, Element_Type => Unbounded_String,
+      Hash => Ada.Strings.Unbounded.Hash, Equivalent_Keys => "=", "=" => "=");
+
+   subtype Variables_Map is Variables_Package.Map;
+   type Variables_Access is access all Variables_Map;
 
    type Undefined_Alerts is (None, Warning, Error);
    --  Error level assumed when undefined variables or text filters are
@@ -103,5 +114,18 @@ package Mold_Lib is
    --  if detailed information about the process is required.
    --
    --  Return True if the process ends successfully (no errors detected).
+
+   function Apply (
+      Template  : String;
+      Variables : not null Variables_Access;
+      Settings  : Settings_Access := null;
+      Filters   : Filters_Access  := null;
+      Results   : Results_Access  := null;
+      Log_Level : Log.Levels      := Log.Info
+   ) return String;
+   --  Given the Template String and the Variables_Map, applies the variable
+   --  replacement and return the result in a String. If an error is detected,
+   --  then return an empty String; to check what happened, provide a non-null
+   --  Results object.
 
 end Mold_Lib;
