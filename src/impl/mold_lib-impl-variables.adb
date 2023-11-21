@@ -6,10 +6,11 @@
 --
 -------------------------------------------------------------------------------
 
-with Log_Exceptions; use Log_Exceptions;
-
 with TOML;
 with TOML.File_IO;
+
+with Log_Exceptions; use Log_Exceptions;
+with Mold_Lib.Impl.Text;
 
 package body Mold_Lib.Impl.Variables is
 
@@ -39,8 +40,11 @@ package body Mold_Lib.Impl.Variables is
       end Set_Boolean;
 
    begin
-      if Key = "mold-replacement-in-file-names" then
+      if Key = "mold-replacement-in-filenames" then
          Set_Boolean (Args.Settings.Replacement_In_Filenames'Access);
+
+      elsif Key = "mold-replacement-in-variables" then
+         Set_Boolean (Args.Settings.Replacement_In_Variables'Access);
 
       elsif Key = "mold-delete-source-files" then
          Set_Boolean (Args.Settings.Delete_Source_Files'Access);
@@ -131,6 +135,59 @@ package body Mold_Lib.Impl.Variables is
          return Empty_Map;
 
    end Read;
+
+   ---------------------------------
+   -- Apply_Variable_Substitution --
+   ---------------------------------
+
+   function Apply_Variable_Substitution
+     (Variables : in out Variables_Map) return Boolean
+   is
+      use all type Variables_Package.Cursor;
+
+      Loops       : Natural := 0;
+      Cursor      : Variables_Package.Cursor;
+      Has_Changes : Boolean;
+   begin
+      if Variables.Length = 0 then
+         return True;
+      end if;
+
+      loop
+         Loops       := Loops + 1;
+         Cursor      := Variables.First;
+         Has_Changes := False;
+         loop
+            declare
+               Success   : Boolean;
+               Var_Name  : constant String := To_String (Cursor.Key);
+               Value : constant String := Get_Value (To_String (Cursor.Key));
+               New_Value : constant String :=
+                 Impl.Text.Replace
+                   (Value, Impl.Text.variable, Loops, Var_Name, Success);
+            begin
+               if not Success then
+                  return False;
+               end if;
+               if Value /= New_Value then
+                  Has_Changes := True;
+                  Variables.Replace
+                    (Cursor.Key, To_Unbounded_String (New_Value));
+               end if;
+               Log.Debug
+                 (Var_Name & " --> '" & Value & "' --> '" & New_Value & "'");
+            end;
+            Cursor := Cursor.Next;
+            exit when Cursor = Variables_Package.No_Element;
+         end loop;
+
+         exit when not Has_Changes or else Loops = 10;
+         --  This magic number 10 has been obtained experimentally with a
+         --  cycle of length = 1000 variables.
+      end loop;
+
+      return True;
+   end Apply_Variable_Substitution;
 
    ---------------
    -- Get_Value --

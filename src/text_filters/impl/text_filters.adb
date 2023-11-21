@@ -54,7 +54,7 @@ package body Text_Filters is
    function Apply (
       Filters           : String;
       Value             : String;
-      Output            : IO.File_Type
+      Output            : IO.File_Access
    )  return UString
    --!pp on
 

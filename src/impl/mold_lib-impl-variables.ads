@@ -13,6 +13,12 @@ package Mold_Lib.Impl.Variables is
    --  Read all variable definitions of the given TOML Toml_Path. Return a
    --  Variables_Map object.
 
+   function Apply_Variable_Substitution
+     (Variables : in out Variables_Map) return Boolean;
+   --  Applies the variable substitution process to all variables and update
+   --  their value, if it has changed. Return True no error is found during the
+   --  the variable substitution process.
+
    function Get_Value (Variable : String) return String;
    --  Return the value of Variable, if defined. When undefined, it reports an
    --  error and behaves according to the settings.

@@ -10,10 +10,12 @@ project Mold_Lib_Tests is
     Compiler_Switches := ();
     Linker_Switches := ();
     case Mold_Lib_Tests_Config.Build_Profile is
+        when "development" =>
+            Compiler_Switches := ("-gnata");
         when "validation" =>
-            Compiler_Switches := ("--coverage");
+            Compiler_Switches := ("-gnata", "--coverage");
             Linker_Switches := ("--coverage");
-        when "development" | "release" => null;
+        when "release" => null;
     end case;
 
    package Compiler is

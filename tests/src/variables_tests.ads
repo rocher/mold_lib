@@ -17,6 +17,7 @@ package Variables_Tests is
 
    overriding procedure Register_Tests (T : in out Variables_Test_Case);
 
+   procedure Test_Variables_Definition (T : in out Test_Case'Class);
    procedure Test_No_Substitution (T : in out Test_Case'Class);
    procedure Test_Basic_Substitution (T : in out Test_Case'Class);
    procedure Test_Modal_Substitution (T : in out Test_Case'Class);

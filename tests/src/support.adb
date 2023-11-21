@@ -95,7 +95,7 @@ package body Support is
    -- MD5_Digest --
    ----------------
 
-   function MD5_Digest (File_Name : String) return String is
+   function MD5_Digest (Filename : String) return String is
       use Ada.Streams;
       use Ada.Streams.Stream_IO;
       use GNAT.MD5;
@@ -108,7 +108,7 @@ package body Support is
       Buffer : Buffer_Type;
       Last   : Stream_Element_Offset := 0;
    begin
-      File.Open (In_File, File_Name);
+      File.Open (In_File, Filename);
 
       loop
          exit when File.End_Of_File;
@@ -124,19 +124,19 @@ package body Support is
    -- Check_MD5_Digest --
    ----------------------
 
-   procedure Check_MD5_Digest (File_Name, Unix_Digest, DOS_Digest : String) is
+   procedure Check_MD5_Digest (Filename, Unix_Digest, DOS_Digest : String) is
       use Ada.Directories;
    begin
-      Assert (Exists (File_Name), "File not found: " & File_Name);
+      Assert (Exists (Filename), "File not found: " & Filename);
 
       if Alire_Host_OS in "windows" then
          Assert
-           (MD5_Digest (File_Name) = DOS_Digest,
-            "Invalid MD5 digest of file " & File_Name);
+           (MD5_Digest (Filename) = DOS_Digest,
+            "Invalid MD5 digest of file " & Filename);
       else
          Assert
-           (MD5_Digest (File_Name) = Unix_Digest,
-            "Invalid MD5 digest of file " & File_Name);
+           (MD5_Digest (Filename) = Unix_Digest,
+            "Invalid MD5 digest of file " & Filename);
       end if;
    end Check_MD5_Digest;
 

@@ -91,11 +91,18 @@ package body Mold_Lib is
          Text_Filters.Set_Custom_Text_Filters (Filters);
 
          Variables := Impl.Variables.Read (Toml_Path, Success);
-
          if Success then
             Log.Debug ("  Toml_Path loaded");
          else
             Log.Error ("Cannot load toml file " & Toml_File);
+            return False;
+         end if;
+
+         Success := Impl.Variables.Apply_Variable_Substitution (Variables);
+         if Success then
+            Log.Debug ("  Variable substitution applied to variables");
+         else
+            Log.Error ("Error applying variables substitution to variables");
             return False;
          end if;
 

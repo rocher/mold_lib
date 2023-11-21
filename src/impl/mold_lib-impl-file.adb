@@ -7,7 +7,7 @@
 -------------------------------------------------------------------------------
 
 with Log_Exceptions; use Log_Exceptions;
-with Mold_Lib.Impl.Line;
+with Mold_Lib.Impl.Text;
 with Mold_Lib.Impl.Variables;
 
 package body Mold_Lib.Impl.File is
@@ -84,7 +84,7 @@ package body Mold_Lib.Impl.File is
    ------------------
 
    function Include_Path
-     (Filename : String; Success : in out Boolean) return String
+     (Filename : String; Success : out Boolean) return String
    is
       Extension : constant String := Dir.Extension (Filename);
    begin
@@ -178,10 +178,11 @@ package body Mold_Lib.Impl.File is
                --  variable substitution
                declare
                   New_Line : constant String :=
-                    Impl.Line.Replace (Line, Line_Number, Output, Success);
+                    Impl.Text.Replace
+                      (Line, Impl.Text.file, Line_Number, "", Success);
                begin
                   if not Success then
-                     --  error logged in Impl.Line.Replace
+                     --  error logged in Impl.Text.Replace
                      goto Exit_Function;
                   end if;
                   Output.Put_Line (New_Line);

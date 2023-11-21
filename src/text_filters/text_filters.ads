@@ -22,7 +22,7 @@ package Text_Filters is
    function Apply (
       Filters          : String;
       Value            : String;
-      Output           : IO.File_Type
+      Output           : IO.File_Access
    )  return UString;  --  Ada.Strings.Unbounded.Unbounded_String
    --!pp on
    --

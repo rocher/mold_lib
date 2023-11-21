@@ -27,6 +27,8 @@ package body Variables_Tests is
    overriding procedure Register_Tests (T : in out Variables_Test_Case) is
       use AUnit.Test_Cases.Registration;
    begin
+      Register_Routine
+        (T, Test_Variables_Definition'Access, "Variables Definitions");
       Register_Routine (T, Test_No_Substitution'Access, "No Substitution");
       Register_Routine
         (T, Test_Basic_Substitution'Access, "Basic Substitutions");
@@ -34,6 +36,38 @@ package body Variables_Tests is
         (T, Test_Modal_Substitution'Access, "Modal Substitution");
       Register_Routine (T, Test_Multiline'Access, "Multiline");
    end Register_Tests;
+
+   procedure Test_Variables_Definition (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
+      Success  : Boolean;
+      Results  : aliased Mold.Results_Type;
+      Expected : aliased Mold.Results_Type;
+   begin
+      --  ----- variables inside variables ------------------------------------
+      --!pp off
+      Success := Apply (
+         Source     => "suite/mold/vars-def-1.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Global_Settings,
+         Toml_File  => "suite/toml/vars-def-1.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed    => 1,
+         Variables_Defined  => 4,
+         Variables_Found    => 2,
+         Variables_Replaced => 2,
+         others             => 0
+      ];
+      --!pp on
+      Check_Results
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
+
+      Check_MD5_Digest
+        ("suite/tmp/vars-def-1.txt", "3a1f86f00d7f3c412130c9f8b8329c74",
+         "c403d6318220fc26784e41e6461855e8");
+   end Test_Variables_Definition;
 
    --------------------------
    -- Test_No_Substitution --
