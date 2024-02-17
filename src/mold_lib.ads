@@ -19,8 +19,8 @@ package Mold_Lib is
 
    type Undefined_Behaviors is (Ignore, Empty, Error);
    --  Behavior followed when an undefined variable or text filter are
-   --  encountered during the variable substitution process. 'Ignore' means that
-   --  nothing will happen and the variable will remain the same (e.g.
+   --  encountered during the variable substitution process. 'Ignore' means
+   --  that nothing will happen and the variable will remain the same (e.g.
    --  '{{My_Var}}'); 'Empty' substitutes the variable with the empty string
    --  (removes the variable); 'Error' stops the substitution process and
    --  emits an error. 'Ignore' and 'Empty' issue a warning.
