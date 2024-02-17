@@ -138,7 +138,9 @@ package body Mold_Lib.Impl.Variables is
       Cursor      : Variables_Package.Cursor;
       Has_Changes : Boolean;
    begin
-      if Variables.Length = 0 then
+      if Variables.Length = 0
+        or else Args.Settings.Replacement_In_Variables = False
+      then
          return True;
       end if;
 
