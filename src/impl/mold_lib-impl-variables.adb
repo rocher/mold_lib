@@ -52,9 +52,10 @@ package body Mold_Lib.Impl.Variables is
       elsif Key = "mold-overwrite-destination-files" then
          Set_Boolean (Args.Settings.Overwrite_Destination_Files'Access);
 
-      elsif Key = "mold-undefined-action" then
+      elsif Key = "mold-undefined-behavior" then
          begin
-            Args.Settings.Undefined_Action := Undefined_Actions'Value (Value);
+            Args.Settings.Undefined_Behavior :=
+              Undefined_Behaviors'Value (Value);
          exception
             when E : Constraint_Error =>
                Log_Exception
@@ -62,18 +63,6 @@ package body Mold_Lib.Impl.Variables is
                Success := False;
          end;
 
-      elsif Key = "mold-undefined-alert" then
-         declare
-            Undefined_Alert : Undefined_Alerts;
-         begin
-            Undefined_Alert               := Undefined_Alerts'Value (Value);
-            Args.Settings.Undefined_Alert := Undefined_Alert;
-         exception
-            when E : Constraint_Error =>
-               Log_Exception
-                 (E, "Invalid setting value " & Key & " = " & Value);
-               Success := False;
-         end;
       else
          Log.Error ("Invalid setting key in " & Key & " = " & Value);
          Success := False;

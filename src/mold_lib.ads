@@ -17,15 +17,13 @@ package Mold_Lib is
 
    package Log renames Simple_Logging;
 
-   type Undefined_Alerts is (None, Warning, Error);
-   --  Error level assumed when undefined variables or text filters are
-   --  encountered during the variable substitution process.
-
-   type Undefined_Actions is (Ignore, Empty);
-   --  Action to perform when an undefined variable or text filter is found.
-   --  'Ignore' means that there is no substitution at all, and the same
-   --  variable substitution will appear (e.g. '{{My_Var}}'). 'Empty' will
-   --  completely remove the variable (empty string).
+   type Undefined_Behaviors is (Ignore, Empty, Error);
+   --  Behavior followed when an undefined variable or text filter are
+   --  encountered during the variable substitution process. 'Ignore' means that
+   --  nothing will happen and the variable will remain the same (e.g.
+   --  '{{My_Var}}'); 'Empty' substitutes the variable with the empty string
+   --  (removes the variable); 'Error' stops the substitution process and
+   --  emits an error. 'Ignore' and 'Empty' issue a warning.
 
    type Settings_Type is record
       Replacement_In_Filenames    : aliased Boolean;
@@ -33,8 +31,7 @@ package Mold_Lib is
       Delete_Source_Files         : aliased Boolean;
       Overwrite_Destination_Files : aliased Boolean;
       Enable_Defined_Settings     : aliased Boolean;
-      Undefined_Action            : aliased Undefined_Actions;
-      Undefined_Alert             : aliased Undefined_Alerts;
+      Undefined_Behavior          : aliased Undefined_Behaviors;
    end record;
    type Settings_Access is access all Settings_Type;
    --  Settings to configure the behavior of mold. Refer to the documentation
@@ -46,8 +43,7 @@ package Mold_Lib is
       Delete_Source_Files         => False,
       Overwrite_Destination_Files => True,
       Enable_Defined_Settings     => True,
-      Undefined_Action            => Ignore,
-      Undefined_Alert             => Warning
+      Undefined_Behavior          => Ignore
    );
 
    type Results_Fields is (

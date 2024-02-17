@@ -55,8 +55,7 @@ package body Directory_Tests is
       Settings.Delete_Source_Files         := True;  --  changed in def file
       Settings.Overwrite_Destination_Files := True;
       Settings.Enable_Defined_Settings     := True;
-      Settings.Undefined_Action            := Empty; --  changed in def file
-      Settings.Undefined_Alert             := None;  --  changed in def file
+      Settings.Undefined_Behavior          := Empty; --  changed in def file
       --!pp off
       Success := Apply (
          Source    => "suite/dir",
@@ -83,7 +82,7 @@ package body Directory_Tests is
          Files_Processed      =>    7,
          Files_Renamed        =>    2,
          Files_Overwritten    =>    0,
-         Variables_Defined    =>    4 + 26 + 100,
+         Variables_Defined    =>    3 + 26 + 100,
          Variables_Found      =>  100 +  4 +   9 + 2118 + 1950 + 1736,
          Variables_Undefined  =>    0 +  4 +   9 +    0 +    0 +    0,
          Variables_Replaced   =>  100 +  0 +   0 + 2118 + 1950 + 1736,
@@ -126,7 +125,7 @@ package body Directory_Tests is
       Settings.Replacement_In_Filenames    := False;
       Settings.Delete_Source_Files         := True;
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Action            := Empty;
+      Settings.Undefined_Behavior          := Empty;
 
       Dir.Copy_File
         ("suite/mold/foo.txt.mold", "suite/dir-delete/foo.txt.mold");
@@ -174,8 +173,7 @@ package body Directory_Tests is
       Settings.Delete_Source_Files         := True;  --  changed in def file
       Settings.Overwrite_Destination_Files := True;
       Settings.Enable_Defined_Settings     := True;
-      Settings.Undefined_Action            := Empty; --  changed in def file
-      Settings.Undefined_Alert             := None;  --  changed in def file
+      Settings.Undefined_Behavior          := Empty; --  changed in def file
       --!pp off
       Success := Apply (
          Source     => "suite/dir",
@@ -203,7 +201,7 @@ package body Directory_Tests is
          Files_Processed     =>   7,
          Files_Renamed       =>   2,
          Files_Overwritten   =>   0,
-         Variables_Defined   =>   4 + 26 + 100,
+         Variables_Defined   =>   3 + 26 + 100,
          Variables_Found     => 100 +  4 +   9 + 2118 + 1950 + 1736,
          Variables_Undefined =>   0 +  4 +   9 +    0 +    0 +    0,
          Variables_Replaced  => 100 +  0 +   0 + 2118 + 1950 + 1736,

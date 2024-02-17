@@ -116,17 +116,17 @@ package body Mold_Lib.Impl.Text is
                   elsif Is_Optional then
                      Local_Inc_Result (Variables_Emptied);
                   else  --  Is Normal
-                     if Args.Settings.Undefined_Alert = Warning then
+                     if Args.Settings.Undefined_Behavior in Ignore | Empty then
                         Local_Inc_Result (Warnings);
                         Log.Warning (Message);
-                     elsif Args.Settings.Undefined_Alert = Error then
+                     elsif Args.Settings.Undefined_Behavior = Error then
                         Log.Error (Message);
                         Success := False;
                      end if;
-                     if Args.Settings.Undefined_Action = Ignore then
+                     if Args.Settings.Undefined_Behavior = Ignore then
                         Local_Inc_Result (Variables_Ignored);
                         New_Text.Append (Var_Mold);
-                     else
+                     elsif Args.Settings.Undefined_Behavior = Empty then
                         Local_Inc_Result (Variables_Emptied);
                      end if;
                   end if;
@@ -158,19 +158,19 @@ package body Mold_Lib.Impl.Text is
                        Text_Filters.Apply (Filters, Var_Value, Output);
                   begin
                      if Var_Filter_Applied = Null_Unbounded_String then
-                        if Args.Settings.Undefined_Action = Ignore then
+                        if Args.Settings.Undefined_Behavior = Ignore then
                            Local_Inc_Result (Variables_Ignored);
                            New_Text.Append (Var_Mold);
-                        else
+                        elsif Args.Settings.Undefined_Behavior = Empty then
                            Local_Inc_Result (Variables_Emptied);
                         end if;
-                        if Args.Settings.Undefined_Alert = Error then
+                        if Args.Settings.Undefined_Behavior = Error then
                            Log.Error
                              ("Invalid text filter '" & Filters & "' in " &
                               Args.Source.all & ":" & LIN (2 .. LIN'Last) &
                               ":" & COL (2 .. COL'Last));
                            Success := False;
-                        elsif Args.Settings.Undefined_Alert = Warning then
+                        else
                            Local_Inc_Result (Warnings);
                            Log.Warning
                              ("Invalid text filter '" & Filters & "' in " &

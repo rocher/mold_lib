@@ -50,8 +50,7 @@ package body Filters_Tests is
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- variable substitution with text filters: errors as warnings ---
-      Settings.Undefined_Action := Ignore;
-      Settings.Undefined_Alert  := Warning;
+      Settings.Undefined_Behavior := Ignore;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/predefined-filters.txt.mold",
@@ -103,8 +102,7 @@ package body Filters_Tests is
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- variable substitution with custom text filters ----------------
-      Settings.Undefined_Action := Ignore;
-      Settings.Undefined_Alert  := Warning;
+      Settings.Undefined_Behavior := Ignore;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/custom-filters.txt.mold",
@@ -152,8 +150,7 @@ package body Filters_Tests is
       --!pp on
    begin
       --  ----- variable substitution with text filters: ignore and warn ------
-      Settings.Undefined_Action := Ignore;
-      Settings.Undefined_Alert  := Warning;
+      Settings.Undefined_Behavior := Ignore;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/invalid-filters.txt.mold",
@@ -182,8 +179,7 @@ package body Filters_Tests is
 
       --  ----- variable substitution with text filters: empty and warn -------
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Action            := Empty;
-      Settings.Undefined_Alert             := Warning;
+      Settings.Undefined_Behavior          := Empty;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/invalid-filters.txt.mold",
@@ -214,8 +210,7 @@ package body Filters_Tests is
 
       --  ----- undefined custom text filter: ignore and warn -----------------
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Action            := Ignore;
-      Settings.Undefined_Alert             := Warning;
+      Settings.Undefined_Behavior          := Ignore;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/custom-filters.txt.mold",
@@ -246,8 +241,7 @@ package body Filters_Tests is
 
       --  ----- undefined custom text filter: empty and error -----------------
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Action            := Empty;
-      Settings.Undefined_Alert             := Error;
+      Settings.Undefined_Behavior          := Ignore;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/custom-filters.txt.mold",
@@ -259,23 +253,23 @@ package body Filters_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed    => 1,
-         Files_Overwritten  => 1,
-         Variables_Defined  => 2,
-         Variables_Found    => 5,
-         Variables_Replaced => 4,
-         Variables_Ignored  => 0,
-         Variables_Emptied  => 1,
-         Warnings           => 0,
-         others             => 0
+         Files_Processed    =>  1,
+         Files_Overwritten  =>  1,
+         Variables_Defined  =>  2,
+         Variables_Found    => 12,
+         Variables_Replaced =>  8,
+         Variables_Ignored  =>  4,
+         Variables_Emptied  =>  0,
+         Warnings           =>  4,
+         others             =>  0
       ];
       --!pp on
       Check_Results
-        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
-        ("suite/tmp/custom-filters.txt", "bdce571efb81ad49f828420b0ca7f28c",
-         "85808c4e764d9f8041f78196ed682444");
+        ("suite/tmp/custom-filters.txt", "b7501d2677f79ecd9f5969dee6574bf3",
+         "a8ab488e7078d006c15347c2c17143c0");
    end Test_Invalid_Filters;
 
    ----------------------
