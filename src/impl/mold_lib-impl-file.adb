@@ -161,7 +161,7 @@ package body Mold_Lib.Impl.File is
      Post => (not Input.Is_Open and then Output.Is_Open)
    --!pp on
    is
-      Success     : Boolean;
+      Success     : Boolean := True;
       Line_Number : Natural := 0;
       Matches     : Reg.Match_Array (0 .. 1);
    begin
