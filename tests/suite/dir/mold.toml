@@ -1,6 +1,6 @@
 mold-replacement-in-filenames = "true"
 mold-delete-source-files = "false"
-mold-undefined-behavior = "ignore"
+mold-on-undefined = "ignore"
 
 a = "arcu"          #    91  {{a}}
 b = "bibendum"      #    37  {{#b}}

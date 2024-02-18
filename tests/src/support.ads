@@ -22,7 +22,7 @@ package Support is
       Delete_Source_Files          => False,   --  Do not remove source files
       Overwrite_Destination_Files  => True,    --  Overwrite destination files
       Enable_Defined_Settings      => True,
-      Undefined_Behavior           => Mold.Ignore
+      On_Undefined                 => Mold.Ignore
    );
    --!pp on
 

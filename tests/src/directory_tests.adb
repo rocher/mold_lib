@@ -55,7 +55,7 @@ package body Directory_Tests is
       Settings.Delete_Source_Files         := True;  --  changed in def file
       Settings.Overwrite_Destination_Files := True;
       Settings.Enable_Defined_Settings     := True;
-      Settings.Undefined_Behavior          := Empty; --  changed in def file
+      Settings.On_Undefined                := Empty; --  changed in def file
       --!pp off
       Success := Apply (
          Source    => "suite/dir",
@@ -88,7 +88,7 @@ package body Directory_Tests is
          Variables_Replaced   =>  100 +  0 +   0 + 2118 + 1950 + 1736,
          Variables_Ignored    =>    0 +  4 +   9 +    0 +    0 +    0,
          Variables_Emptied    =>    0 +  0 +   0 +    0 +    0 +    0,
-         Warnings             =>    0 +  4 +   9 +    0 +    0 +    0,
+         Warnings             =>    0 +  0 +   0 +    0 +    0 +    0,
          others               =>    0
       ];
       --!pp on
@@ -125,7 +125,7 @@ package body Directory_Tests is
       Settings.Replacement_In_Filenames    := False;
       Settings.Delete_Source_Files         := True;
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Behavior          := Empty;
+      Settings.On_Undefined                := Empty;
 
       Dir.Copy_File
         ("suite/mold/foo.txt.mold", "suite/dir-delete/foo.txt.mold");
@@ -173,7 +173,7 @@ package body Directory_Tests is
       Settings.Delete_Source_Files         := True;  --  changed in def file
       Settings.Overwrite_Destination_Files := True;
       Settings.Enable_Defined_Settings     := True;
-      Settings.Undefined_Behavior          := Empty; --  changed in def file
+      Settings.On_Undefined                := Empty; --  changed in def file
       --!pp off
       Success := Apply (
          Source     => "suite/dir",
@@ -207,7 +207,7 @@ package body Directory_Tests is
          Variables_Replaced  => 100 +  0 +   0 + 2118 + 1950 + 1736,
          Variables_Ignored   =>   0 +  4 +   9 +    0 +    0 +    0,
          Variables_Emptied   =>   0 +  0 +   0 +    0 +    0 +    0,
-         Warnings            =>   0 +  4 +   9 +    0 +    0 +    0,
+         Warnings            =>   0 +  0 +   0 +    0 +    0 +    0,
          others              =>   0
       ];
       --!pp on

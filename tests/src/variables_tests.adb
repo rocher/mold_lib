@@ -118,7 +118,7 @@ package body Variables_Tests is
          Variables_Ignored   => 9,
          Variables_Found     => 9,
          Variables_Undefined => 9,
-         Warnings            => 9,
+         Warnings            => 0,
          others              => 0
       ];
       --!pp on
@@ -146,7 +146,7 @@ package body Variables_Tests is
          Variables_Found     => 9,
          Variables_Undefined => 9,
          Variables_Ignored   => 9,
-         Warnings            => 9,
+         Warnings            => 0,
          others              => 0
       ];
       --!pp on
@@ -213,7 +213,7 @@ package body Variables_Tests is
          Variables_Undefined => 2,
          Variables_Replaced  => 2,
          Variables_Ignored   => 2,
-         Warnings            => 2,
+         Warnings            => 0,
          others              => 0
       ];
       --!pp on
@@ -346,7 +346,7 @@ package body Variables_Tests is
          "0faaaac0483521b52b19b0832c45855c");
 
       --  ----- undefined variables ignored and no warning --------------------
-      Settings.Undefined_Behavior := Mold.Ignore;
+      Settings.On_Undefined := Mold.Ignore;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
@@ -364,7 +364,7 @@ package body Variables_Tests is
          Variables_Undefined =>  294,
          Variables_Replaced  => 1824,
          Variables_Ignored   =>  294,
-         Warnings            =>  294,
+         Warnings            =>    0,
          others              =>    0
       ];
       --!pp on
@@ -376,7 +376,7 @@ package body Variables_Tests is
          "0b57373fbc9240bf183adfd5eb3fd82b");
 
       --  ----- undefined variables ignored, warning issued -------------------
-      Settings.Undefined_Behavior := Mold.Ignore;
+      Settings.On_Undefined := Mold.Ignore;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
@@ -394,7 +394,7 @@ package body Variables_Tests is
          Variables_Undefined =>  294,
          Variables_Replaced  => 1824,
          Variables_Ignored   =>  294,
-         Warnings            =>  294,
+         Warnings            =>    0,
          others              =>    0
       ];
       --!pp on
@@ -406,7 +406,7 @@ package body Variables_Tests is
          "0b57373fbc9240bf183adfd5eb3fd82b");
 
       --  ----- undefined variables emptied and no warning --------------------
-      Settings.Undefined_Behavior := Mold.Empty;
+      Settings.On_Undefined := Mold.Empty;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
@@ -436,7 +436,7 @@ package body Variables_Tests is
          "171564ce81dfde5ca643e2227e8524b7");
 
       --  ----- undefined variables emptied, warning issued -------------------
-      Settings.Undefined_Behavior := Mold.Empty;
+      Settings.On_Undefined := Mold.Empty;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
@@ -466,7 +466,7 @@ package body Variables_Tests is
          "171564ce81dfde5ca643e2227e8524b7");
 
       --  ----- undefined mandatory variable ----------------------------------
-      Settings.Undefined_Behavior := Mold.Ignore;
+      Settings.On_Undefined := Mold.Ignore;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
@@ -485,7 +485,7 @@ package body Variables_Tests is
          Variables_Replaced  =>  3,
          Variables_Ignored   =>  2,
          Variables_Emptied   =>  0,
-         Warnings            =>  1,
+         Warnings            =>  0,
          others              =>  0
       ];
       --!pp on

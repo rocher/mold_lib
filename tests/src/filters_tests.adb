@@ -50,7 +50,7 @@ package body Filters_Tests is
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- variable substitution with text filters: errors as warnings ---
-      Settings.Undefined_Behavior := Ignore;
+      Settings.On_Undefined := Ignore;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/predefined-filters.txt.mold",
@@ -102,7 +102,7 @@ package body Filters_Tests is
       Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- variable substitution with custom text filters ----------------
-      Settings.Undefined_Behavior := Ignore;
+      Settings.On_Undefined := Ignore;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/custom-filters.txt.mold",
@@ -150,7 +150,7 @@ package body Filters_Tests is
       --!pp on
    begin
       --  ----- variable substitution with text filters: ignore and warn ------
-      Settings.Undefined_Behavior := Ignore;
+      Settings.On_Undefined := Ignore;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/invalid-filters.txt.mold",
@@ -166,7 +166,7 @@ package body Filters_Tests is
          Variables_Found    => 20,
          Variables_Replaced =>  0,
          Variables_Ignored  => 20,
-         Warnings           => 20,
+         Warnings           =>  0,
          others             =>  0
       ];
       --!pp on
@@ -179,7 +179,7 @@ package body Filters_Tests is
 
       --  ----- variable substitution with text filters: empty and warn -------
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Behavior          := Empty;
+      Settings.On_Undefined                := Empty;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/invalid-filters.txt.mold",
@@ -210,7 +210,7 @@ package body Filters_Tests is
 
       --  ----- undefined custom text filter: ignore and warn -----------------
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Behavior          := Ignore;
+      Settings.On_Undefined                := Ignore;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/custom-filters.txt.mold",
@@ -228,7 +228,7 @@ package body Filters_Tests is
          Variables_Found    => 12,
          Variables_Replaced =>  8,
          Variables_Ignored  =>  4,
-         Warnings           =>  4,
+         Warnings           =>  0,
          others             =>  0
       ];
       --!pp on
@@ -241,7 +241,7 @@ package body Filters_Tests is
 
       --  ----- undefined custom text filter: empty and error -----------------
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Behavior          := Ignore;
+      Settings.On_Undefined                := Ignore;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/custom-filters.txt.mold",
@@ -260,7 +260,7 @@ package body Filters_Tests is
          Variables_Replaced =>  8,
          Variables_Ignored  =>  4,
          Variables_Emptied  =>  0,
-         Warnings           =>  4,
+         Warnings           =>  0,
          others             =>  0
       ];
       --!pp on

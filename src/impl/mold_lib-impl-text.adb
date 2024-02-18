@@ -116,18 +116,16 @@ package body Mold_Lib.Impl.Text is
                   elsif Is_Optional then
                      Local_Inc_Result (Variables_Emptied);
                   else  --  Is Normal
-                     if Args.Settings.Undefined_Behavior in Ignore | Empty then
-                        Local_Inc_Result (Warnings);
-                        Log.Warning (Message);
-                     elsif Args.Settings.Undefined_Behavior = Error then
-                        Log.Error (Message);
-                        Success := False;
-                     end if;
-                     if Args.Settings.Undefined_Behavior = Ignore then
+                     if Args.Settings.On_Undefined = Ignore then
                         Local_Inc_Result (Variables_Ignored);
                         New_Text.Append (Var_Mold);
-                     elsif Args.Settings.Undefined_Behavior = Empty then
+                     elsif Args.Settings.On_Undefined = Empty then
                         Local_Inc_Result (Variables_Emptied);
+                        Local_Inc_Result (Warnings);
+                        Log.Warning (Message);
+                     elsif Args.Settings.On_Undefined = Error then
+                        Log.Error (Message);
+                        Success := False;
                      end if;
                   end if;
                end;
@@ -158,24 +156,22 @@ package body Mold_Lib.Impl.Text is
                        Text_Filters.Apply (Filters, Var_Value, Output);
                   begin
                      if Var_Filter_Applied = Null_Unbounded_String then
-                        if Args.Settings.Undefined_Behavior = Ignore then
+                        if Args.Settings.On_Undefined = Ignore then
                            Local_Inc_Result (Variables_Ignored);
                            New_Text.Append (Var_Mold);
-                        elsif Args.Settings.Undefined_Behavior = Empty then
+                        elsif Args.Settings.On_Undefined = Empty then
                            Local_Inc_Result (Variables_Emptied);
-                        end if;
-                        if Args.Settings.Undefined_Behavior = Error then
-                           Log.Error
-                             ("Invalid text filter '" & Filters & "' in " &
-                              Args.Source.all & ":" & LIN (2 .. LIN'Last) &
-                              ":" & COL (2 .. COL'Last));
-                           Success := False;
-                        else
                            Local_Inc_Result (Warnings);
                            Log.Warning
                              ("Invalid text filter '" & Filters & "' in " &
                               Args.Source.all & ":" & LIN (2 .. LIN'Last) &
                               ":" & COL (2 .. COL'Last));
+                        elsif Args.Settings.On_Undefined = Error then
+                           Log.Error
+                             ("Invalid text filter '" & Filters & "' in " &
+                              Args.Source.all & ":" & LIN (2 .. LIN'Last) &
+                              ":" & COL (2 .. COL'Last));
+                           Success := False;
                         end if;
                      else
                         if Entity = file then

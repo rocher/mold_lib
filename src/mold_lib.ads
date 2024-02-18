@@ -17,13 +17,13 @@ package Mold_Lib is
 
    package Log renames Simple_Logging;
 
-   type Undefined_Behaviors is (Ignore, Empty, Error);
-   --  Behavior followed when an undefined variable or text filter are
-   --  encountered during the variable substitution process. 'Ignore' means
-   --  that nothing will happen and the variable will remain the same (e.g.
-   --  '{{My_Var}}'); 'Empty' substitutes the variable with the empty string
-   --  (removes the variable); 'Error' stops the substitution process and
-   --  emits an error. 'Ignore' and 'Empty' issue a warning.
+   type On_Undefined_Handling is (Ignore, Empty, Error);
+   --  Specifies how to handle undefined variables or text filters encountered
+   --  during the variable substitution process. 'Ignore' means that nothing
+   --  happens and the variable remains the same (e.g. '{{My_Var}}'); 'Empty'
+   --  issues a warning and replaces the variable with the empty string
+   --  (removes the variable); 'Error' emits an error and stops the
+   --  substitution process. Default is 'Error'.
 
    type Settings_Type is record
       Replacement_In_Filenames    : aliased Boolean;
@@ -31,7 +31,7 @@ package Mold_Lib is
       Delete_Source_Files         : aliased Boolean;
       Overwrite_Destination_Files : aliased Boolean;
       Enable_Defined_Settings     : aliased Boolean;
-      Undefined_Behavior          : aliased Undefined_Behaviors;
+      On_Undefined                : aliased On_Undefined_Handling;
    end record;
    type Settings_Access is access all Settings_Type;
    --  Settings to configure the behavior of mold. Refer to the documentation
@@ -43,7 +43,7 @@ package Mold_Lib is
       Delete_Source_Files         => False,
       Overwrite_Destination_Files => True,
       Enable_Defined_Settings     => True,
-      Undefined_Behavior          => Ignore
+      On_Undefined                => Error
    );
 
    type Results_Fields is (

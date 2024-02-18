@@ -53,7 +53,7 @@ package body Errors_Tests is
 
       --  ----- undefined variable --------------------------------------------
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Behavior          := Error;
+      Settings.On_Undefined                := Error;
       Results                              := [others => 0];
       --!pp off
       Success := Apply (
@@ -101,7 +101,7 @@ package body Errors_Tests is
 
       --  ----- recursive variable definition ---------------------------------
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Behavior          := Error;
+      Settings.On_Undefined                := Error;
       Results                              := [others => 0];
       --!pp off
       Success := Apply (
@@ -122,7 +122,7 @@ package body Errors_Tests is
 
       --  ----- cyclic variable definition ------------------------------------
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Behavior          := Error;
+      Settings.On_Undefined                := Error;
       Results                              := [others => 0];
       --!pp off
       Success := Apply (
@@ -143,7 +143,7 @@ package body Errors_Tests is
 
       --  ----- invalid filter in variable definition -------------------------
       Settings.Overwrite_Destination_Files := True;
-      Settings.Undefined_Behavior          := Error;
+      Settings.On_Undefined                := Error;
       Results                              := [others => 0];
       --!pp off
       Success := Apply (

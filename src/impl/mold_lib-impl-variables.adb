@@ -52,10 +52,9 @@ package body Mold_Lib.Impl.Variables is
       elsif Key = "mold-overwrite-destination-files" then
          Set_Boolean (Args.Settings.Overwrite_Destination_Files'Access);
 
-      elsif Key = "mold-undefined-behavior" then
+      elsif Key = "mold-on-undefined" then
          begin
-            Args.Settings.Undefined_Behavior :=
-              Undefined_Behaviors'Value (Value);
+            Args.Settings.On_Undefined := On_Undefined_Handling'Value (Value);
          exception
             when E : Constraint_Error =>
                Log_Exception

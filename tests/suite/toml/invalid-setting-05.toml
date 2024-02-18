@@ -1,1 +1,1 @@
-mold-undefined-behavior = "nothing"
+mold-on-undefined = "nothing"
