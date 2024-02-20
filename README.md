@@ -56,4 +56,4 @@ information.
 
 ---
 ## License
-MIT (c) 2023 Francesc Rocher
+MIT (c) 2023, 2024 Francesc Rocher

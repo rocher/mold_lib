@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 --
 --  Mold - Meta-variable Operations for Lean Development TESTS
---  Copyright (c) 2023 Francesc Rocher <francesc.rocher@gmail.com>
+--  Copyright (c) 2023, 2024 Francesc Rocher <francesc.rocher@gmail.com>
 --  SPDX-License-Identifier: MIT
 --
 -------------------------------------------------------------------------------
@@ -20,27 +20,27 @@ with Mold_Lib;
 
 procedure Mold_Lib_Tests is
 
-   procedure Run is new AUnit.Run.Test_Runner_With_Results
-     (Mold_Lib_Test_Suite.Suite);
-   Reporter : AUnit.Reporter.Text.Text_Reporter;
-   Results  : AUnit.Test_Results.Result;
+  procedure Run is new AUnit.Run.Test_Runner_With_Results
+   (Mold_Lib_Test_Suite.Suite);
+  Reporter : AUnit.Reporter.Text.Text_Reporter;
+  Results  : AUnit.Test_Results.Result;
 
-   use Mold_Lib_Tests_Config;
+  use Mold_Lib_Tests_Config;
 begin
-   GNAT.Exception_Traces.Trace_On (GNAT.Exception_Traces.Unhandled_Raise);
+  GNAT.Exception_Traces.Trace_On (GNAT.Exception_Traces.Unhandled_Raise);
 
-   Ada.Text_IO.Put_Line
-     ("Tests for " & Mold_Lib.Name & " version " & Mold_Lib.Version);
+  Ada.Text_IO.Put_Line
+   ("Tests for " & Mold_Lib.Name & " version " & Mold_Lib.Version);
 
-   pragma Warnings (Off);
-   Reporter.Set_Use_ANSI_Colors
-     (Mold_Lib_Tests_Config.Build_Profile = Mold_Lib_Tests_Config.development);
-   pragma Warnings (On);
+  pragma Warnings (Off);
+  Reporter.Set_Use_ANSI_Colors
+   (Mold_Lib_Tests_Config.Build_Profile = Mold_Lib_Tests_Config.development);
+  pragma Warnings (On);
 
-   Run (Reporter, Results);
+  Run (Reporter, Results);
 
-   if not Results.Successful then
-      Ada.Command_Line.Set_Exit_Status (1);
-   end if;
+  if not Results.Successful then
+    Ada.Command_Line.Set_Exit_Status (1);
+  end if;
 
 end Mold_Lib_Tests;
