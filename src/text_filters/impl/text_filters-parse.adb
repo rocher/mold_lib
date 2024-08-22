@@ -78,6 +78,7 @@ begin
    case Kind is
 
       when '0' .. '9' =>
+         --  Custom filters: /<NUM>
          Text_Filter.Number := Integer'Value (Kind & "");
          if Custom_Filters = null
            or else Custom_Filters.all (Text_Filter.Number) = null
@@ -88,7 +89,14 @@ begin
             Text_Filter.Kind := filter_custom;
          end if;
 
+         declare
+            A : Integer := 10_000;
+         begin
+            null;
+         end;
+
       when 'T' =>
+         --  Trim: /T<DIR>
          Get_Args;
          if Argc = 1 then
             Arg := Args.Element (1);
@@ -115,9 +123,11 @@ begin
          end if;
 
       when 'X' =>
+         --  Remove blanks: /X
          Text_Filter.Kind := filter_remove_blanks;
 
       when 'r' =>
+         --  Replace: /r<WHICH><SRC><DST>
          Get_Args;
          if Argc = 3 then
             Arg := Args.Element (1);
@@ -142,6 +152,7 @@ begin
          end if;
 
       when 's' =>
+         --  Sequence: /s<CHAR>
          Get_Args;
          if Argc = 1 then
             Text_Filter.Kind := filter_sequence;
@@ -153,6 +164,7 @@ begin
          end if;
 
       when 'D' =>
+         --  Delete: /D<CHAR>
          Get_Args;
          if Argc = 1 then
             Text_Filter.Kind := filter_delete_all;
@@ -165,6 +177,7 @@ begin
          end if;
 
       when 'p' =>
+         --  Padding: /p<DIR><CHAR><NUM>
          Get_Args;
          if Argc >= 3 then
             Text_Filter.Kind := filter_padding;
@@ -204,6 +217,7 @@ begin
          end if;
 
       when 'W' =>
+         --  Truncate: /W<NUM>
          Get_Args;
          if Argc >= 1 then
             Text_Filter.Kind := filter_truncate;
@@ -227,14 +241,18 @@ begin
          end if;
 
       when 'c' =>
+         --  Case transformation: /c<CASE>
          Get_Args;
          if Argc = 1 then
             Arg := Args.Element (1);
             case Arg is
+               --  lowercase
                when 'l' =>
                   Text_Filter.Kind := filter_case_lowercase;
+                  --  Capitals
                when 'c' =>
                   Text_Filter.Kind := filter_case_capitals;
+                  --  UPPERCASE
                when 'u' =>
                   Text_Filter.Kind := filter_case_uppercase;
                when others =>
@@ -248,32 +266,44 @@ begin
               UStr ("Invalid number or arguments in filter 'c'");
          end if;
 
+         --  Style transformation: /n<STYLE>
       when 'n' =>
          Get_Args;
          if Argc = 1 then
             Arg := Args.Element (1);
             case Arg is
                when 'f' =>
+                  --  flatcase
                   Text_Filter.Kind := filter_style_flat_case;
                when 'c' =>
+                  --  lowerCamelCase
                   Text_Filter.Kind := filter_style_lower_camel_case;
                when 'C' =>
+                  --  UpperCamelCase
                   Text_Filter.Kind := filter_style_upper_camel_case;
                when 'U' =>
+                  --  UPPERCASE
                   Text_Filter.Kind := filter_style_uppercase;
                when 's' =>
+                  --  snake_case
                   Text_Filter.Kind := filter_style_snake_case;
                when 'S' =>
+                  --  camel_Snake_Case
                   Text_Filter.Kind := filter_style_camel_snake_case;
                when 'i' =>
+                  -- Title Case
                   Text_Filter.Kind := filter_style_title_case;
                when 'A' =>
+                  -- ALL CAPS
                   Text_Filter.Kind := filter_style_all_caps;
                when 'd' =>
+                  --  dash-case
                   Text_Filter.Kind := filter_style_dash_case;
                when 't' =>
+                  -- Train-Case
                   Text_Filter.Kind := filter_style_train_case;
                when 'T' =>
+                  -- TRAIN-CASE
                   Text_Filter.Kind := filter_style_train_uppercase;
                when others =>
                   Text_Filter.Kind  := filter_error;
