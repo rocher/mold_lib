@@ -80,8 +80,10 @@ package Mold_Lib is
    --  (0 .. 9) pointers to functions.
 
    function Name return String;
+   --  Returns the name of the library.
 
    function Version return String;
+   --  Returns the version of the library.
 
    function Apply (
       Source     : String          := ".";
@@ -92,15 +94,29 @@ package Mold_Lib is
       Results    : Results_Access  := null;
       Log_Level  : Log.Levels      := Log.Info
    )  return Boolean;
-   --  Given Source, a file or directory, a TOML file with a set of variables
-   --  defined in it, this function applies variable replacement and template
-   --  inclusion in Source file. Or, recursively, in all '.mold' files in the
-   --  current directory and subdirectories when Source is a directory.
-   --  Optionally, Output_Dir can specify a different output directory,
-   --  Settings can be a customized set  of settings other than
-   --  Default_Settings, and Results can be a pointer to a Results_Type object
-   --  if detailed information about the process is required.
    --
-   --  Return True if the process ends successfully (no errors detected).
+   --  Given a Source, a file or directory, this function applies variable
+   --  replacement and template inclusion in Source file or, recursively, in
+   --  all '.mold' files in the Source directory and subdirectories. By
+   --  default, Source is the current directory ('.') and the output directory
+   --  is the current directory. The default TOML file is 'mold.toml' in the
+   --  current directory.
+   --
+   --  Optionally,
+   --
+   --     Output_Dir: specifies a different output directory
+   --
+   --     Toml_File: specifies a different TOML file
+   --
+   --     Settings: customized set  of settings other than Default_Settings
+   --
+   --     Filters: pointer to custom set of text filters
+   --
+   --     Results: pointer to a Results_Type object if detailed information
+   --     about the process is required
+   --
+   --     Log_Level: specifies the log level
+   --
+   --  Returns True if the process ends successfully (no errors detected).
 
 end Mold_Lib;
