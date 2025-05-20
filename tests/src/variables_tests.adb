@@ -406,7 +406,7 @@ package body Variables_Tests is
          "0b57373fbc9240bf183adfd5eb3fd82b");
 
       --  ----- undefined variables emptied and no warning --------------------
-      Settings.On_Undefined := Mold.Empty;
+      Settings.On_Undefined := Mold.Warning;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",
@@ -436,7 +436,7 @@ package body Variables_Tests is
          "171564ce81dfde5ca643e2227e8524b7");
 
       --  ----- undefined variables emptied, warning issued -------------------
-      Settings.On_Undefined := Mold.Empty;
+      Settings.On_Undefined := Mold.Warning;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/lorem-ipsum.txt.mold",

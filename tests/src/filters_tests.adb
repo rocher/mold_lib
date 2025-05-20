@@ -182,7 +182,7 @@ package body Filters_Tests is
 
       --  ----- variable substitution with text filters: empty and warn -------
       Settings.Overwrite_Destination_Files := True;
-      Settings.On_Undefined                := Empty;
+      Settings.On_Undefined                := Warning;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/invalid-filters.txt.mold",
@@ -242,7 +242,7 @@ package body Filters_Tests is
         ("suite/tmp/custom-filters.txt", "b7501d2677f79ecd9f5969dee6574bf3",
          "a8ab488e7078d006c15347c2c17143c0");
 
-      --  ----- undefined custom text filter: empty and error -----------------
+      --  ----- undefined custom text filter: empty ---------------------------
       Settings.Overwrite_Destination_Files := True;
       Settings.On_Undefined                := Ignore;
       --!pp off

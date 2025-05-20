@@ -17,13 +17,14 @@ package Mold_Lib is
 
    package Log renames Simple_Logging;
 
-   type On_Undefined_Handling is (Ignore, Empty, Error);
-   --  Specifies how to handle undefined variables or text filters encountered
-   --  during the variable substitution process. 'Ignore' means that nothing
-   --  happens and the variable remains the same (e.g. '{{My_Var}}'); 'Empty'
-   --  issues a warning and replaces the variable with the empty string
-   --  (removes the variable); 'Error' emits an error and stops the
-   --  substitution process. Default is 'Error'.
+   type On_Undefined_Handling is (Ignore, Warning, Error);
+   --
+   --  Specifies how to handle undefined variables, undefined text filters or
+   --  invalid date formats encountered during the variable substitution
+   --  process. 'Ignore' means that nothing happens and the variable remains
+   --  the same (e.g. '{{My_Var}}'); 'Warning' issues a warning and replaces
+   --  the variable name with the empty string; 'Error' emits an error and
+   --  stops the substitution process. Default is 'Error'.
 
    type Settings_Type is record
       Replacement_In_Filenames    : aliased Boolean;
