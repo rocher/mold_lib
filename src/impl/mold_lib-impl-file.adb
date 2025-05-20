@@ -179,7 +179,7 @@ package body Mold_Lib.Impl.File is
                declare
                   New_Line : constant String :=
                     Impl.Text.Replace
-                      (Line, Impl.Text.file, Line_Number, "", Success);
+                      (Line, Impl.Text.text_line, Line_Number, "", Success);
                begin
                   if not Success then
                      --  error logged in Impl.Text.Replace

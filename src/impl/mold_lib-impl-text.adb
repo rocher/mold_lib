@@ -31,19 +31,19 @@ package body Mold_Lib.Impl.Text is
    is
       Matches     : Reg.Match_Array (0 .. 4);
       New_Text    : Unbounded_String := To_Unbounded_String ("");
-      Current     : Natural          := Text'First;
-      Has_Matches : Boolean          := False;
+      Current     : Natural := Text'First;
+      Has_Matches : Boolean := False;
 
-      procedure Local_Inc_Result
-        (Field : Results_Fields; Amount : Natural := 1)
-      is
       --  Local version of Inc_Result to increment only results when Entity
       --  is a file
+      procedure Local_Inc_Result
+        (Field : Results_Fields; Amount : Natural := 1) is
       begin
-         if Entity = file then
+         if Entity = text_line then
             Inc_Result (Field, Amount);
          end if;
       end Local_Inc_Result;
+
    begin
       Success := True;
 
@@ -65,21 +65,21 @@ package body Mold_Lib.Impl.Text is
               Text (Matches (3).First .. Matches (3).Last);
 
             Is_Mandatory : constant Boolean :=
-              (Var_All_Name (Var_All_Name'First) =
-               Mandatory_Replacement_Prefix);
+              (Var_All_Name (Var_All_Name'First)
+               = Mandatory_Replacement_Prefix);
 
             Is_Optional : constant Boolean :=
-              (Var_All_Name (Var_All_Name'First) =
-               Optional_Replacement_Prefix);
+              (Var_All_Name (Var_All_Name'First)
+               = Optional_Replacement_Prefix);
 
             Var_Name : constant String :=
-              (if Is_Mandatory or Is_Optional then
-                 Var_All_Name (Var_All_Name'First + 1 .. Var_All_Name'Last)
+              (if Is_Mandatory or Is_Optional
+               then Var_All_Name (Var_All_Name'First + 1 .. Var_All_Name'Last)
                else Var_All_Name);
 
             Filters : constant String :=
-              (if Matches (4).First > 0 then
-                 Text (Matches (4).First .. Matches (4).Last)
+              (if Matches (4).First > 0
+               then Text (Matches (4).First .. Matches (4).Last)
                else "");
 
             Var_Value : constant String := Impl.Variables.Get_Value (Var_Name);
@@ -102,10 +102,17 @@ package body Mold_Lib.Impl.Text is
                Local_Inc_Result (Variables_Undefined);
                declare
                   Message : constant String :=
-                    "Undefined variable '" & Var_Name & "' in " &
-                    (if Entity = file then
-                       "file " & Args.Source.all & ":" & LIN (2 .. LIN'Last) &
-                       ":" & COL (2 .. COL'Last)
+                    "Undefined variable '"
+                    & Var_Name
+                    & "' in "
+                    & (if Entity = text_line
+                       then
+                         "file "
+                         & Args.Source.all
+                         & ":"
+                         & LIN (2 .. LIN'Last)
+                         & ":"
+                         & COL (2 .. COL'Last)
                      else "variable '" & Name & "'");
                begin
                   if Is_Mandatory then
@@ -115,11 +122,12 @@ package body Mold_Lib.Impl.Text is
                      Success := False;
                   elsif Is_Optional then
                      Local_Inc_Result (Variables_Emptied);
-                  else  --  Is Normal
+                  else
+                     --  Is Normal
                      if Args.Settings.On_Undefined = Ignore then
                         Local_Inc_Result (Variables_Ignored);
                         New_Text.Append (Var_Mold);
-                     elsif Args.Settings.On_Undefined = Empty then
+                     elsif Args.Settings.On_Undefined = Warning then
                         Local_Inc_Result (Variables_Emptied);
                         Local_Inc_Result (Warnings);
                         Log.Warning (Message);
@@ -140,13 +148,21 @@ package body Mold_Lib.Impl.Text is
                   else
                      --  Error: found cyclic definition of variable
                      Log.Error
-                       ("Cyclic definition (loop" & Line'Image &
-                        ") of variable '" & Name & "'");
+                       ("Cyclic definition (loop"
+                        & Line'Image
+                        & ") of variable '"
+                        & Name
+                        & "'");
                   end if;
                   Success := False;
                end if;
 
-               if Filters = "" then
+               if Var_Is_Mold_Date then
+                  if Date_Value /= "INVALID" then
+                     Local_Inc_Result (Variables_Replaced);
+                     New_Text.Append (To_String (Date_Value));
+                  end if;
+               elsif Filters = "" then
                   Local_Inc_Result (Variables_Replaced);
                   New_Text.Append (Var_Value);
                else
@@ -159,22 +175,32 @@ package body Mold_Lib.Impl.Text is
                         if Args.Settings.On_Undefined = Ignore then
                            Local_Inc_Result (Variables_Ignored);
                            New_Text.Append (Var_Mold);
-                        elsif Args.Settings.On_Undefined = Empty then
+                        elsif Args.Settings.On_Undefined = Warning then
                            Local_Inc_Result (Variables_Emptied);
                            Local_Inc_Result (Warnings);
                            Log.Warning
-                             ("Invalid text filter '" & Filters & "' in " &
-                              Args.Source.all & ":" & LIN (2 .. LIN'Last) &
-                              ":" & COL (2 .. COL'Last));
+                             ("Invalid text filter '"
+                              & Filters
+                              & "' in "
+                              & Args.Source.all
+                              & ":"
+                              & LIN (2 .. LIN'Last)
+                              & ":"
+                              & COL (2 .. COL'Last));
                         elsif Args.Settings.On_Undefined = Error then
                            Log.Error
-                             ("Invalid text filter '" & Filters & "' in " &
-                              Args.Source.all & ":" & LIN (2 .. LIN'Last) &
-                              ":" & COL (2 .. COL'Last));
+                             ("Invalid text filter '"
+                              & Filters
+                              & "' in "
+                              & Args.Source.all
+                              & ":"
+                              & LIN (2 .. LIN'Last)
+                              & ":"
+                              & COL (2 .. COL'Last));
                            Success := False;
                         end if;
                      else
-                        if Entity = file then
+                        if Entity = text_line then
                            --  do not count replacements in variables
                            Local_Inc_Result (Variables_Replaced);
                         end if;

@@ -8,7 +8,7 @@
 
 package Mold_Lib.Impl.Text is
 
-   type Entity_Kind is (file, variable);
+   type Entity_Kind is (text_line, variable);
 
    --!pp off
    function Replace (
