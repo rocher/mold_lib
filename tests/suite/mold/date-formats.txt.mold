@@ -1,0 +1,15 @@
+    date: {{  mold-date-%Y-%m-%d  }}
+ISO date: {{ mold-date-%Y-%m-%dT%H:%M:%S%:::z }}
+     day: {{ mold-date-%A }}
+
+ISO_Time: {{ mold-date-ISO_Time }}
+ISO_Date: {{ mold-date-ISO_Date }}
+ US_Date: {{ mold-date-US_Date }}
+ EU_Date: {{ mold-date-EU_Date }}
+
+Extensions:
+{{mold-date-%i}}
+{{mold-date-%i-%e}}
+{{mold-date-%i-%e-%o}}
+    date: {{  mold-date-%-Y-%-m-%-d  }}
+    date: {{  mold-date-%_Y-%_m-%_d  }}

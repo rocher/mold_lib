@@ -275,6 +275,72 @@ package body Filters_Tests is
          "a8ab488e7078d006c15347c2c17143c0");
    end Test_Invalid_Filters;
 
+   -----------------------
+   -- Test_Date_Formats --
+   -----------------------
+
+   procedure Test_Date_Formats (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
+      Success  : Boolean;
+      Settings : Mold.Settings_Type := Global_Settings.all;
+      Results  : aliased Results_Type;
+      Expected : aliased Results_Type;
+   begin
+      Success := Apply (
+         Source     => "suite/mold/date-formats.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unrestricted_Access,
+         Toml_File  => "suite/toml/empty.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed    =>   1,
+         Variables_Defined  =>   0,
+         Variables_Found    =>  12,
+         Variables_Replaced =>  12,
+         others             =>  0
+      ];
+
+      Check_Results
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
+   end Test_Date_Formats;
+
+   -------------------------------
+   -- Test_Invalid_Date_Formats --
+   -------------------------------
+
+   procedure Test_Invalid_Date_Formats (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
+      Success  : Boolean;
+      Settings : Mold.Settings_Type := Global_Settings.all;
+      Results  : aliased Results_Type;
+      Expected : aliased Results_Type;
+   begin
+      Settings.On_Undefined := Warning;
+      Success := Apply (
+         Source     => "suite/mold/invalid-date-formats.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unrestricted_Access,
+         Toml_File  => "suite/toml/empty.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed    =>  1,
+         Variables_Defined  =>  0,
+         Variables_Found    => 11,
+         Variables_Replaced =>  0,
+         Variables_Ignored  =>  0,
+         Variables_Emptied  => 11,
+         Warnings           => 11,
+         others             =>  0
+      ];
+
+      Check_Results
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
+   end Test_Invalid_Date_Formats;
+
    ----------------------
    -- Replace_By_Slash --
    ----------------------

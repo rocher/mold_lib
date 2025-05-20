@@ -1,0 +1,14 @@
+Invalid Date Formats (fields)
+{{  mold-date-  }}
+{{ mold-date-% }}
+{{ mold-date-%q }}
+{{ mold-date-%Y-% }}
+{{ mold-date-%Y-%q }}
+
+Invalid Date Formats (names)
+iso_time : {{ mold-date-iso_time }}
+isos_time: {{ mold-date-isos_time }}
+iso_date : {{ mold-date-iso_date }}
+iso_dates: {{ mold-date-iso_dates }}
+USA_Date : {{ mold-date-USA_Date }}
+EUR_Date : {{ mold-date-EUR_Date }}

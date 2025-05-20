@@ -6,8 +6,12 @@
 --
 -------------------------------------------------------------------------------
 
+with Ada.Calendar;
+with GNAT.Calendar.Time_IO;
+
 with Mold_Lib.Impl.Variables;
 with Text_Filters;
+with Log_Exceptions; use Log_Exceptions;
 
 package body Mold_Lib.Impl.Text is
 
@@ -84,7 +88,16 @@ package body Mold_Lib.Impl.Text is
 
             Var_Value : constant String := Impl.Variables.Get_Value (Var_Name);
 
-            Variable_Undefined : constant Boolean := (Var_Value = "");
+            Date_Value : Unbounded_String := To_Unbounded_String ("INVALID");
+
+            Var_Is_Mold_Date : constant Boolean :=
+              Index
+                (Source  => To_Unbounded_String (Var_Name),
+                 Pattern => "mold-date-")
+              > 0;
+
+            Variable_Undefined : constant Boolean :=
+              (Var_Value = "") and then (not Var_Is_Mold_Date);
 
             LIN : constant String := Line'Image;
             COL : constant String := Matches (2).First'Image;
@@ -94,7 +107,11 @@ package body Mold_Lib.Impl.Text is
             --  Log.Debug ("Var_Mold    : '" & Var_Mold & "'");
             --  Log.Debug ("Var_All_Name: '" & Var_All_Name & "'");
             --  Log.Debug ("Var_Name    : '" & Var_Name & "'");
+            --  Log.Debug ("Var_Value   : '" & Var_Value & "'");
             --  Log.Debug ("Filters     : '" & Filters & "'");
+            --  Log.Debug ("Undefined   : " & Boolean'Image (Variable_Undefined));
+            --  Log.Debug
+            --    ("Var_Is_Mold_Date : " & Boolean'Image (Var_Is_Mold_Date));
 
             New_Text.Append (Pre_Text);
 
@@ -113,7 +130,7 @@ package body Mold_Lib.Impl.Text is
                          & LIN (2 .. LIN'Last)
                          & ":"
                          & COL (2 .. COL'Last)
-                     else "variable '" & Name & "'");
+                       else "variable '" & Name & "'");
                begin
                   if Is_Mandatory then
                      Local_Inc_Result (Variables_Ignored);
@@ -139,6 +156,122 @@ package body Mold_Lib.Impl.Text is
                end;
             else
                --  variable defined
+
+               if Var_Is_Mold_Date then
+                  declare
+                     Format     :
+                       constant GNAT.Calendar.Time_IO.Picture_String :=
+                         GNAT.Calendar.Time_IO.Picture_String
+                           (Slice
+                              (To_Unbounded_String (Var_Name),
+                               11,
+                               Var_Name'Length));
+                     Format_Str : constant String := String (Format);
+                  begin
+                     case Format_Str is
+                        when "ISO_Time" =>
+                           Date_Value :=
+                             To_Unbounded_String
+                               ((GNAT.Calendar.Time_IO.Image
+                                   (Ada.Calendar.Clock,
+                                    "%Y-%m-%dT%H:%M:%S%:::z")));
+
+                        when "ISO_Date" =>
+                           Date_Value :=
+                             To_Unbounded_String
+                               ((GNAT.Calendar.Time_IO.Image
+                                   (Ada.Calendar.Clock, "%Y-%m-%d")));
+
+                        when "US_Date" =>
+                           Date_Value :=
+                             To_Unbounded_String
+                               ((GNAT.Calendar.Time_IO.Image
+                                   (Ada.Calendar.Clock, "%m/%d/%y")));
+
+                        when "EU_Date" =>
+                           Date_Value :=
+                             To_Unbounded_String
+                               ((GNAT.Calendar.Time_IO.Image
+                                   (Ada.Calendar.Clock, "%d/%m/%y")));
+
+                        when others =>
+                           declare
+                              Result : constant String :=
+                                GNAT.Calendar.Time_IO.Image
+                                  (Ada.Calendar.Clock, Format);
+                           begin
+                              Log.Debug ("Result: " & Result);
+                              Log.Debug ("Format_Str: " & Format_Str);
+                              if Format_Str = Result then
+                                 if Args.Settings.On_Undefined = Ignore then
+                                    Local_Inc_Result (Variables_Ignored);
+                                    New_Text.Append (Var_Mold);
+                                 elsif Args.Settings.On_Undefined = Warning
+                                 then
+                                    Local_Inc_Result (Variables_Emptied);
+                                    Local_Inc_Result (Warnings);
+                                    Log.Warning
+                                      ("Invalid date format '"
+                                       & String (Format)
+                                       & "' in "
+                                       & Args.Source.all
+                                       & ":"
+                                       & LIN (2 .. LIN'Last)
+                                       & ":"
+                                       & COL (2 .. COL'Last));
+                                 else
+                                    Log.Error
+                                      ("Invalid date format '"
+                                       & String (Format)
+                                       & "' in "
+                                       & Args.Source.all
+                                       & ":"
+                                       & LIN (2 .. LIN'Last)
+                                       & ":"
+                                       & COL (2 .. COL'Last));
+                                    Log.Error ("Result is " & Result);
+                                    Success := False;
+                                 end if;
+                              else
+                                 Local_Inc_Result (Variables_Replaced);
+                                 New_Text.Append (Result);
+                              end if;
+                           end;
+                     end case;
+                  exception
+                     when E : GNAT.Calendar.Time_IO.Picture_Error =>
+                        if Args.Settings.On_Undefined = Ignore then
+                           Local_Inc_Result (Variables_Ignored);
+                           New_Text.Append (Var_Mold);
+                        elsif Args.Settings.On_Undefined = Warning then
+                           Local_Inc_Result (Variables_Emptied);
+                           Local_Inc_Result (Warnings);
+                           Log.Warning
+                             ("Invalid date format '"
+                              & String (Format)
+                              & "' in "
+                              & Args.Source.all
+                              & ":"
+                              & LIN (2 .. LIN'Last)
+                              & ":"
+                              & COL (2 .. COL'Last));
+                        else
+                           Local_Inc_Result (Warnings);
+                           Log_Exception (E);
+                           Log.Error
+                             ("Invalid date format '"
+                              & String (Format)
+                              & "' in "
+                              & Args.Source.all
+                              & ":"
+                              & LIN (2 .. LIN'Last)
+                              & ":"
+                              & COL (2 .. COL'Last));
+                           Success := False;
+                        end if;
+                        pragma Annotate (Xcov, Exempt_Off);
+                  end;
+               end if;
 
                if Entity = variable and then Var_Name = Name then
                   if Line = 1 then
