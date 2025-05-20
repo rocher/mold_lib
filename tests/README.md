@@ -27,8 +27,9 @@ with:
 
 ```sh
    # prepare the environment
+   rm -rf *.srctrace gnatcov_out/
    git clean -dfx suite/
-   alr clean
+   alr clean --cache --temp
 
    # instrument the code and build the project
    alr gnatcov instrument --level=stmt --dump-trigger=atexit --projects mold_lib --no-subprojects
