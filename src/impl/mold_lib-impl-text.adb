@@ -109,7 +109,8 @@ package body Mold_Lib.Impl.Text is
             --  Log.Debug ("Var_Name    : '" & Var_Name & "'");
             --  Log.Debug ("Var_Value   : '" & Var_Value & "'");
             --  Log.Debug ("Filters     : '" & Filters & "'");
-            --  Log.Debug ("Undefined   : " & Boolean'Image (Variable_Undefined));
+            --  Log.Debug
+            --    ("Undefined   : " & Boolean'Image (Variable_Undefined));
             --  Log.Debug
             --    ("Var_Is_Mold_Date : " & Boolean'Image (Var_Is_Mold_Date));
 
