@@ -30,10 +30,13 @@ package body Filters_Tests is
    overriding procedure Register_Tests (T : in out Filters_Test_Case) is
       use AUnit.Test_Cases.Registration;
    begin
+      --  Register_Routine
+      --    (T, Test_Predefined_Filters'Access, "Predefined Filters");
+      --  Register_Routine (T, Test_Custom_Filters'Access, "Custom Filters");
+      --  Register_Routine (T, Test_Invalid_Filters'Access, "Invalid Filters");
+      Register_Routine (T, Test_Date_Formats'Access, "Date Formats");
       Register_Routine
-        (T, Test_Predefined_Filters'Access, "Predefined Filters");
-      Register_Routine (T, Test_Custom_Filters'Access, "Custom Filters");
-      Register_Routine (T, Test_Invalid_Filters'Access, "Invalid Filters");
+        (T, Test_Invalid_Date_Formats'Access, "Invalid Date Formats");
    end Register_Tests;
 
    -----------------------------

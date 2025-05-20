@@ -8,7 +8,7 @@
 
 with Ada.Text_IO;
 
-with Custom_Text_Filters; use Custom_Text_Filters;
+with Text_Filters_Custom; use Text_Filters_Custom;
 with Text_Filters_Data;   use Text_Filters_Data;
 
 package Text_Filters is
@@ -23,7 +23,7 @@ package Text_Filters is
       Filters          : String;
       Value            : String;
       Output           : IO.File_Access
-   )  return UString;  --  Ada.Strings.Unbounded.Unbounded_String
+   )  return UString;  --  Unbounded_String
    --!pp on
    --
    --  Recursively apply all Filters to Value, using Output file for

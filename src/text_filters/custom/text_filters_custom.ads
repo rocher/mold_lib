@@ -6,7 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
-package Custom_Text_Filters is
+package Text_Filters_Custom is
 
    type Text_Filter is access function (S : String) return String;
    --  Function that transform a String into another String.
@@ -17,4 +17,4 @@ package Custom_Text_Filters is
    type Filters_Access is access all Filters_Array;
    --  Pointer to an array of pointers to functions.
 
-end Custom_Text_Filters;
+end Text_Filters_Custom;

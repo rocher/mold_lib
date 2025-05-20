@@ -38,7 +38,7 @@ is
                Slash := False;
             else
                Args.Append (Filters.Element (I));
-               Argc  := Argc + 1;
+               Argc := Argc + 1;
                Slash := (Filters.Element (I) = '/');
             end if;
          end loop;
@@ -83,17 +83,11 @@ begin
          if Custom_Filters = null
            or else Custom_Filters.all (Text_Filter.Number) = null
          then
-            Text_Filter.Kind  := filter_error;
+            Text_Filter.Kind := filter_error;
             Text_Filter.Error := UStr ("Null custom filter '" & Kind & "'");
          else
             Text_Filter.Kind := filter_custom;
          end if;
-
-         declare
-            A : Integer := 10_000;
-         begin
-            null;
-         end;
 
       when 'T' =>
          --  Trim: /T<DIR>
@@ -103,21 +97,26 @@ begin
             case Arg is
                when 'l' =>
                   Text_Filter.Kind := filter_trim_left;
+
                when 'r' =>
                   Text_Filter.Kind := filter_trim_right;
+
                when 'b' =>
                   Text_Filter.Kind := filter_trim_both;
+
                when 's' =>
                   Text_Filter.Kind := filter_trim_squash;
+
                when 'a' =>
                   Text_Filter.Kind := filter_trim_all;
+
                when others =>
-                  Text_Filter.Kind  := filter_error;
+                  Text_Filter.Kind := filter_error;
                   Text_Filter.Error :=
                     UStr ("Invalid argument '" & Arg & "' in filter 'T'");
             end case;
          else
-            Text_Filter.Kind  := filter_error;
+            Text_Filter.Kind := filter_error;
             Text_Filter.Error :=
               UStr ("Invalid number or arguments in filter 'T'");
          end if;
@@ -134,19 +133,22 @@ begin
             case Arg is
                when 'a' =>
                   Text_Filter.Kind := filter_replace_all;
+
                when 'f' =>
                   Text_Filter.Kind := filter_replace_first;
+
                when 'l' =>
                   Text_Filter.Kind := filter_replace_last;
+
                when others =>
-                  Text_Filter.Kind  := filter_error;
+                  Text_Filter.Kind := filter_error;
                   Text_Filter.Error :=
                     UStr ("Invalid substitution '" & Arg & "' in filter 'r'");
             end case;
             Text_Filter.Src := Args.Element (2);
             Text_Filter.Dst := Args.Element (3);
          else
-            Text_Filter.Kind  := filter_error;
+            Text_Filter.Kind := filter_error;
             Text_Filter.Error :=
               UStr ("Invalid number or arguments in filter 'r'");
          end if;
@@ -156,9 +158,9 @@ begin
          Get_Args;
          if Argc = 1 then
             Text_Filter.Kind := filter_sequence;
-            Text_Filter.Dst  := Args.Element (1);
+            Text_Filter.Dst := Args.Element (1);
          else
-            Text_Filter.Kind  := filter_error;
+            Text_Filter.Kind := filter_error;
             Text_Filter.Error :=
               UStr ("Invalid number or arguments in filter 's'");
          end if;
@@ -168,10 +170,10 @@ begin
          Get_Args;
          if Argc = 1 then
             Text_Filter.Kind := filter_delete_all;
-            Text_Filter.Src  := Args.Element (1);
-            Text_Filter.Dst  := Args.Element (1);
+            Text_Filter.Src := Args.Element (1);
+            Text_Filter.Dst := Args.Element (1);
          else
-            Text_Filter.Kind  := filter_error;
+            Text_Filter.Kind := filter_error;
             Text_Filter.Error :=
               UStr ("Invalid number or arguments in filter 'D'");
          end if;
@@ -187,10 +189,12 @@ begin
             case Arg is
                when 'l' =>
                   Text_Filter.Dir := left;
+
                when 'r' =>
                   Text_Filter.Dir := right;
+
                when others =>
-                  Text_Filter.Kind  := filter_error;
+                  Text_Filter.Kind := filter_error;
                   Text_Filter.Error :=
                     UStr ("Invalid direction '" & Arg & "' in filter 'p'");
             end case;
@@ -206,12 +210,12 @@ begin
                Text_Filter.Number := Width;
             exception
                when Ada.Text_IO.Data_Error =>
-                  Text_Filter.Kind  := filter_error;
+                  Text_Filter.Kind := filter_error;
                   Text_Filter.Error :=
                     UStr ("Invalid number '" & Text & "' in filter 'p'");
             end;
          else
-            Text_Filter.Kind  := filter_error;
+            Text_Filter.Kind := filter_error;
             Text_Filter.Error :=
               UStr ("Invalid number or arguments in filter 'p'");
          end if;
@@ -230,12 +234,12 @@ begin
                Text_Filter.Number := Width;
             exception
                when Ada.Text_IO.Data_Error =>
-                  Text_Filter.Kind  := filter_error;
+                  Text_Filter.Kind := filter_error;
                   Text_Filter.Error :=
                     UStr ("Invalid number '" & Text & "' in filter 'W'");
             end;
          else
-            Text_Filter.Kind  := filter_error;
+            Text_Filter.Kind := filter_error;
             Text_Filter.Error :=
               UStr ("Invalid number or arguments in filter 'W'");
          end if;
@@ -246,28 +250,28 @@ begin
          if Argc = 1 then
             Arg := Args.Element (1);
             case Arg is
-               --  lowercase
                when 'l' =>
                   Text_Filter.Kind := filter_case_lowercase;
-                  --  Capitals
+
                when 'c' =>
                   Text_Filter.Kind := filter_case_capitals;
-                  --  UPPERCASE
+
                when 'u' =>
                   Text_Filter.Kind := filter_case_uppercase;
+
                when others =>
-                  Text_Filter.Kind  := filter_error;
+                  Text_Filter.Kind := filter_error;
                   Text_Filter.Error :=
                     UStr ("Invalid case '" & Arg & "' in filter 'c'");
             end case;
          else
-            Text_Filter.Kind  := filter_error;
+            Text_Filter.Kind := filter_error;
             Text_Filter.Error :=
               UStr ("Invalid number or arguments in filter 'c'");
          end if;
 
-         --  Style transformation: /n<STYLE>
       when 'n' =>
+         --  Style transformation: /n<STYLE>
          Get_Args;
          if Argc = 1 then
             Arg := Args.Element (1);
@@ -275,49 +279,60 @@ begin
                when 'f' =>
                   --  flatcase
                   Text_Filter.Kind := filter_style_flat_case;
+
                when 'c' =>
                   --  lowerCamelCase
                   Text_Filter.Kind := filter_style_lower_camel_case;
+
                when 'C' =>
                   --  UpperCamelCase
                   Text_Filter.Kind := filter_style_upper_camel_case;
+
                when 'U' =>
                   --  UPPERCASE
                   Text_Filter.Kind := filter_style_uppercase;
+
                when 's' =>
                   --  snake_case
                   Text_Filter.Kind := filter_style_snake_case;
+
                when 'S' =>
                   --  camel_Snake_Case
                   Text_Filter.Kind := filter_style_camel_snake_case;
+
                when 'i' =>
-                  -- Title Case
+                  --  Title Case
                   Text_Filter.Kind := filter_style_title_case;
+
                when 'A' =>
-                  -- ALL CAPS
+                  --  ALL CAPS
                   Text_Filter.Kind := filter_style_all_caps;
+
                when 'd' =>
                   --  dash-case
                   Text_Filter.Kind := filter_style_dash_case;
+
                when 't' =>
-                  -- Train-Case
+                  --  Train-Case
                   Text_Filter.Kind := filter_style_train_case;
+
                when 'T' =>
-                  -- TRAIN-CASE
+                  --  TRAIN-CASE
                   Text_Filter.Kind := filter_style_train_uppercase;
+
                when others =>
-                  Text_Filter.Kind  := filter_error;
+                  Text_Filter.Kind := filter_error;
                   Text_Filter.Error :=
                     UStr ("Invalid argument '" & Arg & "'in filter 'n'");
             end case;
          else
-            Text_Filter.Kind  := filter_error;
+            Text_Filter.Kind := filter_error;
             Text_Filter.Error :=
               UStr ("Invalid number or arguments in filter 'n'");
          end if;
 
       when others =>
-         Text_Filter.Kind  := filter_error;
+         Text_Filter.Kind := filter_error;
          Text_Filter.Error := UStr ("Unknown filter '" & Kind & "'");
    end case;
    return Text_Filter;

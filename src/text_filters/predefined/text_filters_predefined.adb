@@ -10,7 +10,7 @@ with Ada.Strings.Maps.Constants;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Characters.Handling;
 
-package body Predefined_Text_Filters is
+package body Text_Filters_Predefined is
 
    package CHAR renames Ada.Characters.Handling;
 
@@ -328,4 +328,4 @@ package body Predefined_Text_Filters is
    function Style_Train_Uppercase (S : UString) return UString is
      (Replace_All (Case_Uppercase (Trim_All (S)), ' ', '-'));
 
-end Predefined_Text_Filters;
+end Text_Filters_Predefined;

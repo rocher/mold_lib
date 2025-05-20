@@ -11,7 +11,7 @@ with GNAT.Regpat;
 
 with Simple_Logging;
 
-with Predefined_Text_Filters; use Predefined_Text_Filters;
+with Text_Filters_Predefined; use Text_Filters_Predefined;
 
 package body Text_Filters is
 
@@ -52,9 +52,9 @@ package body Text_Filters is
 
    --!pp off
    function Apply (
-      Filters           : String;
-      Value             : String;
-      Output            : IO.File_Access
+      Filters : String;
+      Value   : String;
+      Output  : IO.File_Access
    )  return UString
    --!pp on
 

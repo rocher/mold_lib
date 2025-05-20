@@ -8,7 +8,7 @@
 
 with Text_Filters_Data; use Text_Filters_Data;
 
-package Predefined_Text_Filters is
+package Text_Filters_Predefined is
 
    --!pp off
    function Trim_Left     (S : UString) return UString;
@@ -48,4 +48,4 @@ package Predefined_Text_Filters is
    function Style_Train_Uppercase  (S : UString) return UString;
    --!pp on
 
-end Predefined_Text_Filters;
+end Text_Filters_Predefined;

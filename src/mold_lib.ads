@@ -10,7 +10,7 @@
 --  Please visit  https://rocher.github.io/mold  for a complete reference.
 --
 
-with Custom_Text_Filters;
+with Text_Filters_Custom;
 with Simple_Logging;
 
 package Mold_Lib is
@@ -63,16 +63,18 @@ package Mold_Lib is
    type Results_Access is access all Results_Type;
    --  Set of results returned by mold, when requested.
 
-   subtype Filters_Array  is Custom_Text_Filters.Filters_Array;
-   subtype Filters_Access is Custom_Text_Filters.Filters_Access;
-   --  Text filters are pointers to functions with the specification:
+   subtype Filters_Array  is Text_Filters_Custom.Filters_Array;
+   subtype Filters_Access is Text_Filters_Custom.Filters_Access;
+   --
+   --  Custom text filters are pointers to functions with the following
+   --  specification,
    --
    --     function (S : String) return String;
    --
    --  that can be applied during variable substitution to provide additional
-   --  text transformation. There are several predefined text filters covering
-   --  a wide range of use cases. In case you need to define your custom text
-   --  filter, you can provide up to ten functions with the above
+   --  text transformations. There are several predefined text filters
+   --  covering a wide range of use cases. In case you need to define your
+   --  custom text filter, you can provide up to ten functions with the above
    --  specification. The type Filter_Access is a pointer to an array of ten
    --  (0 .. 9) pointers to functions.
 

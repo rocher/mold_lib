@@ -46,7 +46,7 @@ begin
 
       --!pp off
       when filter_case_lowercase => return Case_Lowercase (S);
-      when filter_case_capitals  => return Case_Capitals (S);
+      when filter_case_capitals  => return Case_Capitals  (S);
       when filter_case_uppercase => return Case_Uppercase (S);
 
       when filter_style_flat_case        => return Style_Flat_Case (S);
