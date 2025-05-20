@@ -28,15 +28,14 @@ package body Mold_Lib.Impl.Variables is
 
       procedure Set_Boolean (Variable : not null access Boolean) is
       begin
-         case Value is
-            when "TRUE" | "True" | "true" =>
-               Variable.all := True;
-            when "FALSE" | "False" | "false" =>
-               Variable.all := False;
-            when others =>
-               Log.Error ("Invalid setting value in " & Key & " = " & Value);
-               Success := False;
-         end case;
+         if Value = "TRUE" or else Value = "True" or else Value = "true" then
+            Variable.all := True;
+         elsif Value = "FALSE" or else Value = "False" or else Value = "false" then
+            Variable.all := False;
+         else
+            Log.Error ("Invalid setting value in " & Key & " = " & Value);
+            Success := False;
+         end if;
       end Set_Boolean;
 
    begin
