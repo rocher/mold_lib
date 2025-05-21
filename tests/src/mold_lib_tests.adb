@@ -18,8 +18,6 @@ with Mold_Lib_Tests_Config;
 with Mold_Lib_Test_Suite;
 with Mold_Lib;
 
-with Simple_Logging;
-
 procedure Mold_Lib_Tests is
 
    procedure Run is new AUnit.Run.Test_Runner_With_Results
@@ -29,7 +27,6 @@ procedure Mold_Lib_Tests is
 
    use Mold_Lib_Tests_Config;
 begin
-   Simple_Logging.Level := Simple_Logging.Debug;
 
    GNAT.Exception_Traces.Trace_On (GNAT.Exception_Traces.Unhandled_Raise);
 
