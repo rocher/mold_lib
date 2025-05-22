@@ -23,8 +23,8 @@ jobs:
             with:
               ref: ${{ github.event.workflow_run.head_branch }}
 
-          - name: Get Alire v1.2.2
-            uses: alire-project/setup-alire@v2
+          - name: Get Alire v2.1.0
+            uses: alire-project/setup-alire@v4
 
           - name: Build unit tests of plain code
             run: |
