@@ -93,7 +93,7 @@ package body Mold_Lib.Impl.File is
       Log.Debug ("  Extension : " & Extension);
 
       --  check extension file to be 'molt'
-      --  *TODO - Consider relaxing this, with a flag or permanently
+      --  # TODO : Consider relaxing this, with a flag or permanently
 
       if Extension /= Include_File_Extension then
          Success := False;

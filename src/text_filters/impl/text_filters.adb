@@ -60,7 +60,7 @@ package body Text_Filters is
 
    is
       pragma Unreferenced
-        (Output);  --  !TODO To be used with paragraph filters
+        (Output);  --  # TODO : To be used with paragraph filters
 
       Parsing : Text_Filter_Parsed;
       Result  : UString := To_Unbounded_String (Value);

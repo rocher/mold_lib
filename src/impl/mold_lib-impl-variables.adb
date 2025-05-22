@@ -30,7 +30,8 @@ package body Mold_Lib.Impl.Variables is
       begin
          if Value = "TRUE" or else Value = "True" or else Value = "true" then
             Variable.all := True;
-         elsif Value = "FALSE" or else Value = "False" or else Value = "false" then
+         elsif Value = "FALSE" or else Value = "False" or else Value = "false"
+         then
             Variable.all := False;
          else
             Log.Error ("Invalid setting value in " & Key & " = " & Value);
@@ -90,11 +91,12 @@ package body Mold_Lib.Impl.Variables is
       if Read_Result.Success then
          for Element of Read_Result.Value.Iterate_On_Table loop
             if Args.Settings.Enable_Defined_Settings
-              and then Element.Key.Length >= 10
-              and then Element.Key.Slice (1, 5) = Defined_Setting_Prefix
+              and then Element.Key.Length >= 10 --  minimum length of defined settings
+              and then Element.Key.Slice (1, Defined_Setting_Prefix'Length)
+                       = Defined_Setting_Prefix
             then
                if not Set_Mold_Setting
-                   (To_String (Element.Key), Element.Value.As_String)
+                        (To_String (Element.Key), Element.Value.As_String)
                then
                   Success := False;
                   return Empty_Map;
@@ -143,14 +145,15 @@ package body Mold_Lib.Impl.Variables is
       end if;
 
       loop
-         Loops       := Loops + 1;
-         Cursor      := Variables.First;
+         Loops := Loops + 1;
+         Cursor := Variables.First;
          Has_Changes := False;
          loop
             declare
                Success   : Boolean;
                Var_Name  : constant String := To_String (Cursor.Key);
-               Value : constant String := Get_Value (To_String (Cursor.Key));
+               Value     : constant String :=
+                 Get_Value (To_String (Cursor.Key));
                New_Value : constant String :=
                  Impl.Text.Replace
                    (Value, Impl.Text.variable, Loops, Var_Name, Success);

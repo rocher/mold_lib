@@ -98,6 +98,10 @@ package body Mold_Lib is
             return False;
          end if;
 
+         --  # TODO : Replace predefined variables with their actual values so
+         --  that filters can be applied after the variables substitution is
+         --  done
+
          Success := Impl.Variables.Apply_Variable_Substitution (Variables);
          if Success then
             Log.Debug ("  Variable substitution applied to variables");

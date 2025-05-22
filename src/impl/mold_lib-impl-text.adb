@@ -357,6 +357,8 @@ package body Mold_Lib.Impl.Text is
                             (Filters, To_String (Var_Value), Output);
                      begin
                         if Var_Filter_Applied = Null_Unbounded_String then
+                           --  Error: filter not found or error in filter
+                           --  application
                            if Args.Settings.On_Undefined = Ignore then
                               Local_Inc_Result (Entity, Variables_Ignored);
                               New_Text.Append (Var_Mold);
@@ -385,11 +387,6 @@ package body Mold_Lib.Impl.Text is
                               Success := False;
                            end if;
                         else
-                           if Entity = text_line then
-                              --  do not count replacements in variables
-                              --  Local_Inc_Result (Entity, Variables_Replaced);
-                              null;
-                           end if;
                            New_Text.Append (Var_Filter_Applied);
                         end if;
                      end;
