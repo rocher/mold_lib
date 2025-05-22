@@ -18,7 +18,7 @@ ada_version = ["-gnat2022", "-gnatW8", "-gnatX"]
 aunit = "^23.0.0"
 gnat = ">=2021 | (>=12 & <2000)"
 gnatcov = "^22.0.1"
-mold_lib = ">=1.0.0"
+mold_lib = "*"
 simple_logging = "^1.2.0"
 
 [[pins]]
