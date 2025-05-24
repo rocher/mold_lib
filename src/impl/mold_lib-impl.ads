@@ -6,6 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
+with Ada.Calendar;
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Hashed_Maps; use Ada.Containers;
 with Ada.Directories;
@@ -61,6 +62,7 @@ package Mold_Lib.Impl is
       Results           : Results_Access;
       Errors            : Natural;
       Included_Files    : Inclusion_List;
+      Invocation_Time   : Ada.Calendar.Time := Ada.Calendar.Clock;
    end record;
    --  Arguments used during the variable substitution process:
    --
@@ -72,6 +74,7 @@ package Mold_Lib.Impl is
    --     Filters             Set of custom filters
    --     Results             Set of results from the process
    --     Included_Files      List of included files, to avoid circular refs.
+   --     Invocation_Time     Common time used by all mold-date-* variables
 
    Args : Arguments_Type;
 

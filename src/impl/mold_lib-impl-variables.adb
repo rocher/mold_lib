@@ -91,7 +91,8 @@ package body Mold_Lib.Impl.Variables is
       if Read_Result.Success then
          for Element of Read_Result.Value.Iterate_On_Table loop
             if Args.Settings.Enable_Defined_Settings
-              and then Element.Key.Length >= 10 --  minimum length of defined settings
+              and then Element.Key.Length
+                       >= 10 --  minimum length of defined settings
               and then Element.Key.Slice (1, Defined_Setting_Prefix'Length)
                        = Defined_Setting_Prefix
             then
@@ -145,10 +146,14 @@ package body Mold_Lib.Impl.Variables is
       end if;
 
       loop
+         --  loop several times the variable substitution process to allow for
+         --  nested variables (e.g. foo = {{bar}}, bar = {{baz}}, baz = "foo")
          Loops := Loops + 1;
          Cursor := Variables.First;
          Has_Changes := False;
          loop
+            --  loop over all variables defined in the toml file
+            Log.Debug ("Var subst BEGIN : " & To_String (Cursor.Key));
             declare
                Success   : Boolean;
                Var_Name  : constant String := To_String (Cursor.Key);
@@ -167,15 +172,26 @@ package body Mold_Lib.Impl.Variables is
                     (Cursor.Key, To_Unbounded_String (New_Value));
                end if;
                Log.Debug
-                 (Var_Name & " --> '" & Value & "' --> '" & New_Value & "'");
+                 ("Var subst END   : "
+                  & Var_Name
+                  & " --> '"
+                  & Value
+                  & "' --> '"
+                  & New_Value
+                  & "'");
             end;
             Cursor := Cursor.Next;
             exit when Cursor = Variables_Package.No_Element;
          end loop;
 
          exit when not Has_Changes or else Loops = 10;
-         --  This magic number 10 has been obtained experimentally with a
-         --  cycle of length = 1000 variables.
+         --  # TODO  --  Investigate the number of loops needed to converge
+         --              depending on the number of variables defined.
+         --
+         --  It seems that 10 is a good number for most cases. The number of
+         --  loops is limited to avoid infinite loops in case of circular
+         --  references. The magic number 10 has been obtained experimentally
+         --  with a cycle of 1000 variables.
       end loop;
 
       return True;

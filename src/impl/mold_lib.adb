@@ -28,13 +28,16 @@ package body Mold_Lib is
    -- Name --
    ----------
 
-   function Name return String is (Mold_Lib_Config.Crate_Name);
+   function Name return String
+   is (Mold_Lib_Config.Crate_Name);
 
    -------------
    -- Version --
    -------------
 
-   function Version return String is (Mold_Lib_Config.Crate_Version);
+   function Version return String
+   is (Mold_Lib_Config.Crate_Version);
+
 
    -----------
    -- Apply --
@@ -67,8 +70,12 @@ package body Mold_Lib is
       end if;
 
       if not Impl.Validation.Valid_Input_Paths
-          (Source, Output_Dir, Toml_File, Valid_Source_Path, Valid_Output_Path,
-           Valid_Toml_Path)
+               (Source,
+                Output_Dir,
+                Toml_File,
+                Valid_Source_Path,
+                Valid_Output_Path,
+                Valid_Toml_Path)
       then
          return False;
       end if;
@@ -82,9 +89,9 @@ package body Mold_Lib is
       begin
          Impl.Args.Running_Directory :=
            To_Unbounded_String (Dir.Current_Directory);
-         Impl.Args.Settings          := Used_Settings'Unrestricted_Access;
-         Impl.Args.Variables         := Variables'Unchecked_Access;
-         Impl.Args.Results           := Results;
+         Impl.Args.Settings := Used_Settings'Unrestricted_Access;
+         Impl.Args.Variables := Variables'Unchecked_Access;
+         Impl.Args.Results := Results;
          if Impl.Args.Results /= null then
             Impl.Args.Results.all := [others => 0];
          end if;
@@ -137,7 +144,8 @@ package body Mold_Lib is
 
          pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
       exception
-         when E : Dir.Name_Error =>  --  raised by Dir.Kind
+         when E : Dir.Name_Error =>
+            --  raised by Dir.Kind
             Log_Exception (E, "Invalid source file '" & Source & "'");
             return False;
             pragma Annotate (Xcov, Exempt_Off);

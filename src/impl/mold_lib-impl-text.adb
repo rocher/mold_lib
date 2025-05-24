@@ -6,7 +6,6 @@
 --
 -------------------------------------------------------------------------------
 
-with Ada.Calendar;
 with GNAT.Calendar.Time_IO;
 
 with Mold_Lib.Impl.Variables;
@@ -151,23 +150,23 @@ package body Mold_Lib.Impl.Text is
          Var_Value :=
            To_Unbounded_String
              ((GNAT.Calendar.Time_IO.Image
-                 (Ada.Calendar.Clock, "%Y-%m-%dT%H:%M:%S%:::z")));
+                 (Args.Invocation_Time, "%Y-%m-%dT%H:%M:%S%:::z")));
       elsif Format_Str = "ISO_Date" then
          Var_Value :=
            To_Unbounded_String
-             ((GNAT.Calendar.Time_IO.Image (Ada.Calendar.Clock, "%Y-%m-%d")));
+             ((GNAT.Calendar.Time_IO.Image (Args.Invocation_Time, "%Y-%m-%d")));
       elsif Format_Str = "US_Date" then
          Var_Value :=
            To_Unbounded_String
-             ((GNAT.Calendar.Time_IO.Image (Ada.Calendar.Clock, "%m/%d/%y")));
+             ((GNAT.Calendar.Time_IO.Image (Args.Invocation_Time, "%m/%d/%y")));
       elsif Format_Str = "EU_Date" then
          Var_Value :=
            To_Unbounded_String
-             ((GNAT.Calendar.Time_IO.Image (Ada.Calendar.Clock, "%d/%m/%y")));
+             ((GNAT.Calendar.Time_IO.Image (Args.Invocation_Time, "%d/%m/%y")));
       else
          declare
             Result : constant String :=
-              GNAT.Calendar.Time_IO.Image (Ada.Calendar.Clock, Format);
+              GNAT.Calendar.Time_IO.Image (Args.Invocation_Time, Format);
          begin
             Log.Debug ("Result: " & Result);
             Log.Debug ("Format_Str: " & Format_Str);
