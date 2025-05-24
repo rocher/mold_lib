@@ -322,6 +322,7 @@ package body Filters_Tests is
       Expected : aliased Results_Type;
    begin
       Settings.On_Undefined := Warning;
+      --!pp off
       Success := Apply (
          Source     => "suite/mold/invalid-date-formats.txt.mold",
          Output_Dir => "suite/tmp/",
@@ -340,9 +341,68 @@ package body Filters_Tests is
          Warnings           => 11,
          others             =>  0
       ];
+      --!pp on
 
       Check_Results
         (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
+
+      --  Apply same test with 'Warning' handling
+
+      Settings.On_Undefined := Warning;
+      Settings.Overwrite_Destination_Files := True;
+      --!pp off
+      Success := Apply (
+         Source     => "suite/mold/invalid-date-formats.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unrestricted_Access,
+         Toml_File  => "suite/toml/empty.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed            =>  1,
+         Mold_Lib.Files_Overwritten =>  1,
+         Variables_Defined          =>  0,
+         Variables_Found            => 11,
+         Variables_Replaced         =>  0,
+         Variables_Ignored          =>  0,
+         Variables_Emptied          => 11,
+         Warnings                   => 11,
+         others                     =>  0
+      ];
+      --!pp on
+
+      Check_Results
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
+
+      --  Apply same test with 'Error' handling
+
+      Settings.On_Undefined := Error;
+      Settings.Overwrite_Destination_Files := True;
+      --!pp off
+      Success := Apply (
+         Source     => "suite/mold/invalid-date-formats.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unrestricted_Access,
+         Toml_File  => "suite/toml/empty.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed            =>  1,
+         Mold_Lib.Files_Overwritten =>  1,
+         Variables_Defined          =>  0,
+         Variables_Found            =>  1,
+         Variables_Replaced         =>  0,
+         Variables_Ignored          =>  0,
+         Variables_Emptied          =>  0,
+         Warnings                   =>  0,
+         others                     =>  0
+      ];
+      --!pp on
+
+      Check_Results
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
    end Test_Invalid_Date_Formats;
 
    ---------------------------
