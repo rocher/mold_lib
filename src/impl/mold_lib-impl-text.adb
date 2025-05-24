@@ -398,7 +398,7 @@ package body Mold_Lib.Impl.Text is
                      --  Filters, if any, of the variable value
                      & (if Var_Value_Matches (4).First > 0
                         then
-                          To_string (Var_Value)
+                          To_String (Var_Value)
                             (Var_Value_Matches (4).First
                              .. Var_Value_Matches (4).Last)
                         else "")

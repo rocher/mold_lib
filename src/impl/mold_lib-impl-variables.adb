@@ -6,7 +6,6 @@
 --
 -------------------------------------------------------------------------------
 
-with Ada.Wide_Text_IO.Wide_Unbounded_IO;
 with TOML;
 with TOML.File_IO;
 
@@ -140,7 +139,7 @@ package body Mold_Lib.Impl.Variables is
          exit when Cursor = Variables_Package.No_Element;
          declare
             Var_Name : constant String := To_String (Cursor.Key);
-            Value    : constant String := Get_Value (To_String (Cursor.key));
+            Value    : constant String := Get_Value (To_String (Cursor.Key));
          begin
             Ada.Text_IO.Put_Line
               ("Variable: " & Var_Name & " = '" & Value & "'");

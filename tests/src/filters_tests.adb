@@ -288,6 +288,7 @@ package body Filters_Tests is
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
    begin
+      --!pp off
       Success := Apply (
          Source     => "suite/mold/date-formats.txt.mold",
          Output_Dir => "suite/tmp/",
@@ -303,6 +304,7 @@ package body Filters_Tests is
          Variables_Replaced =>  12,
          others             =>  0
       ];
+      --!pp on
 
       Check_Results
         (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
@@ -355,6 +357,7 @@ package body Filters_Tests is
       Expected : aliased Results_Type;
    begin
       Settings.On_Undefined := Warning;
+      --!pp off
       Success := Apply (
          Source     => "suite/mold/filters+vars.txt.mold",
          Output_Dir => "suite/tmp/",
@@ -373,6 +376,7 @@ package body Filters_Tests is
          Warnings           =>  0,
          others             =>  0
       ];
+      --!pp on
 
       Check_Results
         (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
