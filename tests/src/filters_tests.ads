@@ -22,5 +22,6 @@ package Filters_Tests is
    procedure Test_Invalid_Filters (T : in out Test_Case'Class);
    procedure Test_Date_Formats (T : in out Test_Case'Class);
    procedure Test_Invalid_Date_Formats (T : in out Test_Case'Class);
+   procedure Test_Filters_And_Vars (T : in out Test_Case'Class);
 
 end Filters_Tests;

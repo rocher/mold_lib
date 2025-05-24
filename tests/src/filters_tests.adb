@@ -37,6 +37,8 @@ package body Filters_Tests is
       Register_Routine (T, Test_Date_Formats'Access, "Date Formats");
       Register_Routine
         (T, Test_Invalid_Date_Formats'Access, "Invalid Date Formats");
+      Register_Routine
+        (T, Test_Filters_And_Vars'Access, "Filters in variable substitution");
    end Register_Tests;
 
    -----------------------------
@@ -340,6 +342,45 @@ package body Filters_Tests is
       Check_Results
         (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
    end Test_Invalid_Date_Formats;
+
+   ---------------------------
+   -- Test_Filters_And_Vars --
+   ---------------------------
+
+   procedure Test_Filters_And_Vars (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
+      Success  : Boolean;
+      Settings : Mold.Settings_Type := Global_Settings.all;
+      Results  : aliased Results_Type;
+      Expected : aliased Results_Type;
+   begin
+      Settings.On_Undefined := Warning;
+      Success := Apply (
+         Source     => "suite/mold/filters+vars.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unrestricted_Access,
+         Toml_File  => "suite/toml/filters+vars.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed    =>  1,
+         Variables_Defined  =>  6,
+         Variables_Found    => 11,
+         Variables_Replaced => 11,
+         Variables_Ignored  =>  0,
+         Variables_Emptied  =>  0,
+         Warnings           =>  0,
+         others             =>  0
+      ];
+
+      Check_Results
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
+
+      Check_MD5_Digest
+        ("suite/tmp/filters+vars.txt", "c6c7ee18d3fa14c89d6e01f3f54a64f5",
+         "995e5af4f5bdccddba47157050f1ca0c");
+   end Test_Filters_And_Vars;
 
    ----------------------
    -- Replace_By_Slash --

@@ -1,0 +1,6 @@
+foo = "foo" = "{{foo}}"
+bar = "{{bar}}" = "{{foo/rafb/rfoa/raor}}"
+baz = "{{baz}}" = "{{bar/rarz}}"
+puf = "{{puf}}" = "{{baz/rabp/raau/razf}}"
+baf = "{{baf}}" = "{{puf/rapb/raua}}"
+mof = "{{mof}}" = "{{baf/rabm/raao}}"
