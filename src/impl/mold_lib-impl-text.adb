@@ -212,6 +212,7 @@ package body Mold_Lib.Impl.Text is
       Success := True;
 
       loop
+         --  Loop over all matches of the regular expression in the Text
          Variable_Matcher.Match (Text, Matches, Current);
          exit when Matches (0) = Reg.No_Match;
 
@@ -236,8 +237,7 @@ package body Mold_Lib.Impl.Text is
             Var_All_Name : constant String :=
               Text (Matches (3).First .. Matches (3).Last);
             --  The whole name of the variable, including the prefix
-            --  (mandatory or optional) and the filter to apply (if any),
-            --  e.g. "#foo/s" or "foo"
+            --  (mandatory or optional), e.g. "#foo" or "foo"
 
             Is_Mandatory : constant Boolean :=
               (Var_All_Name (Var_All_Name'First)
@@ -268,6 +268,11 @@ package body Mold_Lib.Impl.Text is
             --  The value of the variable, e.g. "bar", or the empty string if
             --  the variable is not defined
 
+            Var_Value_Matches     : Reg.Match_Array (0 .. 4);
+            Var_Value_Is_Variable : Boolean;
+            --  Whether the value of the variable is a variable itself or not
+            --  (e.g. "{{ #foo/s }}" where "foo" is a variable)
+
             Var_Is_Mold_Date : constant Boolean :=
               Index
                 (Source  => To_Unbounded_String (Var_Name),
@@ -285,19 +290,31 @@ package body Mold_Lib.Impl.Text is
 
             LIN : constant String := Line'Image;
             COL : constant String := Matches (2).First'Image;
+            --  Line and column of the match in the text, used for error
+            --  reporting
          begin
 
-            --  Log.Debug ("Pre_Text    : '" & Pre_Text & "'");
-            --  Log.Debug ("Var_Mold    : '" & Var_Mold & "'");
-            --  Log.Debug ("Var_All_Name: '" & Var_All_Name & "'");
-            --  Log.Debug ("Var_Name    : '" & Var_Name & "'");
-            --  Log.Debug ("Var_Value   : '" & Var_Value & "'");
-            --  Log.Debug ("Filters     : '" & Filters & "'");
-            --  Log.Debug
-            --    ("Undefined   : " & Boolean'Image (Variable_Undefined));
-            --  Log.Debug
-            --    ("Var_Is_Mold_Date : " & Boolean'Image (Var_Is_Mold_Date));
+            --  Check if the variable value is a variable itself
+            --  (e.g. "{{ #foo/s }}" where "foo" is a variable)
+            Variable_Matcher.Match (To_String (Var_Value), Var_Value_Matches);
+            Var_Value_Is_Variable := Var_Value_Matches (0) /= Reg.No_Match;
 
+            Log.Debug ("Entity      : " & Entity'Image);
+            Log.Debug ("LIN         : " & LIN'Image);
+            Log.Debug ("COL         : " & COL'Image);
+            Log.Debug ("Pre_Text    : '" & Pre_Text & "'");
+            Log.Debug ("Var_Mold    : '" & Var_Mold & "'");
+            Log.Debug ("Var_All_Name: '" & Var_All_Name & "'");
+            Log.Debug ("Var_Name    : '" & Var_Name & "'");
+            Log.Debug ("Var_Value   : '" & To_String (Var_Value) & "'");
+            Log.Debug
+              ("Is_Variable : " & Boolean'Image (Var_Value_Is_Variable));
+            Log.Debug ("Filters     : '" & Filters & "'");
+            Log.Debug ("Undefined   : " & Boolean'Image (Variable_Undefined));
+            Log.Debug
+              ("Var_Is_Mold_Date : " & Boolean'Image (Var_Is_Mold_Date));
+
+            --  Append the text before the variable to the new text (if any)
             New_Text.Append (Pre_Text);
 
             if Variable_Undefined then
@@ -312,88 +329,127 @@ package body Mold_Lib.Impl.Text is
                   LIN,
                   COL,
                   Success);
-            else
-               --  variable defined
 
-               if Entity = variable and then Var_Name = Name then
-                  if Line = 1 then
-                     --  Error: found recursive definition of variable
-                     Log.Error
-                       ("Recursive definition of variable '" & Name & "'");
-                  else
-                     --  Error: found cyclic definition of variable
-                     Log.Error
-                       ("Cyclic definition (loop"
-                        & Line'Image
-                        & ") of variable '"
-                        & Name
-                        & "'");
-                  end if;
-                  Success := False;
+               goto End_Replacement_Processing;
+            end if;
+
+            --  VARIABLE DEFINED
+
+            --  Check for recursive or cyclic definitions
+            if Entity = variable and then Var_Name = Name then
+               if Line = 1 then
+                  --  Error: found recursive definition of variable
+                  Log.Error
+                    ("Recursive definition of variable '" & Name & "'");
+               else
+                  --  Error: found cyclic definition of variable
+                  Log.Error
+                    ("Cyclic definition (loop"
+                     & Line'Image
+                     & ") of variable '"
+                     & Name
+                     & "'");
                end if;
+               Success := False;
+            end if;
 
-               if Var_Is_Mold_Date then
-                  Manage_Date_Variable
-                    (Var_Name,
-                     Var_Mold,
-                     Var_Value,
-                     Entity,
-                     New_Text,
-                     LIN,
-                     COL,
-                     Valid_Date_Format,
-                     Success);
-               end if;
+            --  Manage date variables
+            if Var_Is_Mold_Date then
+               Manage_Date_Variable
+                 (Var_Name,
+                  Var_Mold,
+                  Var_Value,
+                  Entity,
+                  New_Text,
+                  LIN,
+                  COL,
+                  Valid_Date_Format,
+                  Success);
+            end if;
 
-               if Success and then Valid_Date_Format then
-                  if Filters = "" then
-                     Local_Inc_Result (Entity, Variables_Replaced);
-                     New_Text.Append (Var_Value);
-                  else
-                     Log.Debug ("Applying filters");
-                     declare
-                        Var_Filter_Applied : constant Unbounded_String :=
-                          Text_Filters.Apply
-                            (Filters, To_String (Var_Value), Output);
-                     begin
-                        if Var_Filter_Applied = Null_Unbounded_String then
-                           --  Error: filter not found or error in filter
-                           --  application
-                           if Args.Settings.On_Undefined = Ignore then
-                              Local_Inc_Result (Entity, Variables_Ignored);
-                              New_Text.Append (Var_Mold);
-                           elsif Args.Settings.On_Undefined = Warning then
-                              Local_Inc_Result (Entity, Variables_Emptied);
-                              Local_Inc_Result (Entity, Warnings);
-                              Log.Warning
-                                ("Invalid text filter '"
-                                 & Filters
-                                 & "' in "
-                                 & Args.Source.all
-                                 & ":"
-                                 & LIN (2 .. LIN'Last)
-                                 & ":"
-                                 & COL (2 .. COL'Last));
-                           elsif Args.Settings.On_Undefined = Error then
-                              Log.Error
-                                ("Invalid text filter '"
-                                 & Filters
-                                 & "' in "
-                                 & Args.Source.all
-                                 & ":"
-                                 & LIN (2 .. LIN'Last)
-                                 & ":"
-                                 & COL (2 .. COL'Last));
-                              Success := False;
-                           end if;
-                        else
-                           New_Text.Append (Var_Filter_Applied);
+            --  If everything is fine, proceed with the variable replacement
+            --  and filter application
+            if Success and then Valid_Date_Format then
+               if Filters = "" then
+                  Local_Inc_Result (Entity, Variables_Replaced);
+                  New_Text.Append (Var_Value);
+               elsif Var_Value_Is_Variable then
+                  --  If the value is a variable, we do not apply the filters
+                  --  to it, as it is expected to be replaced later
+                  Log.Debug ("Variable value is a variable, skipping filters");
+
+                  --  Append the variable value, including prefix and filters,
+                  --  and keep the variable filters for later
+                  --
+                  --  e.g. if foo = "{{bar/raoO}}" and bar = "{{baz/s}}" then
+                  --  the result is "{{baz/s/raoO}}", and in the following
+                  --  iterations baz will be replaced with its value
+                  --  and the filters will be applied to it
+                  New_Text.Append
+                    (
+                     --  Opening brackets
+                     "{{"
+                     --  Name of the variable, including the prefix
+                     & To_String (Var_Value)
+                         (Var_Value_Matches (3).First
+                          .. Var_Value_Matches (3).Last)
+                     --  Filters, if any, of the variable value
+                     & (if Var_Value_Matches (4).First > 0
+                        then
+                          To_string (Var_Value)
+                            (Var_Value_Matches (4).First
+                             .. Var_Value_Matches (4).Last)
+                        else "")
+                     --  Filters, if any, of the variable
+                     & Filters
+                     --  Closing brackets
+                     & "}}");
+               else
+                  Log.Debug ("Applying filters");
+                  declare
+                     Var_Filter_Applied : constant Unbounded_String :=
+                       Text_Filters.Apply
+                         (Filters, To_String (Var_Value), Output);
+                  begin
+                     if Var_Filter_Applied = Null_Unbounded_String then
+                        --  Error: filter not found or error in filter
+                        --  application
+                        if Args.Settings.On_Undefined = Ignore then
+                           Local_Inc_Result (Entity, Variables_Ignored);
+                           New_Text.Append (Var_Mold);
+                        elsif Args.Settings.On_Undefined = Warning then
+                           Local_Inc_Result (Entity, Variables_Emptied);
+                           Local_Inc_Result (Entity, Warnings);
+                           Log.Warning
+                             ("Invalid text filter '"
+                              & Filters
+                              & "' in "
+                              & Args.Source.all
+                              & ":"
+                              & LIN (2 .. LIN'Last)
+                              & ":"
+                              & COL (2 .. COL'Last));
+                        elsif Args.Settings.On_Undefined = Error then
+                           Log.Error
+                             ("Invalid text filter '"
+                              & Filters
+                              & "' in "
+                              & Args.Source.all
+                              & ":"
+                              & LIN (2 .. LIN'Last)
+                              & ":"
+                              & COL (2 .. COL'Last));
+                           Success := False;
                         end if;
-                     end;
-                  end if;
+                     else
+                        New_Text.Append (Var_Filter_Applied);
+                     end if;
+                  end;
                end if;
             end if;
          end;
+
+         <<End_Replacement_Processing>>
 
          if not Success then
             return "";
