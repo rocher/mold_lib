@@ -33,6 +33,7 @@ package Mold_Lib is
       Overwrite_Destination_Files : aliased Boolean;
       Enable_Defined_Settings     : aliased Boolean;
       On_Undefined                : aliased On_Undefined_Handling;
+      Show_Variables              : aliased Boolean;
    end record;
    type Settings_Access is access all Settings_Type;
    --  Settings to configure the behavior of mold. Refer to the documentation
@@ -44,7 +45,8 @@ package Mold_Lib is
       Delete_Source_Files         => False,
       Overwrite_Destination_Files => True,
       Enable_Defined_Settings     => True,
-      On_Undefined                => Error
+      On_Undefined                => Error,
+      Show_Variables              => False
    );
 
    type Results_Fields is (
@@ -84,6 +86,15 @@ package Mold_Lib is
 
    function Version return String;
    --  Returns the version of the library.
+
+   function Show_Variables (
+      Toml_File : String          := "mold.toml";
+      Settings  : Settings_Access := null;
+      Filters   : Filters_Access  := null;
+      Log_Level : Log.Levels      := Log.Info
+   ) return Boolean;
+   --  Shows all defined variables and their values. Returns True if the
+   --  process ends successfully (no errors detected).
 
    function Apply (
       Source     : String          := ".";

@@ -38,6 +38,31 @@ package body Mold_Lib is
    function Version return String
    is (Mold_Lib_Config.Crate_Version);
 
+   --------------------
+   -- Show_Variables --
+   --------------------
+
+   --!pp off
+   function Show_Variables (
+      Toml_File : String          := "mold.toml";
+      Settings  : Settings_Access := null;
+      Filters   : Filters_Access  := null;
+      Log_Level : Log.Levels      := Log.Info
+   ) return Boolean
+   --!pp on
+   is
+   begin
+      Settings.Show_Variables := True;
+      return
+        Apply
+          (Source     => ".",
+           Output_Dir => "",
+           Toml_File  => Toml_File,
+           Settings   => Settings,
+           Filters    => Filters,
+           Results    => null,
+           Log_Level  => Log_Level);
+   end Show_Variables;
 
    -----------
    -- Apply --
@@ -105,10 +130,6 @@ package body Mold_Lib is
             return False;
          end if;
 
-         --  # TODO : Replace predefined variables with their actual values so
-         --  that filters can be applied after the variables substitution is
-         --  done
-
          Success := Impl.Variables.Apply_Variable_Substitution (Variables);
          if Success then
             Log.Debug ("  Variable substitution applied to variables");
@@ -125,18 +146,26 @@ package body Mold_Lib is
 
          Log.Debug ("Global Settings:" & Args.Settings.all'Image);
 
-         if Dir.Kind (Source_Path) = Dir.Ordinary_File then
-            Success :=
-              Impl.File.Replace
-                (Source_Path'Unrestricted_Access,
-                 Output_Path'Unrestricted_Access);
+         if Settings.Show_Variables then
+            --  Show all variables defined in the toml file after value
+            --  replacement and filters have been applied
+            Impl.Variables.Show (Variables);
          else
-            Log.Debug
-              ("  File.Set_Running_Directory " & Dir.Current_Directory);
-            Success :=
-              Impl.Directory.Replace
-                ("", Source_Path'Unrestricted_Access,
-                 Output_Path'Unrestricted_Access);
+            --  Proceed with the file or directories processing
+            if Dir.Kind (Source_Path) = Dir.Ordinary_File then
+               Success :=
+                 Impl.File.Replace
+                   (Source_Path'Unrestricted_Access,
+                    Output_Path'Unrestricted_Access);
+            else
+               Log.Debug
+                 ("  File.Set_Running_Directory " & Dir.Current_Directory);
+               Success :=
+                 Impl.Directory.Replace
+                   ("",
+                    Source_Path'Unrestricted_Access,
+                    Output_Path'Unrestricted_Access);
+            end if;
          end if;
 
          Log.Debug ("END Mold_Lib.Apply");

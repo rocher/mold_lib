@@ -13,6 +13,9 @@ package Mold_Lib.Impl.Variables is
    --  Read all variable definitions of the given TOML Toml_Path. Return a
    --  Variables_Map object.
 
+   procedure Show (Variables : Variables_Map);
+   --  Show all defined variables and their values.
+
    function Apply_Variable_Substitution
      (Variables : in out Variables_Map) return Boolean;
    --  Applies the variable substitution process to all variables and update

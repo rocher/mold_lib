@@ -6,6 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
+with Ada.Wide_Text_IO.Wide_Unbounded_IO;
 with TOML;
 with TOML.File_IO;
 
@@ -125,6 +126,28 @@ package body Mold_Lib.Impl.Variables is
          return Empty_Map;
 
    end Read;
+
+   ----------
+   -- Show --
+   ----------
+
+   procedure Show (Variables : Variables_Map) is
+      use all type Variables_Package.Cursor;
+
+      Cursor : Variables_Package.Cursor := Variables.First;
+   begin
+      loop
+         exit when Cursor = Variables_Package.No_Element;
+         declare
+            Var_Name : constant String := To_String (Cursor.Key);
+            Value    : constant String := Get_Value (To_String (Cursor.key));
+         begin
+            Ada.Text_IO.Put_Line
+              ("Variable: " & Var_Name & " = '" & Value & "'");
+         end;
+         Cursor := Cursor.Next;
+      end loop;
+   end Show;
 
    ---------------------------------
    -- Apply_Variable_Substitution --
