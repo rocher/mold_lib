@@ -154,15 +154,18 @@ package body Mold_Lib.Impl.Text is
       elsif Format_Str = "ISO_Date" then
          Var_Value :=
            To_Unbounded_String
-             ((GNAT.Calendar.Time_IO.Image (Args.Invocation_Time, "%Y-%m-%d")));
+             ((GNAT.Calendar.Time_IO.Image
+                 (Args.Invocation_Time, "%Y-%m-%d")));
       elsif Format_Str = "US_Date" then
          Var_Value :=
            To_Unbounded_String
-             ((GNAT.Calendar.Time_IO.Image (Args.Invocation_Time, "%m/%d/%y")));
+             ((GNAT.Calendar.Time_IO.Image
+                 (Args.Invocation_Time, "%m/%d/%y")));
       elsif Format_Str = "EU_Date" then
          Var_Value :=
            To_Unbounded_String
-             ((GNAT.Calendar.Time_IO.Image (Args.Invocation_Time, "%d/%m/%y")));
+             ((GNAT.Calendar.Time_IO.Image
+                 (Args.Invocation_Time, "%d/%m/%y")));
       else
          declare
             Result : constant String :=
@@ -442,6 +445,7 @@ package body Mold_Lib.Impl.Text is
                         end if;
                      else
                         New_Text.Append (Var_Filter_Applied);
+                        Local_Inc_Result (Entity, Variables_Replaced);
                      end if;
                   end;
                end if;
