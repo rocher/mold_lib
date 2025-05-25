@@ -6,19 +6,15 @@
 --
 -------------------------------------------------------------------------------
 
-with Ada.Exceptions;
-with GNAT.Source_Info;
+with Ada.Exceptions;   use Ada.Exceptions;
+with GNAT.Source_Info; use GNAT.Source_Info;
 
 package Log_Exceptions is
 
-   --!pp off
    procedure Log_Exception
-   (
-      Occurrence : Ada.Exceptions.Exception_Occurrence;
+     (Occurrence : Exception_Occurrence;
       Message    : String := "";
-      Location   : String := GNAT.Source_Info.Source_Location;
-      Entity     : String := GNAT.Source_Info.Enclosing_Entity
-   );
-   --!pp on
+      Location   : String := Source_Location;
+      Entity     : String := Enclosing_Entity);
 
 end Log_Exceptions;
