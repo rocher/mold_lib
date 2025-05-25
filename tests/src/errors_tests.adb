@@ -6,8 +6,6 @@
 --
 -------------------------------------------------------------------------------
 
-with GNAT.Source_Info;
-
 with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
@@ -49,7 +47,6 @@ package body Errors_Tests is
       Settings : aliased Settings_Type := Global_Settings.all;
       Number   : String (1 .. 2);
    begin
-      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- undefined variable --------------------------------------------
       Settings.Overwrite_Destination_Files := True;
@@ -175,7 +172,6 @@ package body Errors_Tests is
       Expected : aliased Results_Type;
       Settings : aliased Settings_Type := Global_Settings.all;
    begin
-      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- non-existent file ---------------------------------------------
       Results  := [others => 0];
@@ -305,7 +301,6 @@ package body Errors_Tests is
       Success  : Boolean;
       Settings : aliased Settings_Type := Global_Settings.all;
    begin
-      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- invalid source path -------------------------------------------
       Settings.Delete_Source_Files := False;
@@ -328,7 +323,6 @@ package body Errors_Tests is
       pragma Unreferenced (T);
       Success : Boolean;
    begin
-      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- invalid source file (not .mold extension) ---------------------
       --!pp off

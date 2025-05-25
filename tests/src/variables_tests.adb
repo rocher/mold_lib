@@ -6,8 +6,6 @@
 --
 -------------------------------------------------------------------------------
 
-with GNAT.Source_Info;
-
 with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
@@ -80,7 +78,6 @@ package body Variables_Tests is
       Results  : aliased Mold.Results_Type;
       Expected : aliased Mold.Results_Type;
    begin
-      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- no variables in the source file -------------------------------
       --!pp off
@@ -169,7 +166,6 @@ package body Variables_Tests is
       Results  : aliased Mold.Results_Type;
       Expected : aliased Mold.Results_Type;
    begin
-      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- variable replaced ---------------------------------------------
       --!pp off
@@ -263,7 +259,6 @@ package body Variables_Tests is
       Expected : aliased Mold.Results_Type;
       Settings : aliased Mold.Settings_Type := Global_Settings.all;
    begin
-      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- all variables replaced ----------------------------------------
       --!pp off
@@ -509,7 +504,6 @@ package body Variables_Tests is
       Results  : aliased Mold.Results_Type;
       Expected : aliased Mold.Results_Type;
    begin
-      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- multiline paragraphs ------------------------------------------
       --!pp off
@@ -547,7 +541,6 @@ package body Variables_Tests is
       Results  : aliased Mold.Results_Type;
       Expected : aliased Mold.Results_Type;
    begin
-      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- show variables ------------------------------------------------
       --!pp off

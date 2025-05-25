@@ -6,8 +6,6 @@
 --
 -------------------------------------------------------------------------------
 
-with GNAT.Source_Info;
-
 with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
@@ -52,7 +50,6 @@ package body Filters_Tests is
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
    begin
-      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- variable substitution with text filters: errors as warnings ---
       Settings.On_Undefined := Ignore;
@@ -104,7 +101,6 @@ package body Filters_Tests is
       ];
       --!pp on
    begin
-      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
 
       --  ----- variable substitution with custom text filters ----------------
       Settings.On_Undefined := Ignore;
