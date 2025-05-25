@@ -10,7 +10,7 @@ with TOML;
 with TOML.File_IO;
 
 with Log_Exceptions; use Log_Exceptions;
-with Log_Wrapper; use Log_Wrapper;
+with Log_Wrapper;    use Log_Wrapper;
 with Mold_Lib.Impl.Text;
 
 package body Mold_Lib.Impl.Variables is
@@ -88,37 +88,42 @@ package body Mold_Lib.Impl.Variables is
       Read_Result : TOML.Read_Result;
    begin
       Read_Result := TOML.File_IO.Load_File (Toml_Path);
+      Success := Read_Result.Success;
 
-      if Read_Result.Success then
-         for Element of Read_Result.Value.Iterate_On_Table loop
-            if Args.Settings.Enable_Defined_Settings
-              and then Element.Key.Length
-                       >= 10 --  minimum length of defined settings
-              and then Element.Key.Slice (1, Defined_Setting_Prefix'Length)
-                       = Defined_Setting_Prefix
-            then
-               if not Set_Mold_Setting
-                        (To_String (Element.Key), Element.Value.As_String)
-               then
-                  Success := False;
-                  return Empty_Map;
-               end if;
-            end if;
-            Vars.Include (Element.Key, Element.Value.As_Unbounded_String);
-
-            Log_Debug
-              ("defined var "
-               & To_String (Element.Key)
-               & " = "
-               & Element.Value.As_String);
-
-            Inc_Result (Variables_Defined);
-         end loop;
-      else
-         Log.Error ("Cannot load variables file");
+      if not Success then
+         Log.Error ("Cannot read TOML file " & Toml_Path);
+         return Empty_Map;
       end if;
 
-      Success := Read_Result.Success;
+      for Element of Read_Result.Value.Iterate_On_Table loop
+         --  Check if the key is a defined setting
+         if Args.Settings.Enable_Defined_Settings
+           and then Element.Key.Length >= Defined_Setting_Prefix'Length
+           and then Element.Key.Slice (1, Defined_Setting_Prefix'Length)
+                    = Defined_Setting_Prefix
+         then
+            if not Set_Mold_Setting
+                     (To_String (Element.Key), Element.Value.As_String)
+            then
+               Log_Debug
+                 ("Error setting "
+                  & To_String (Element.Key)
+                  & " = "
+                  & Element.Value.As_String);
+               Success := False;
+               return Empty_Map;
+            end if;
+         end if;
+
+         Vars.Include (Element.Key, Element.Value.As_Unbounded_String);
+         Inc_Result (Variables_Defined);
+
+         Log_Debug
+           ("defined var "
+            & To_String (Element.Key)
+            & " = "
+            & Element.Value.As_String);
+      end loop;
       return Vars;
 
    exception
