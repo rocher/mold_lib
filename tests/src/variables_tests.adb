@@ -35,6 +35,7 @@ package body Variables_Tests is
       Register_Routine
         (T, Test_Modal_Substitution'Access, "Modal Substitution");
       Register_Routine (T, Test_Multiline'Access, "Multiline");
+      Register_Routine (T, Test_Show_Variables'Access, "Show Variables");
    end Register_Tests;
 
    procedure Test_Variables_Definition (T : in out Test_Case'Class) is
@@ -535,5 +536,34 @@ package body Variables_Tests is
         ("suite/tmp/multiline.txt", "cfafd88cdde135c6e27e9917e5a74504",
          "ff09390de79ffd52e39d82c490d336ad");
    end Test_Multiline;
+
+   -------------------------
+   -- Test_Show_Variables --
+   -------------------------
+
+   procedure Test_Show_Variables (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
+      Success  : Boolean;
+      Results  : aliased Mold.Results_Type;
+      Expected : aliased Mold.Results_Type;
+   begin
+      Log.Debug ("UNIT TEST " & GNAT.Source_Info.Enclosing_Entity);
+
+      --  ----- show variables ------------------------------------------------
+      --!pp off
+      Success := Show_Variables (
+         Toml_File => "suite/toml/filters+vars.toml",
+         Settings  => Global_Settings,
+         Results    => Results'Unchecked_Access,
+         Log_Level => Log.Level
+      );
+      Expected := [
+         Variables_Defined  => 6,
+         others             => 0
+      ];
+      --!pp on
+      Check_Results
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
+   end Test_Show_Variables;
 
 end Variables_Tests;
