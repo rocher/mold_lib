@@ -11,6 +11,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Simple_Logging.Decorators;
 
 with Log_Exceptions; use Log_Exceptions;
+with Log_Wrapper; use Log_Wrapper;
 with Mold_Lib.Impl;  use Mold_Lib.Impl;
 with Mold_Lib.Impl.Directory;
 with Mold_Lib.Impl.File;
@@ -92,7 +93,7 @@ package body Mold_Lib is
         (if Settings = null then Default_Settings else Settings.all);
    begin
       Log.Level := Log_Level;
-      if Log.Level = Log.Debug then
+      if Log.Level = Simple_Logging.Debug then
          Log.Decorators.Location_Decorator :=
            Log.Decorators.Simple_Location_Decorator'Access;
       end if;
@@ -127,7 +128,7 @@ package body Mold_Lib is
 
          Variables := Impl.Variables.Read (Toml_Path, Success);
          if Success then
-            Log.Debug ("  Toml_Path loaded");
+            Log_Debug ("  Toml_Path loaded");
          else
             Log.Error ("Cannot load toml file " & Toml_File);
             return False;
@@ -135,19 +136,19 @@ package body Mold_Lib is
 
          Success := Impl.Variables.Apply_Variable_Substitution (Variables);
          if Success then
-            Log.Debug ("  Variable substitution applied to variables");
+            Log_Debug ("  Variable substitution applied to variables");
          else
             Log.Error ("Error applying variables substitution to variables");
             return False;
          end if;
 
-         Log.Debug ("BEGIN Mold_Lib.Apply");
-         Log.Debug ("  Source_Path  : " & Source_Path);
-         Log.Debug ("  Output_Path  : " & Output_Path);
-         Log.Debug ("  Toml_Path    : " & Toml_Path);
-         Log.Debug ("  Variables    : " & Variables'Image);
+         Log_Debug ("BEGIN Mold_Lib.Apply");
+         Log_Debug ("  Source_Path  : " & Source_Path);
+         Log_Debug ("  Output_Path  : " & Output_Path);
+         Log_Debug ("  Toml_Path    : " & Toml_Path);
+         Log_Debug ("  Variables    : " & Variables'Image);
 
-         Log.Debug ("Global Settings:" & Args.Settings.all'Image);
+         Log_Debug ("Global Settings:" & Args.Settings.all'Image);
 
          if Settings.Show_Variables then
             --  Show all variables defined in the toml file after value
@@ -161,7 +162,7 @@ package body Mold_Lib is
                    (Source_Path'Unrestricted_Access,
                     Output_Path'Unrestricted_Access);
             else
-               Log.Debug
+               Log_Debug
                  ("  File.Set_Running_Directory " & Dir.Current_Directory);
                Success :=
                  Impl.Directory.Replace
@@ -171,7 +172,7 @@ package body Mold_Lib is
             end if;
          end if;
 
-         Log.Debug ("END Mold_Lib.Apply");
+         Log_Debug ("END Mold_Lib.Apply");
          return Success;
 
          pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");

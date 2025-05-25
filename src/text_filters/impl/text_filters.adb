@@ -9,13 +9,11 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with GNAT.Regpat;
 
-with Simple_Logging;
-
+with Log_Wrapper; use Log_Wrapper;
 with Text_Filters_Predefined; use Text_Filters_Predefined;
 
 package body Text_Filters is
 
-   package Log renames Simple_Logging;
    package Reg renames GNAT.Regpat;
 
    Text_Filter_Matcher : Reg.Pattern_Matcher (256);
@@ -78,9 +76,9 @@ package body Text_Filters is
             Result := Apply (Parsing, Result);
          end if;
 
-         Log.Debug ("Filter_Parsed : " & Parsing'Image);
-         Log.Debug ("Tail          : '" & Tail'Image & "'");
-         Log.Debug ("Result        : '" & To_String (Result) & "'");
+         Log_Debug ("Filter_Parsed : " & Parsing'Image);
+         Log_Debug ("Tail          : '" & Tail'Image & "'");
+         Log_Debug ("Result        : '" & To_String (Result) & "'");
 
          exit Apply_All_Text_Filters_Loop when Tail = Null_Unbounded_String;
          Filter := Tail;

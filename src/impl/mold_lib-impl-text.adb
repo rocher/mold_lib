@@ -12,6 +12,7 @@ with GNAT.Calendar.Time_IO;
 with Mold_Lib.Impl.Variables;
 with Text_Filters;
 with Log_Exceptions; use Log_Exceptions;
+with Log_Wrapper; use Log_Wrapper;
 
 package body Mold_Lib.Impl.Text is
 
@@ -172,8 +173,8 @@ package body Mold_Lib.Impl.Text is
             Result : constant String :=
               GNAT.Calendar.Time_IO.Image (Args.Invocation_Time, Format);
          begin
-            Log.Debug ("Result: " & Result);
-            Log.Debug ("Format_Str: " & Format_Str);
+            Log_Debug ("Result: " & Result);
+            Log_Debug ("Format_Str: " & Format_Str);
 
             if Format_Str /= Result then
                Var_Value := To_Unbounded_String (Result);
@@ -359,19 +360,19 @@ package body Mold_Lib.Impl.Text is
             Variable_Matcher.Match (To_String (Var_Value), Var_Value_Matches);
             Var_Value_Is_Variable := Var_Value_Matches (0) /= Reg.No_Match;
 
-            Log.Debug ("Entity      : " & Entity'Image);
-            Log.Debug ("LIN         : " & LIN'Image);
-            Log.Debug ("COL         : " & COL'Image);
-            Log.Debug ("Pre_Text    : '" & Pre_Text & "'");
-            Log.Debug ("Var_Mold    : '" & Var_Mold & "'");
-            Log.Debug ("Var_All_Name: '" & Var_All_Name & "'");
-            Log.Debug ("Var_Name    : '" & Var_Name & "'");
-            Log.Debug ("Var_Value   : '" & To_String (Var_Value) & "'");
-            Log.Debug
+            Log_Debug ("Entity      : " & Entity'Image);
+            Log_Debug ("LIN         : " & LIN'Image);
+            Log_Debug ("COL         : " & COL'Image);
+            Log_Debug ("Pre_Text    : '" & Pre_Text & "'");
+            Log_Debug ("Var_Mold    : '" & Var_Mold & "'");
+            Log_Debug ("Var_All_Name: '" & Var_All_Name & "'");
+            Log_Debug ("Var_Name    : '" & Var_Name & "'");
+            Log_Debug ("Var_Value   : '" & To_String (Var_Value) & "'");
+            Log_Debug
               ("Is_Variable : " & Boolean'Image (Var_Value_Is_Variable));
-            Log.Debug ("Filters     : '" & Filters & "'");
-            Log.Debug ("Undefined   : " & Boolean'Image (Variable_Undefined));
-            Log.Debug
+            Log_Debug ("Filters     : '" & Filters & "'");
+            Log_Debug ("Undefined   : " & Boolean'Image (Variable_Undefined));
+            Log_Debug
               ("Var_Is_Mold_Date : " & Boolean'Image (Var_Is_Mold_Date));
 
             --  Append the text before the variable to the new text (if any)
@@ -443,16 +444,16 @@ package body Mold_Lib.Impl.Text is
                        Append_Filters_To_Variables
                          (To_String (Var_Value), Filters);
                   begin
-                     Log.Debug
+                     Log_Debug
                        ("Variable value is a variable, skipping filters in "
                         & To_String (Var_Value));
-                     Log.Debug
+                     Log_Debug
                        ("Appending variable value with filters: "
                         & To_String (Variable_String));
                      New_Text.Append (Variable_String);
                   end;
                else
-                  Log.Debug ("Applying filters");
+                  Log_Debug ("Applying filters");
                   declare
                      Var_Filter_Applied : constant Unbounded_String :=
                        Text_Filters.Apply

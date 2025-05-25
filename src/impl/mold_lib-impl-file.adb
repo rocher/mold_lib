@@ -7,6 +7,7 @@
 -------------------------------------------------------------------------------
 
 with Log_Exceptions; use Log_Exceptions;
+with Log_Wrapper; use Log_Wrapper;
 with Mold_Lib.Impl.Text;
 with Mold_Lib.Impl.Variables;
 
@@ -25,7 +26,7 @@ package body Mold_Lib.Impl.File is
       Current     : Natural          := Name'First;
       Has_Matches : Boolean          := False;
    begin
-      Log.Debug ("BEGIN Impl.File.Replace_In_Filename");
+      Log_Debug ("BEGIN Impl.File.Replace_In_Filename");
 
       loop
          File_Matcher.Match (Name, Matches, Current);
@@ -47,10 +48,10 @@ package body Mold_Lib.Impl.File is
             Is_Undefined : constant Boolean := (Var_Value = "");
          begin
 
-            Log.Debug ("  Pre_Name : '" & Pre_Name & "'");
-            Log.Debug ("  Var_Mold : '" & Var_Mold & "'");
-            Log.Debug ("  Var_Name : '" & Var_Name & "'");
-            Log.Debug ("  Var_Value: '" & Var_Value & "'");
+            Log_Debug ("  Pre_Name : '" & Pre_Name & "'");
+            Log_Debug ("  Var_Mold : '" & Var_Mold & "'");
+            Log_Debug ("  Var_Name : '" & Var_Name & "'");
+            Log_Debug ("  Var_Value: '" & Var_Value & "'");
 
             New_Name.Append (Pre_Name);
             if Is_Undefined then
@@ -69,12 +70,12 @@ package body Mold_Lib.Impl.File is
 
       if Has_Matches then
          New_Name.Append (Name (Current .. Name'Last));
-         Log.Debug ("  Renamed file " & Name & " to " & To_String (New_Name));
-         Log.Debug ("END Replace_In_Filename");
+         Log_Debug ("  Renamed file " & Name & " to " & To_String (New_Name));
+         Log_Debug ("END Replace_In_Filename");
          return To_String (New_Name);
       else
-         Log.Debug ("  No replacement done");
-         Log.Debug ("END Replace_In_Filename");
+         Log_Debug ("  No replacement done");
+         Log_Debug ("END Replace_In_Filename");
          return Name;
       end if;
    end Replace_In_Filename;
@@ -88,9 +89,9 @@ package body Mold_Lib.Impl.File is
    is
       Extension : constant String := Dir.Extension (Filename);
    begin
-      Log.Debug ("BEGIN Impl.File.Include_Path");
-      Log.Debug ("  Filename  : " & Filename);
-      Log.Debug ("  Extension : " & Extension);
+      Log_Debug ("BEGIN Impl.File.Include_Path");
+      Log_Debug ("  Filename  : " & Filename);
+      Log_Debug ("  Extension : " & Extension);
 
       --  check extension file to be 'molt'
       --  # TODO : Consider relaxing this, with a flag or permanently
@@ -109,30 +110,30 @@ package body Mold_Lib.Impl.File is
       if Dir.Exists (Filename) and then Dir.Kind (Filename) = Dir.Ordinary_File
       then
          Success := True;
-         Log.Debug ("  Including file " & Filename);
-         Log.Debug ("END Include_Path");
+         Log_Debug ("  Including file " & Filename);
+         Log_Debug ("END Include_Path");
          return Filename;
       end if;
 
-      Log.Debug ("  Trying to include from running directory");
+      Log_Debug ("  Trying to include from running directory");
 
       declare
          File_Path : constant String :=
            Full_Path_Expanded (To_String (Args.Running_Directory), Filename);
       begin
-         Log.Debug ("  File_Path : " & File_Path);
+         Log_Debug ("  File_Path : " & File_Path);
 
          if Dir.Exists (File_Path)
            and then Dir.Kind (File_Path) = Dir.Ordinary_File
          then
             Success := True;
-            Log.Debug ("  Include from running directory " & File_Path);
-            Log.Debug ("END Include_Path");
+            Log_Debug ("  Include from running directory " & File_Path);
+            Log_Debug ("END Include_Path");
             return File_Path;
          else
             Success := False;
-            Log.Debug ("  File not found " & File_Path);
-            Log.Debug ("END Include_Path");
+            Log_Debug ("  File not found " & File_Path);
+            Log_Debug ("END Include_Path");
             return "";
          end if;
       end;
@@ -165,7 +166,7 @@ package body Mold_Lib.Impl.File is
       Line_Number : Natural := 0;
       Matches     : Reg.Match_Array (0 .. 1);
    begin
-      Log.Debug ("BEGIN Impl.File.Replace_In_Stream");
+      Log_Debug ("BEGIN Impl.File.Replace_In_Stream");
       For_Each_Line :
       loop
          exit For_Each_Line when Input.End_Of_File;
@@ -228,7 +229,7 @@ package body Mold_Lib.Impl.File is
 
       <<Exit_Function>>
       Input.Close;
-      Log.Debug ("END File.Replace_In_Stream");
+      Log_Debug ("END File.Replace_In_Stream");
       return Success;
 
    end Replace_In_Stream;
@@ -279,14 +280,14 @@ package body Mold_Lib.Impl.File is
          Dst_File : IO.File_Type;
 
       begin
-         Log.Debug ("BEGIN Impl.File.Replace");
-         Log.Debug ("  Dir_Name      : " & Dir_Name);
-         Log.Debug ("  Src_Filename  : " & Source.all);
-         Log.Debug ("  Base_Filename : " & Base_Filename);
-         Log.Debug ("  Prep_Filename : " & Prep_Filename);
-         Log.Debug ("  Repl_Filename : " & Repl_Filename);
-         Log.Debug ("  Real_Out_Dir  : " & Real_Out_Dir);
-         Log.Debug ("  Dst_Filename  : " & Dst_Filename);
+         Log_Debug ("BEGIN Impl.File.Replace");
+         Log_Debug ("  Dir_Name      : " & Dir_Name);
+         Log_Debug ("  Src_Filename  : " & Source.all);
+         Log_Debug ("  Base_Filename : " & Base_Filename);
+         Log_Debug ("  Prep_Filename : " & Prep_Filename);
+         Log_Debug ("  Repl_Filename : " & Repl_Filename);
+         Log_Debug ("  Real_Out_Dir  : " & Real_Out_Dir);
+         Log_Debug ("  Dst_Filename  : " & Dst_Filename);
 
          Log.Detail ("processing file " & Source.all);
          Inc_Result (Files_Processed);
@@ -337,7 +338,7 @@ package body Mold_Lib.Impl.File is
 
          <<Exit_Function>>
          Args.Included_Files.Clear;
-         Log.Debug ("END Impl.File.Replace");
+         Log_Debug ("END Impl.File.Replace");
          return Success;
 
          pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");

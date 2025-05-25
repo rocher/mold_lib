@@ -10,6 +10,7 @@ with TOML;
 with TOML.File_IO;
 
 with Log_Exceptions; use Log_Exceptions;
+with Log_Wrapper; use Log_Wrapper;
 with Mold_Lib.Impl.Text;
 
 package body Mold_Lib.Impl.Variables is
@@ -105,9 +106,11 @@ package body Mold_Lib.Impl.Variables is
             end if;
             Vars.Include (Element.Key, Element.Value.As_Unbounded_String);
 
-            --  Log.Debug
-            --    ("defined var " & To_String (Element.Key) & " = " &
-            --     Element.Value.As_String);
+            Log_Debug
+              ("defined var "
+               & To_String (Element.Key)
+               & " = "
+               & Element.Value.As_String);
 
             Inc_Result (Variables_Defined);
          end loop;
@@ -175,7 +178,7 @@ package body Mold_Lib.Impl.Variables is
          Has_Changes := False;
          loop
             --  loop over all variables defined in the toml file
-            Log.Debug ("Var subst BEGIN : " & To_String (Cursor.Key));
+            Log_Debug ("Var subst BEGIN : " & To_String (Cursor.Key));
             declare
                Success   : Boolean;
                Var_Name  : constant String := To_String (Cursor.Key);
@@ -193,7 +196,7 @@ package body Mold_Lib.Impl.Variables is
                   Variables.Replace
                     (Cursor.Key, To_Unbounded_String (New_Value));
                end if;
-               Log.Debug
+               Log_Debug
                  ("Var subst END   : "
                   & Var_Name
                   & " --> '"
@@ -229,7 +232,7 @@ package body Mold_Lib.Impl.Variables is
         Args.Variables.Find (To_Unbounded_String (Variable));
    begin
       if Ref = No_Element then
-         Log.Debug ("Unmapped variable " & Variable);
+         Log_Debug ("Unmapped variable " & Variable);
          return "";
       else
          return To_String (Element (Ref));

@@ -54,24 +54,32 @@ begin
       Tail := Null_Unbounded_String;
    end if;
 
-   Log.Debug ("Filters     : """ & To_String (Filters) & """");
-   --  Log.Debug
-   --    ("Matches(0)  : " & Matches (0).First'Image & ", " &
-   --     Matches (0).Last'Image);
-   --  Log.Debug
-   --    ("Matches(1)  : " & Matches (1).First'Image & ", " &
-   --     Matches (1).Last'Image);
-   --  Log.Debug
-   --    ("Matches(2)  : " & Matches (2).First'Image & ", " &
-   --     Matches (2).Last'Image);
-   --  Log.Debug
-   --    ("Matches(3)  : " & Matches (3).First'Image & ", " &
-   --     Matches (3).Last'Image);
-   Log.Debug ("Filter kind : " & Filters.Element (Matches (1).First));
-   Log.Debug
+   Log_Debug ("Filters     : """ & To_String (Filters) & """");
+   Log_Debug
+     ("Matches(0)  : "
+      & Matches (0).First'Image
+      & ", "
+      & Matches (0).Last'Image);
+   Log_Debug
+     ("Matches(1)  : "
+      & Matches (1).First'Image
+      & ", "
+      & Matches (1).Last'Image);
+   Log_Debug
+     ("Matches(2)  : "
+      & Matches (2).First'Image
+      & ", "
+      & Matches (2).Last'Image);
+   Log_Debug
+     ("Matches(3)  : "
+      & Matches (3).First'Image
+      & ", "
+      & Matches (3).Last'Image);
+   Log_Debug ("Filter kind : " & Filters.Element (Matches (1).First));
+   Log_Debug
      ("Filter args : " & Filters.Slice (Matches (2).First, Matches (2).Last));
-   Log.Debug ("Tail        : """ & To_String (Tail) & """");
-   Log.Debug ("Matches     : " & Matches'Image);
+   Log_Debug ("Tail        : """ & To_String (Tail) & """");
+   Log_Debug ("Matches     : " & Matches'Image);
 
    --  return Text_Filter : Text_Filter_Parsed do -- Not supported, GNAT BUG!
    Kind := Filters.Element (Matches (1).First);

@@ -7,6 +7,7 @@
 -------------------------------------------------------------------------------
 
 with Log_Exceptions; use Log_Exceptions;
+with Log_Wrapper; use Log_Wrapper;
 
 package body Mold_Lib.Impl.Validation is
 
@@ -33,7 +34,7 @@ package body Mold_Lib.Impl.Validation is
          --  Source is either a file or directory:
          if Dir.Kind (Source_Path) = Dir.Ordinary_File then
             if Dir.Extension (Source_Path) = Mold_File_Extension then
-               Log.Debug ("  Valid Source_Path");
+               Log_Debug ("  Valid Source_Path");
             else
                Log.Error
                  ("Source file with invalid extension '" & Source_Path & "'");
@@ -72,9 +73,9 @@ package body Mold_Lib.Impl.Validation is
            else Source_Path)
       do
          if Dir.Exists (Output_Dir_Path) then
-            Log.Debug ("  Valid Output_Path");
+            Log_Debug ("  Valid Output_Path");
          else
-            Log.Debug ("Create output path " & Output_Dir_Path);
+            Log_Debug ("Create output path " & Output_Dir_Path);
             Dir.Create_Path (Output_Dir_Path);
          end if;
       end return;
@@ -102,7 +103,7 @@ package body Mold_Lib.Impl.Validation is
          if Dir.Exists (Toml_Path)
            and then Dir.Kind (Toml_Path) = Dir.Ordinary_File
          then
-            Log.Debug ("  Valid Toml_Path");
+            Log_Debug ("  Valid Toml_Path");
          else
             Log.Error ("Toml file not found '" & Toml_Path & "'");
             Error := True;

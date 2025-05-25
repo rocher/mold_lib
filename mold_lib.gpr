@@ -4,7 +4,14 @@ project Mold_Lib is
    for Library_Name use "mold";
    for Library_Version use Project'Library_Name & ".so." & Mold_Lib_Config.Crate_Version;
 
-   for Source_Dirs use ("src/**", "config/");
+   for Source_Dirs use (
+      "config/",
+      "src/",
+      "src/impl/",
+      "src/log/",
+      "src/log/" & Mold_Lib_Config.Build_Profile & "/",
+      "src/text_filters/**"
+   );
    for Object_Dir use "obj/" & Mold_Lib_Config.Build_Profile;
    for Create_Missing_Dirs use "True";
    for Library_Dir use "lib";

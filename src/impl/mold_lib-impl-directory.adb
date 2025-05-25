@@ -7,6 +7,7 @@
 -------------------------------------------------------------------------------
 
 with Log_Exceptions; use Log_Exceptions;
+with Log_Wrapper; use Log_Wrapper;
 with Mold_Lib.Impl.File;
 
 package body Mold_Lib.Impl.Directory is
@@ -37,14 +38,14 @@ package body Mold_Lib.Impl.Directory is
 
       Log.Detail ("processing directory " & Source.all);
 
-      Log.Debug ("BEGIN Impl.Directory.Replace");
-      Log.Debug ("  Sub_Dir     : " & Sub_Dir);
-      Log.Debug ("  Source      : " & Source.all);
-      Log.Debug ("  Output_Dir  : " & Output_Dir.all);
-      Log.Debug ("  CWD         : " & Dir.Current_Directory);
-      Log.Debug ("  entering    : " & Source.all);
+      Log_Debug ("BEGIN Impl.Directory.Replace");
+      Log_Debug ("  Sub_Dir     : " & Sub_Dir);
+      Log_Debug ("  Source      : " & Source.all);
+      Log_Debug ("  Output_Dir  : " & Output_Dir.all);
+      Log_Debug ("  CWD         : " & Dir.Current_Directory);
+      Log_Debug ("  entering    : " & Source.all);
       Dir.Set_Directory (Source.all);
-      Log.Debug ("  CWD         : " & Dir.Current_Directory);
+      Log_Debug ("  CWD         : " & Dir.Current_Directory);
 
       Dir.Start_Search
         (Result, ".", "*",
@@ -58,13 +59,13 @@ package body Mold_Lib.Impl.Directory is
             Name : aliased String := Element.Simple_Name;
          begin
 
-            Log.Debug ("Dir Element : " & Name);
+            Log_Debug ("Dir Element : " & Name);
 
             if Name'Length > 0 and then Name /= "." and then Name /= ".."
               and then Name /= ".git"
             then
                if Element.Kind = Dir.Directory then
-                  Log.Debug ("Directory replace in element " & Name);
+                  Log_Debug ("Directory replace in element " & Name);
                   Success :=
                     Replace
                       (Dir.Compose (Sub_Dir, Name), Name'Unchecked_Access,
@@ -74,7 +75,7 @@ package body Mold_Lib.Impl.Directory is
                      Out_Sub_dir : aliased String :=
                        Path (Output_Dir.all, Sub_Dir);
                   begin
-                     Log.Debug ("File replace in element " & Name);
+                     Log_Debug ("File replace in element " & Name);
                      Success :=
                        Impl.File.Replace
                          (Name'Unchecked_Access, Out_Sub_dir'Unchecked_Access);
@@ -90,7 +91,7 @@ package body Mold_Lib.Impl.Directory is
       <<Exit_Function>>
 
       Dir.Set_Directory (CWD);
-      Log.Debug ("END Impl.Directory.Replace");
+      Log_Debug ("END Impl.Directory.Replace");
       return Success;
 
       pragma Annotate (Xcov, Exempt_On, "Only valid in Windows OS");
