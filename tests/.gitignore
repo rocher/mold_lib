@@ -1,7 +1,6 @@
 test.log
 *.srctrace
 callgrind*
-/.vscode/
 /obj/
 /bin/
 /alire/
