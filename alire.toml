@@ -71,6 +71,9 @@ maintainers-logins = ["rocher"]
 
 licenses = "MIT"
 
+[build-switches."release"]
+optimization = ["-O1", "-gnatn"]
+
 [build-switches."*"]
 ada_version = ["-gnat2022", "-gnatW8", "-gnatX"]
 
