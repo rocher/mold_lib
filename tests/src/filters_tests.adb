@@ -321,7 +321,7 @@ package body Filters_Tests is
       Results  : aliased Results_Type;
       Expected : aliased Results_Type;
    begin
-      Settings.On_Undefined := Warning;
+      Settings.On_Undefined := Ignore;
       --!pp off
       Success := Apply (
          Source     => "suite/mold/invalid-date-formats.txt.mold",
@@ -336,9 +336,9 @@ package body Filters_Tests is
          Variables_Defined  =>  0,
          Variables_Found    => 11,
          Variables_Replaced =>  0,
-         Variables_Ignored  =>  0,
-         Variables_Emptied  => 11,
-         Warnings           => 11,
+         Variables_Ignored  => 11,
+         Variables_Emptied  =>  0,
+         Warnings           =>  0,
          others             =>  0
       ];
       --!pp on
