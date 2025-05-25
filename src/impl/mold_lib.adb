@@ -47,20 +47,23 @@ package body Mold_Lib is
       Toml_File : String          := "mold.toml";
       Settings  : Settings_Access := null;
       Filters   : Filters_Access  := null;
+      Results   : Results_Access  := null;
       Log_Level : Log.Levels      := Log.Info
    ) return Boolean
    --!pp on
    is
+      Local_Settings : aliased Settings_Type :=
+        (if Settings = null then Default_Settings else Settings.all);
    begin
-      Settings.Show_Variables := True;
+      Local_Settings.Show_Variables := True;
       return
         Apply
           (Source     => ".",
            Output_Dir => "",
            Toml_File  => Toml_File,
-           Settings   => Settings,
+           Settings   => Local_Settings'Unrestricted_Access,
            Filters    => Filters,
-           Results    => null,
+           Results    => Results,
            Log_Level  => Log_Level);
    end Show_Variables;
 

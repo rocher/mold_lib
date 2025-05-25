@@ -91,6 +91,7 @@ package Mold_Lib is
       Toml_File : String          := "mold.toml";
       Settings  : Settings_Access := null;
       Filters   : Filters_Access  := null;
+      Results   : Results_Access  := null;
       Log_Level : Log.Levels      := Log.Info
    ) return Boolean;
    --  Shows all defined variables and their values. Returns True if the
