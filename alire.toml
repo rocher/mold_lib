@@ -39,7 +39,7 @@ Main features supported in Mold include
 
   * support for optional and mandatory variables
 
-  * support for custom filter and variables
+  * support for custom filters and variables
 
 Variable replacement can be specified as *normal*, *optional* or *mandatory*.
 For example, the variable `foo = "bar"` can be specified with `{{foo}}`,
