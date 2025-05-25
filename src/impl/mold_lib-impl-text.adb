@@ -6,6 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
+with Ada.Strings.Unbounded;
 with GNAT.Calendar.Time_IO;
 
 with Mold_Lib.Impl.Variables;
@@ -188,6 +189,63 @@ package body Mold_Lib.Impl.Text is
          Log_Exception (E);
          pragma Annotate (Xcov, Exempt_Off);
    end Manage_Date_Variable;
+
+   ---------------------------------
+   -- Append_Filters_To_Variables --
+   ---------------------------------
+
+   function Append_Filters_To_Variables
+     (Variables : String; Filters : String) return Unbounded_String
+   with Pre => Filters /= ""
+   is
+      Matches : Reg.Match_Array (0 .. 4);
+      Current : Natural := Variables'First;
+      Result  : Unbounded_String := To_Unbounded_String ("");
+   begin
+      loop
+         --  Loop over all matches of the regular expression in the Variables
+         --  and append the filters to the variables
+         Variable_Matcher.Match (Variables, Matches, Current);
+         exit when Matches (0) = Reg.No_Match;
+
+         declare
+            Pre_Text : constant String :=
+              Variables (Matches (1).First .. Matches (1).Last);
+            --  Text before the mold variable
+
+            Var_All_Name : constant String :=
+              Variables (Matches (3).First .. Matches (3).Last);
+            --  The whole name of the variable, including the prefix
+
+            Var_Filters : constant String :=
+              (if Matches (4).First > 0
+               then Variables (Matches (4).First .. Matches (4).Last)
+               else "");
+            --  The filter of the variable (if any),
+         begin
+            Result.Append
+              (
+               --  Text before the mold variable
+               Pre_Text
+               --  Opening brackets
+               & "{{"
+               --  Name of the variable, including the prefix
+               & Var_All_Name
+               --  Filters, if any, of the variable
+               & Var_Filters
+               --  Filter to be appended to the variable
+               & Filters
+               --  Closing brackets
+               & "}}");
+            Current := Matches (0).Last + 1;
+         end;
+      end loop;
+
+      --  Append the rest of the variables after the last match
+      Result.Append (Variables (Current .. Variables'Last));
+
+      return Result;
+   end Append_Filters_To_Variables;
 
    -------------
    -- Replace --
@@ -377,35 +435,22 @@ package body Mold_Lib.Impl.Text is
                   New_Text.Append (Var_Value);
                elsif Var_Value_Is_Variable then
                   --  If the value is a variable, we do not apply the filters
-                  --  to it, as it is expected to be replaced later
-                  Log.Debug ("Variable value is a variable, skipping filters");
-
-                  --  Append the variable value, including prefix and filters,
-                  --  and keep the variable filters for later
-                  --
-                  --  e.g. if foo = "{{bar/raoO}}" and bar = "{{baz/s}}" then
-                  --  the result is "{{baz/s/raoO}}", and in the following
-                  --  iterations baz will be replaced with its value
-                  --  and the filters will be applied to it
-                  New_Text.Append
-                    (
-                     --  Opening brackets
-                     "{{"
-                     --  Name of the variable, including the prefix
-                     & To_String (Var_Value)
-                         (Var_Value_Matches (3).First
-                          .. Var_Value_Matches (3).Last)
-                     --  Filters, if any, of the variable value
-                     & (if Var_Value_Matches (4).First > 0
-                        then
-                          To_String (Var_Value)
-                            (Var_Value_Matches (4).First
-                             .. Var_Value_Matches (4).Last)
-                        else "")
-                     --  Filters, if any, of the variable
-                     & Filters
-                     --  Closing brackets
-                     & "}}");
+                  --  to it, as it is expected to be replaced later. Instead,
+                  --  append the variable value, including prefix and filters,
+                  --  and keep the variable filters for later.
+                  declare
+                     Variable_String : constant Unbounded_String :=
+                       Append_Filters_To_Variables
+                         (To_String (Var_Value), Filters);
+                  begin
+                     Log.Debug
+                       ("Variable value is a variable, skipping filters in "
+                        & To_String (Var_Value));
+                     Log.Debug
+                       ("Appending variable value with filters: "
+                        & To_String (Variable_String));
+                     New_Text.Append (Variable_String);
+                  end;
                else
                   Log.Debug ("Applying filters");
                   declare

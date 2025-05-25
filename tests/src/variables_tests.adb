@@ -558,8 +558,8 @@ package body Variables_Tests is
          Log_Level => Log.Level
       );
       Expected := [
-         Variables_Defined  => 6,
-         others             => 0
+         Variables_Defined => 12,
+         others            =>  0
       ];
       --!pp on
       Check_Results

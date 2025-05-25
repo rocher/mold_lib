@@ -428,9 +428,9 @@ package body Filters_Tests is
       );
       Expected := [
          Files_Processed    =>  1,
-         Variables_Defined  =>  6,
-         Variables_Found    => 11,
-         Variables_Replaced => 11,
+         Variables_Defined  => 12,
+         Variables_Found    => 28,
+         Variables_Replaced => 28,
          Variables_Ignored  =>  0,
          Variables_Emptied  =>  0,
          Warnings           =>  0,
@@ -442,8 +442,8 @@ package body Filters_Tests is
         (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
       Check_MD5_Digest
-        ("suite/tmp/filters+vars.txt", "c6c7ee18d3fa14c89d6e01f3f54a64f5",
-         "995e5af4f5bdccddba47157050f1ca0c");
+        ("suite/tmp/filters+vars.txt", "3f9bffbe0e61e28ddf9548b48999295f",
+         "73330fa559b450566ec5f4174b12b8f4");
    end Test_Filters_And_Vars;
 
    ----------------------
