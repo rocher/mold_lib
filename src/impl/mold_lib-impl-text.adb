@@ -9,10 +9,11 @@
 with Ada.Strings.Unbounded;
 with GNAT.Calendar.Time_IO;
 
+with Mold_Lib_Config;
 with Mold_Lib.Impl.Variables;
 with Text_Filters;
 with Log_Exceptions; use Log_Exceptions;
-with Log_Wrapper; use Log_Wrapper;
+with Log_Wrapper;    use Log_Wrapper;
 
 package body Mold_Lib.Impl.Text is
 
@@ -91,15 +92,15 @@ package body Mold_Lib.Impl.Text is
    --------------------------
 
    procedure Manage_Date_Variable
-     (Var_Name          : String;
-      Var_Mold          : String;
-      Var_Value         : in out Unbounded_String;
-      Entity            : Entity_Kind;
-      New_Text          : in out Unbounded_String;
-      LIN               : String;
-      COL               : String;
-      Valid_Date_Format : in out Boolean;
-      Success           : in out Boolean)
+     (Var_Name             : String;
+      Var_Mold             : String;
+      Var_Value            : in out Unbounded_String;
+      Entity               : Entity_Kind;
+      New_Text             : in out Unbounded_String;
+      LIN                  : String;
+      COL                  : String;
+      Valid_Predefined_Var : in out Boolean;
+      Success              : in out Boolean)
    is
       Format : constant GNAT.Calendar.Time_IO.Picture_String :=
         GNAT.Calendar.Time_IO.Picture_String
@@ -116,7 +117,7 @@ package body Mold_Lib.Impl.Text is
 
       procedure Manage_Format_Error (Result : String) is
       begin
-         Valid_Date_Format := False;
+         Valid_Predefined_Var := False;
          if Args.Settings.On_Undefined = Ignore then
             Local_Inc_Result (Entity, Variables_Ignored);
             New_Text.Append (Var_Mold);
@@ -190,6 +191,67 @@ package body Mold_Lib.Impl.Text is
          Log_Exception (E);
          pragma Annotate (Xcov, Exempt_Off);
    end Manage_Date_Variable;
+
+   --------------------------------
+   -- Manage_Predefined_Variable --
+   --------------------------------
+
+   procedure Manage_Predefined_Variable
+     (Var_Name             : String;
+      Var_Mold             : String;
+      Var_Value            : in out Unbounded_String;
+      Entity               : Entity_Kind;
+      New_Text             : in out Unbounded_String;
+      LIN                  : String;
+      COL                  : String;
+      Valid_Predefined_Var : in out Boolean;
+      Success              : in out Boolean) is
+   begin
+      if Var_Name = "mold-version" then
+         Var_Value := To_Unbounded_String (Mold_Lib_Config.Crate_Version);
+
+      elsif Var_Name = "mold-host-os" then
+         Var_Value := To_Unbounded_String (Mold_Lib_Config.Alire_Host_OS);
+
+      elsif Var_Name = "mold-host-arch" then
+         Var_Value := To_Unbounded_String (Mold_Lib_Config.Alire_Host_Arch);
+
+      elsif Var_Name = "mold-host-distro" then
+         Var_Value := To_Unbounded_String (Mold_Lib_Config.Alire_Host_Distro);
+
+      elsif Var_Name = "mold-build-profile" then
+         Var_Value :=
+           To_Unbounded_String
+             (Mold_Lib_Config.Build_Profile_Kind'Image
+                (Mold_Lib_Config.Build_Profile));
+
+      elsif Index (To_Unbounded_String (Var_Name), "mold-date-") = 1 then
+         Manage_Date_Variable
+           (Var_Name,
+            Var_Mold,
+            Var_Value,
+            Entity,
+            New_Text,
+            LIN,
+            COL,
+            Valid_Predefined_Var,
+            Success);
+
+      else
+         Manage_Undefined_Variable
+           (Name         => Name,
+            Var_Name     => Var_Name,
+            Var_Mold     => Var_Mold,
+            Entity       => Entity,
+            Is_Mandatory => True,
+            Is_Optional  => False,
+            New_Text     => New_Text,
+            LIN          => LIN,
+            COL          => COL,
+            Success      => Success);
+         Valid_Predefined_Var := False;
+      end if;
+   end Manage_Predefined_Variable;
 
    ---------------------------------
    -- Append_Filters_To_Variables --
@@ -334,19 +396,17 @@ package body Mold_Lib.Impl.Text is
             --  Whether the value of the variable is a variable itself or not
             --  (e.g. "{{ #foo/s }}" where "foo" is a variable)
 
-            Var_Is_Mold_Date : constant Boolean :=
-              Index
-                (Source  => To_Unbounded_String (Var_Name),
-                 Pattern => "mold-date-")
-              > 0;
-            --  Whether the variable is a date variable or not
+            Var_Is_Predefined : constant Boolean :=
+              Index (To_Unbounded_String (Var_Name), "mold-") > 0;
+            --  Whether the variable is a potentially predefined variable or
+            --  not
 
-            Valid_Date_Format : Boolean := True;
-            --  Whether the date format in a date variable is valid or not;
-            --  TRUE if the variables is not a date variable
+            Valid_Predefined_Var : Boolean := True;
+            --  Whether the predefined variable is valid or not, after
+            --  processing it
 
             Variable_Undefined : constant Boolean :=
-              (Var_Value = "") and then (not Var_Is_Mold_Date);
+              (Var_Value = "") and then (not Var_Is_Predefined);
             --  Whether the variable is undefined or not
 
             LIN : constant String := Line'Image;
@@ -373,7 +433,7 @@ package body Mold_Lib.Impl.Text is
             Log_Debug ("Filters     : '" & Filters & "'");
             Log_Debug ("Undefined   : " & Boolean'Image (Variable_Undefined));
             Log_Debug
-              ("Var_Is_Mold_Date : " & Boolean'Image (Var_Is_Mold_Date));
+              ("Var_Is_Predefined: " & Boolean'Image (Var_Is_Predefined));
 
             --  Append the text before the variable to the new text (if any)
             New_Text.Append (Pre_Text);
@@ -415,8 +475,8 @@ package body Mold_Lib.Impl.Text is
             end if;
 
             --  Manage date variables
-            if Var_Is_Mold_Date then
-               Manage_Date_Variable
+            if Var_Is_Predefined then
+               Manage_Predefined_Variable
                  (Var_Name,
                   Var_Mold,
                   Var_Value,
@@ -424,13 +484,13 @@ package body Mold_Lib.Impl.Text is
                   New_Text,
                   LIN,
                   COL,
-                  Valid_Date_Format,
+                  Valid_Predefined_Var,
                   Success);
             end if;
 
             --  If everything is fine, proceed with the variable replacement
             --  and filter application
-            if Success and then Valid_Date_Format then
+            if Success and then Valid_Predefined_Var then
                if Filters = "" then
                   Local_Inc_Result (Entity, Variables_Replaced);
                   New_Text.Append (Var_Value);

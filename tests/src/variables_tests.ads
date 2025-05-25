@@ -23,5 +23,6 @@ package Variables_Tests is
    procedure Test_Modal_Substitution (T : in out Test_Case'Class);
    procedure Test_Multiline (T : in out Test_Case'Class);
    procedure Test_Show_Variables (T : in out Test_Case'Class);
+   procedure Test_Predefined_Variables (T : in out Test_Case'Class);
 
 end Variables_Tests;

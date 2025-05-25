@@ -34,6 +34,8 @@ package body Variables_Tests is
         (T, Test_Modal_Substitution'Access, "Modal Substitution");
       Register_Routine (T, Test_Multiline'Access, "Multiline");
       Register_Routine (T, Test_Show_Variables'Access, "Show Variables");
+      Register_Routine
+        (T, Test_Predefined_Variables'Access, "Predefined Variables");
    end Register_Tests;
 
    procedure Test_Variables_Definition (T : in out Test_Case'Class) is
@@ -558,5 +560,65 @@ package body Variables_Tests is
       Check_Results
         (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
    end Test_Show_Variables;
+
+   -------------------------------
+   -- Test_Predefined_Variables --
+   -------------------------------
+
+   procedure Test_Predefined_Variables (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
+      Success  : Boolean;
+      Results  : aliased Mold.Results_Type;
+      Expected : aliased Mold.Results_Type;
+   begin
+
+      --  ----- valid predefined variables ------------------------------------
+      --!pp off
+      Success := Apply (
+         Source     => "suite/mold/predefined-vars.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Global_Settings,
+         Toml_File  => "suite/toml/empty.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed    => 1,
+         Variables_Defined  => 0,
+         Variables_Found    => 5,
+         Variables_Replaced => 5,
+         others             => 0
+      ];
+      --!pp on
+      Check_Results
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
+
+      --  Do not check the MD5 digest, as it is not deterministic (can vary
+      --  depending on the system arch and distro).
+
+      --  ----- invalid predefined variables ----------------------------------
+      --!pp off
+      Success := Apply (
+         Source     => "suite/mold/invalid-predefined-vars.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Global_Settings,
+         Toml_File  => "suite/toml/empty.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed     => 1,
+         Variables_Defined   => 0,
+         Variables_Found     => 1,
+         Variables_Undefined => 1,
+         Variables_Ignored   => 1,
+         others              => 0
+      ];
+      --!pp on
+      Check_Results
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
+
+      --  No need to check the MD5 digest.
+   end Test_Predefined_Variables;
 
 end Variables_Tests;
