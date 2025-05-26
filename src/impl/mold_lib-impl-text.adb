@@ -225,6 +225,18 @@ package body Mold_Lib.Impl.Text is
              (Mold_Lib_Config.Build_Profile_Kind'Image
                 (Mold_Lib_Config.Build_Profile));
 
+      elsif Var_Name = "mold-documentation" then
+         Var_Value := To_Unbounded_String (Mold_Lib.Impl.Mold_Documentation);
+
+      elsif Var_Name = "mold-copyright" then
+         Var_Value := To_Unbounded_String (Mold_Lib.Impl.Mold_Copyright);
+
+      elsif Var_Name = "mold-license" then
+         Var_Value := To_Unbounded_String (Mold_Lib.Impl.Mold_License);
+
+      elsif Var_Name = "mold-license-spdx" then
+         Var_Value := To_Unbounded_String (Mold_Lib.Impl.Mold_License_SPDX);
+
       elsif Index (To_Unbounded_String (Var_Name), "mold-date-") = 1 then
          Manage_Date_Variable
            (Var_Name,

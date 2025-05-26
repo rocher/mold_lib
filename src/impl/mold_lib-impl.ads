@@ -27,12 +27,21 @@ package Mold_Lib.Impl is
 
    --  MOLD CONSTANTS ---------------------------------------------------------
 
+   --!pp off
    Optional_Replacement_Prefix  : constant Character := '?';
    Mandatory_Replacement_Prefix : constant Character := '#';
    Mold_File_Extension          : constant String    := "mold";
    Inclusion_Prefix             : constant String    := "include:";
    Include_File_Extension       : constant String    := "molt";
    Defined_Setting_Prefix       : constant String    := "mold-";
+   Mold_Documentation           : constant String    :=
+     "https://rocher.github.io/mold";
+   Mold_Copyright               : constant String    :=
+     "Copyright (c) 2023-2025 Francesc Rocher";
+   Mold_License                 : constant String    := "MIT";
+   Mold_License_SPDX            : constant String    :=
+     "SPDX-License-Identifier: MIT";
+   --!pp on
 
    --  VARIABLES FOR DEFINED SETTINGS -----------------------------------------
 

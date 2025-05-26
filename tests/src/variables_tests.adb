@@ -603,8 +603,8 @@ package body Variables_Tests is
       Expected := [
          Files_Processed    => 1,
          Variables_Defined  => 0,
-         Variables_Found    => 5,
-         Variables_Replaced => 5,
+         Variables_Found    => 9,
+         Variables_Replaced => 9,
          others             => 0
       ];
       --!pp on
