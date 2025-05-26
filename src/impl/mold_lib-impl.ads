@@ -8,9 +8,10 @@
 
 with Ada.Calendar;
 with Ada.Containers.Doubly_Linked_Lists;
-with Ada.Containers.Hashed_Maps; use Ada.Containers;
+with Ada.Containers.Hashed_Maps;
+use Ada.Containers;
 with Ada.Directories;
-with Ada.Strings.Unbounded;      use Ada.Strings.Unbounded;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Strings.Unbounded.Hash;
 with Ada.Text_IO;
 with GNAT.Directory_Operations;
@@ -45,17 +46,21 @@ package Mold_Lib.Impl is
 
    --  VARIABLES FOR DEFINED SETTINGS -----------------------------------------
 
-   package Variables_Package is new Hashed_Maps
-     (Key_Type => Unbounded_String, Element_Type => Unbounded_String,
-      Hash => Ada.Strings.Unbounded.Hash, Equivalent_Keys => "=", "=" => "=");
+   package Variables_Package is new
+     Hashed_Maps
+       (Key_Type        => Unbounded_String,
+        Element_Type    => Unbounded_String,
+        Hash            => Ada.Strings.Unbounded.Hash,
+        Equivalent_Keys => "=",
+        "="             => "=");
 
    subtype Variables_Map is Variables_Package.Map;
    type Variables_Access is access all Variables_Map;
 
    --  TRACKING INCLUDED FILES ------------------------------------------------
 
-   package Inclusion_Package is new Doubly_Linked_Lists
-     (Unbounded_String, "=");
+   package Inclusion_Package is new
+     Doubly_Linked_Lists (Unbounded_String, "=");
 
    subtype Inclusion_List is Inclusion_Package.List;
    --  List of included files to avoid circular references.
@@ -101,16 +106,16 @@ package Mold_Lib.Impl is
    procedure Inc_Result (Field : Results_Fields; Amount : Natural := 1);
    --  Increment the Field in Args.Results with the Amount.
 
-   function Path (A, B : String) return String is
-     (A & GNAT.Directory_Operations.Dir_Separator & B);
+   function Path (A, B : String) return String
+   is (A & GNAT.Directory_Operations.Dir_Separator & B);
    --  Return the path obtained by the concatenation of the directory A and
    --  the file or directory B: in Unix systems, "A/B"
 
-   function Full_Path_Expanded (A : String; B : String := "") return String is
-     (Dir.Full_Name
-        (GNAT.Directory_Operations.Expand_Path
-           (GNAT.Directory_Operations.Format_Pathname
-              (A & GNAT.Directory_Operations.Dir_Separator & B))));
+   function Full_Path_Expanded (A : String; B : String := "") return String
+   is (Dir.Full_Name
+         (GNAT.Directory_Operations.Expand_Path
+            (GNAT.Directory_Operations.Format_Pathname
+               (A & GNAT.Directory_Operations.Dir_Separator & B))));
    --  Return the full path obtained by the concatenation of the directory A
    --  and then file or directory B, expanding environment variables: in Unix
    --  systems, "$HOME/A/B" --> "/home/user/<PATH_TO_A>/B". If B is the empty
