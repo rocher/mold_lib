@@ -7,7 +7,7 @@
 -------------------------------------------------------------------------------
 
 with Log_Exceptions; use Log_Exceptions;
-with Log_Wrapper; use Log_Wrapper;
+with Log_Wrapper;    use Log_Wrapper;
 with Mold_Lib.Impl.Text;
 with Mold_Lib.Impl.Variables;
 
@@ -23,8 +23,8 @@ package body Mold_Lib.Impl.File is
    function Replace_In_Filename (Name : String) return String is
       Matches     : Reg.Match_Array (0 .. 3);
       New_Name    : Unbounded_String := To_Unbounded_String ("");
-      Current     : Natural          := Name'First;
-      Has_Matches : Boolean          := False;
+      Current     : Natural := Name'First;
+      Has_Matches : Boolean := False;
    begin
       Log_Debug ("BEGIN Impl.File.Replace_In_Filename");
 
@@ -57,8 +57,9 @@ package body Mold_Lib.Impl.File is
             if Is_Undefined then
                New_Name.Append (Var_Mold);
                Log.Warning
-                 ("  Undefined variable " & Var_Name &
-                  " in file name substitution");
+                 ("  Undefined variable "
+                  & Var_Name
+                  & " in file name substitution");
                Inc_Result (Warnings);
             else
                New_Name.Append (Var_Value);
@@ -180,7 +181,9 @@ package body Mold_Lib.Impl.File is
                declare
                   New_Line : constant String :=
                     Impl.Text.Replace
-                      (Line, Impl.Text.text_line, Line_Number, "", Success);
+                      (Text   => Line,
+                       Entity => (Kind => Impl.Text.file, Line => Line_Number),
+                       Success => Success);
                begin
                   if not Success then
                      --  error logged in Impl.Text.Replace
@@ -207,7 +210,7 @@ package body Mold_Lib.Impl.File is
                   end if;
 
                   if Args.Included_Files.Contains
-                      (To_Unbounded_String (Inc_Path))
+                       (To_Unbounded_String (Inc_Path))
                   then
                      Log.Error ("Circular inclusion of file " & Inc_Path);
                      Success := False;
@@ -243,7 +246,7 @@ package body Mold_Lib.Impl.File is
    is
       Success : Boolean;
    begin
-      Args.Source         := Source;
+      Args.Source := Source;
       Args.Included_Files := Inclusion_Package.Empty_List;
 
       declare
@@ -260,15 +263,16 @@ package body Mold_Lib.Impl.File is
          --  "Replaced" file name: variable substitution in "preparation" file
          --  name, if enabled
          Repl_Filename : constant String :=
-           (if Args.Settings.Replacement_In_Filenames then
-              Replace_In_Filename (Prep_Filename)
+           (if Args.Settings.Replacement_In_Filenames
+            then Replace_In_Filename (Prep_Filename)
             else Prep_Filename);
 
          --  real output directory: the Output_Dir, if different from "", or
          --  the result directory after variable substitution, if enabled, in
          --  the path of the source file name
          Real_Out_Dir : constant String :=
-           (if Output_Dir.all'Length > 0 then Output_Dir.all
+           (if Output_Dir.all'Length > 0
+            then Output_Dir.all
             else Dir.Containing_Directory (Repl_Filename));
 
          --  destination file name: composition of the real output dir and the

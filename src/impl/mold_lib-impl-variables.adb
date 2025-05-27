@@ -191,7 +191,12 @@ package body Mold_Lib.Impl.Variables is
                  Get_Value (To_String (Cursor.Key));
                New_Value : constant String :=
                  Impl.Text.Replace
-                   (Value, Impl.Text.variable, Loops, Var_Name, Success);
+                   (Text    => Value,
+                    Entity  =>
+                      (Kind  => Impl.Text.variable,
+                       Name  => To_Unbounded_String (Var_Name),
+                       Loops => Loops),
+                    Success => Success);
             begin
                if not Success then
                   return False;

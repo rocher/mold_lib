@@ -28,7 +28,7 @@ package body Mold_Lib.Impl.Text is
    procedure Local_Inc_Result
      (Entity : Entity_Kind; Field : Results_Fields; Amount : Natural := 1) is
    begin
-      if Entity = text_line then
+      if Entity = file then
          Inc_Result (Field, Amount);
       end if;
    end Local_Inc_Result;
@@ -38,10 +38,9 @@ package body Mold_Lib.Impl.Text is
    -------------------------------
 
    procedure Manage_Undefined_Variable
-     (Name         : String;
+     (Entity       : Entity_Type;
       Var_Name     : String;
       Var_Mold     : String;
-      Entity       : Entity_Kind;
       Is_Mandatory : Boolean;
       Is_Optional  : Boolean;
       New_Text     : in out Unbounded_String;
@@ -53,7 +52,7 @@ package body Mold_Lib.Impl.Text is
         "Undefined variable '"
         & Var_Name
         & "' in "
-        & (if Entity = text_line
+        & (if Entity.Kind = file
            then
              "file "
              & Args.Source.all
@@ -61,24 +60,24 @@ package body Mold_Lib.Impl.Text is
              & LIN (LIN'First + 1 .. LIN'Last)
              & ":"
              & COL (COL'First + 1 .. COL'Last)
-           else "variable '" & Name & "'");
+           else "variable '" & To_String (Entity.Name) & "'");
    begin
-      Local_Inc_Result (Entity, Variables_Undefined);
+      Local_Inc_Result (Entity.Kind, Variables_Undefined);
       if Is_Mandatory then
-         Local_Inc_Result (Entity, Variables_Ignored);
+         Local_Inc_Result (Entity.Kind, Variables_Ignored);
          New_Text.Append (Var_Mold);
          Log.Error (Message);
          Success := False;
       elsif Is_Optional then
-         Local_Inc_Result (Entity, Variables_Emptied);
+         Local_Inc_Result (Entity.Kind, Variables_Emptied);
       else
          --  Is Normal
          if Args.Settings.On_Undefined = Ignore then
-            Local_Inc_Result (Entity, Variables_Ignored);
+            Local_Inc_Result (Entity.Kind, Variables_Ignored);
             New_Text.Append (Var_Mold);
          elsif Args.Settings.On_Undefined = Warning then
-            Local_Inc_Result (Entity, Variables_Emptied);
-            Local_Inc_Result (Entity, Warnings);
+            Local_Inc_Result (Entity.Kind, Variables_Emptied);
+            Local_Inc_Result (Entity.Kind, Warnings);
             Log.Warning (Message);
          elsif Args.Settings.On_Undefined = Error then
             Log.Error (Message);
@@ -92,10 +91,12 @@ package body Mold_Lib.Impl.Text is
    --------------------------
 
    procedure Manage_Date_Variable
-     (Var_Name             : String;
+     (Entity               : Entity_Type;
+      Var_Name             : String;
       Var_Mold             : String;
       Var_Value            : in out Unbounded_String;
-      Entity               : Entity_Kind;
+      Is_Mandatory         : Boolean;
+      Is_Optional          : Boolean;
       New_Text             : in out Unbounded_String;
       LIN                  : String;
       COL                  : String;
@@ -110,44 +111,6 @@ package body Mold_Lib.Impl.Text is
               Var_Name'Length));
 
       Format_Str : constant String := String (Format);
-
-      -------------------------
-      -- Manage_Format_Error --
-      -------------------------
-
-      procedure Manage_Format_Error (Result : String) is
-      begin
-         Valid_Predefined_Var := False;
-         if Args.Settings.On_Undefined = Ignore then
-            Local_Inc_Result (Entity, Variables_Ignored);
-            New_Text.Append (Var_Mold);
-         elsif Args.Settings.On_Undefined = Warning then
-            Local_Inc_Result (Entity, Variables_Emptied);
-            Local_Inc_Result (Entity, Warnings);
-            Log.Warning
-              ("Invalid date format '"
-               & String (Format)
-               & "' in "
-               & Args.Source.all
-               & ":"
-               & LIN (LIN'First + 1 .. LIN'Last)
-               & ":"
-               & COL (COL'First + 1 .. COL'Last));
-         else
-            Log.Error
-              ("Invalid date format '"
-               & String (Format)
-               & "' in "
-               & Args.Source.all
-               & ":"
-               & LIN (LIN'First + 1 .. LIN'Last)
-               & ":"
-               & COL (COL'First + 1 .. COL'Last));
-            Log.Error ("Result is " & Result);
-            Success := False;
-         end if;
-      end Manage_Format_Error;
-
    begin
       if Format_Str = "ISO_Time" then
          Var_Value :=
@@ -180,15 +143,37 @@ package body Mold_Lib.Impl.Text is
             if Format_Str /= Result then
                Var_Value := To_Unbounded_String (Result);
             else
-               Manage_Format_Error (Result);
+               Valid_Predefined_Var := False;
+               Manage_Undefined_Variable
+                 (Entity,
+                  Var_Name,
+                  Var_Mold,
+                  Is_Mandatory,
+                  Is_Optional,
+                  New_Text,
+                  LIN,
+                  COL,
+                  Success);
             end if;
          end;
       end if;
 
    exception
       when E : GNAT.Calendar.Time_IO.Picture_Error =>
-         Manage_Format_Error ("unknown");
-         Log_Exception (E);
+         Valid_Predefined_Var := False;
+         Manage_Undefined_Variable
+           (Entity,
+            Var_Name,
+            Var_Mold,
+            Is_Mandatory,
+            Is_Optional,
+            New_Text,
+            LIN,
+            COL,
+            Success);
+         if not Success then
+            Log_Exception (E);
+         end if;
          pragma Annotate (Xcov, Exempt_Off);
    end Manage_Date_Variable;
 
@@ -197,18 +182,43 @@ package body Mold_Lib.Impl.Text is
    --------------------------------
 
    procedure Manage_Predefined_Variable
-     (Var_Name             : String;
+     (Entity               : Entity_Type;
+      Var_Name             : String;
       Var_Mold             : String;
       Var_Value            : in out Unbounded_String;
-      Entity               : Entity_Kind;
+      Is_Mandatory         : Boolean;
+      Is_Optional          : Boolean;
       New_Text             : in out Unbounded_String;
       LIN                  : String;
       COL                  : String;
       Valid_Predefined_Var : in out Boolean;
-      Success              : in out Boolean) is
+      Success              : in out Boolean)
+   is
+
+      function Get_Boolean (Value : Boolean) return Unbounded_String
+      is (To_Unbounded_String (Boolean'Image (Value)));
+      --  Helper function to return the boolean value as a string
+      --  of a predefined setting.
+
    begin
-      if Var_Name = "mold-version" then
+      --  basic information
+
+      if Var_Name = "mold-documentation" then
+         Var_Value := To_Unbounded_String (Mold_Lib.Impl.Mold_Documentation);
+
+      elsif Var_Name = "mold-copyright" then
+         Var_Value := To_Unbounded_String (Mold_Lib.Impl.Mold_Copyright);
+
+      elsif Var_Name = "mold-license" then
+         Var_Value := To_Unbounded_String (Mold_Lib.Impl.Mold_License);
+
+      elsif Var_Name = "mold-license-spdx" then
+         Var_Value := To_Unbounded_String (Mold_Lib.Impl.Mold_License_SPDX);
+
+      elsif Var_Name = "mold-version" then
          Var_Value := To_Unbounded_String (Mold_Lib_Config.Crate_Version);
+
+      --  host and build information
 
       elsif Var_Name = "mold-host-os" then
          Var_Value := To_Unbounded_String (Mold_Lib_Config.Alire_Host_OS);
@@ -225,24 +235,38 @@ package body Mold_Lib.Impl.Text is
              (Mold_Lib_Config.Build_Profile_Kind'Image
                 (Mold_Lib_Config.Build_Profile));
 
-      elsif Var_Name = "mold-documentation" then
-         Var_Value := To_Unbounded_String (Mold_Lib.Impl.Mold_Documentation);
+      --  mold settings
 
-      elsif Var_Name = "mold-copyright" then
-         Var_Value := To_Unbounded_String (Mold_Lib.Impl.Mold_Copyright);
+      elsif Var_Name = "mold-replacement-in-filenames" then
+         Var_Value := Get_Boolean (Args.Settings.Replacement_In_Filenames);
 
-      elsif Var_Name = "mold-license" then
-         Var_Value := To_Unbounded_String (Mold_Lib.Impl.Mold_License);
+      elsif Var_Name = "mold-replacement-in-variables" then
+         Var_Value := Get_Boolean (Args.Settings.Replacement_In_Variables);
 
-      elsif Var_Name = "mold-license-spdx" then
-         Var_Value := To_Unbounded_String (Mold_Lib.Impl.Mold_License_SPDX);
+      elsif Var_Name = "mold-delete-source-files" then
+         Var_Value := Get_Boolean (Args.Settings.Delete_Source_Files);
+
+      elsif Var_Name = "mold-overwrite-destination-files" then
+         Var_Value := Get_Boolean (Args.Settings.Overwrite_Destination_Files);
+
+      elsif Var_Name = "mold-enable-defined-settings" then
+         Var_Value := Get_Boolean (Args.Settings.Enable_Defined_Settings);
+
+      elsif Var_Name = "mold-on-undefined" then
+         Var_Value :=
+           To_Unbounded_String
+             (On_Undefined_Handling'Image (Args.Settings.On_Undefined));
+
+      --  date/time variables
 
       elsif Index (To_Unbounded_String (Var_Name), "mold-date-") = 1 then
          Manage_Date_Variable
-           (Var_Name,
+           (Entity,
+            Var_Name,
             Var_Mold,
             Var_Value,
-            Entity,
+            Is_Mandatory,
+            Is_Optional,
             New_Text,
             LIN,
             COL,
@@ -250,93 +274,30 @@ package body Mold_Lib.Impl.Text is
             Success);
 
       else
-         Manage_Undefined_Variable
-           (Name         => Name,
-            Var_Name     => Var_Name,
-            Var_Mold     => Var_Mold,
-            Entity       => Entity,
-            Is_Mandatory => True,
-            Is_Optional  => False,
-            New_Text     => New_Text,
-            LIN          => LIN,
-            COL          => COL,
-            Success      => Success);
          Valid_Predefined_Var := False;
+         Manage_Undefined_Variable
+           (Entity,
+            Var_Name,
+            Var_Mold,
+            Is_Mandatory,
+            Is_Optional,
+            New_Text,
+            LIN,
+            COL,
+            Success);
       end if;
    end Manage_Predefined_Variable;
-
-   ---------------------------------
-   -- Append_Filters_To_Variables --
-   ---------------------------------
-
-   function Append_Filters_To_Variables
-     (Variables : String; Filters : String) return Unbounded_String
-   with Pre => Filters /= ""
-   is
-      Matches : Reg.Match_Array (0 .. 4);
-      Current : Natural := Variables'First;
-      Result  : Unbounded_String := To_Unbounded_String ("");
-   begin
-      loop
-         --  Loop over all matches of the regular expression in the Variables
-         --  and append the filters to the variables
-         Variable_Matcher.Match (Variables, Matches, Current);
-         exit when Matches (0) = Reg.No_Match;
-
-         declare
-            Pre_Text : constant String :=
-              Variables (Matches (1).First .. Matches (1).Last);
-            --  Text before the mold variable
-
-            Var_All_Name : constant String :=
-              Variables (Matches (3).First .. Matches (3).Last);
-            --  The whole name of the variable, including the prefix
-
-            Var_Filters : constant String :=
-              (if Matches (4).First > 0
-               then Variables (Matches (4).First .. Matches (4).Last)
-               else "");
-            --  The filter of the variable (if any),
-         begin
-            Result.Append
-              (
-               --  Text before the mold variable
-               Pre_Text
-               --  Opening brackets
-               & "{{"
-               --  Name of the variable, including the prefix
-               & Var_All_Name
-               --  Filters, if any, of the variable
-               & Var_Filters
-               --  Filter to be appended to the variable
-               & Filters
-               --  Closing brackets
-               & "}}");
-            Current := Matches (0).Last + 1;
-         end;
-      end loop;
-
-      --  Append the rest of the variables after the last match
-      Result.Append (Variables (Current .. Variables'Last));
-
-      return Result;
-   end Append_Filters_To_Variables;
 
    -------------
    -- Replace --
    -------------
 
-   --!pp off
-   function Replace (
-      Text    :     String;
-      Entity  :     Entity_Kind;
-      Line    :     Natural;
-      Name    :     String;
+   function Replace
+     (Text    : String;
+      Entity  : Entity_Type;
       Success : out Boolean;
-      Output  :     IO.File_Access := null  --  RFU
-   ) return String
-   --!pp on
-
+      Output  : IO.File_Access := null  --  RFU
+      ) return String
    is
       Matches     : Reg.Match_Array (0 .. 4);
       New_Text    : Unbounded_String := To_Unbounded_String ("");
@@ -352,7 +313,7 @@ package body Mold_Lib.Impl.Text is
          exit when Matches (0) = Reg.No_Match;
 
          Has_Matches := True;
-         Local_Inc_Result (Entity, Variables_Found);
+         Local_Inc_Result (Entity.Kind, Variables_Found);
 
          declare
             --  Set of local variables per matched pattern, according to the
@@ -421,7 +382,8 @@ package body Mold_Lib.Impl.Text is
               (Var_Value = "") and then (not Var_Is_Predefined);
             --  Whether the variable is undefined or not
 
-            LIN : constant String := Line'Image;
+            LIN : constant String :=
+              (if Entity.Kind = file then Entity.Line'Image else "");
             COL : constant String := Matches (2).First'Image;
             --  Line and column of the match in the text, used for error
             --  reporting
@@ -432,8 +394,12 @@ package body Mold_Lib.Impl.Text is
             Variable_Matcher.Match (To_String (Var_Value), Var_Value_Matches);
             Var_Value_Is_Variable := Var_Value_Matches (0) /= Reg.No_Match;
 
-            Log_Debug ("Entity      : " & Entity'Image);
-            Log_Debug ("LIN         : " & LIN'Image);
+            Log_Debug ("Entity Kind : " & Entity.Kind'Image);
+            if Entity.Kind = file then
+               Log_Debug ("LIN         : " & LIN'Image);
+            else
+               Log_Debug ("Var. Name   : " & To_String (Entity.Name));
+            end if;
             Log_Debug ("COL         : " & COL'Image);
             Log_Debug ("Pre_Text    : '" & Pre_Text & "'");
             Log_Debug ("Var_Mold    : '" & Var_Mold & "'");
@@ -442,6 +408,8 @@ package body Mold_Lib.Impl.Text is
             Log_Debug ("Var_Value   : '" & To_String (Var_Value) & "'");
             Log_Debug
               ("Is_Variable : " & Boolean'Image (Var_Value_Is_Variable));
+            Log_Debug ("Is_Mandatory: " & Boolean'Image (Is_Mandatory));
+            Log_Debug ("Is_Optional : " & Boolean'Image (Is_Optional));
             Log_Debug ("Filters     : '" & Filters & "'");
             Log_Debug ("Undefined   : " & Boolean'Image (Variable_Undefined));
             Log_Debug
@@ -452,10 +420,9 @@ package body Mold_Lib.Impl.Text is
 
             if Variable_Undefined then
                Manage_Undefined_Variable
-                 (Name,
+                 (Entity,
                   Var_Name,
                   Var_Mold,
-                  Entity,
                   Is_Mandatory,
                   Is_Optional,
                   New_Text,
@@ -469,18 +436,20 @@ package body Mold_Lib.Impl.Text is
             --  VARIABLE DEFINED
 
             --  Check for recursive or cyclic definitions
-            if Entity = variable and then Var_Name = Name then
-               if Line = 1 then
+            if Entity.Kind = variable and then Var_Name = Entity.Name then
+               if Entity.Loops = 1 then
                   --  Error: found recursive definition of variable
                   Log.Error
-                    ("Recursive definition of variable '" & Name & "'");
+                    ("Recursive definition of variable '"
+                     & To_String (Entity.Name)
+                     & "'");
                else
                   --  Error: found cyclic definition of variable
                   Log.Error
                     ("Cyclic definition (loop"
-                     & Line'Image
+                     & Entity.Loops'Image
                      & ") of variable '"
-                     & Name
+                     & To_String (Entity.Name)
                      & "'");
                end if;
                Success := False;
@@ -489,10 +458,12 @@ package body Mold_Lib.Impl.Text is
             --  Manage date variables
             if Var_Is_Predefined then
                Manage_Predefined_Variable
-                 (Var_Name,
+                 (Entity,
+                  Var_Name,
                   Var_Mold,
                   Var_Value,
-                  Entity,
+                  Is_Mandatory,
+                  Is_Optional,
                   New_Text,
                   LIN,
                   COL,
@@ -504,26 +475,16 @@ package body Mold_Lib.Impl.Text is
             --  and filter application
             if Success and then Valid_Predefined_Var then
                if Filters = "" then
-                  Local_Inc_Result (Entity, Variables_Replaced);
+                  Local_Inc_Result (Entity.Kind, Variables_Replaced);
                   New_Text.Append (Var_Value);
                elsif Var_Value_Is_Variable then
                   --  If the value is a variable, we do not apply the filters
                   --  to it, as it is expected to be replaced later. Instead,
                   --  append the variable value, including prefix and filters,
                   --  and keep the variable filters for later.
-                  declare
-                     Variable_String : constant Unbounded_String :=
-                       Append_Filters_To_Variables
-                         (To_String (Var_Value), Filters);
-                  begin
-                     Log_Debug
-                       ("Variable value is a variable, skipping filters in "
-                        & To_String (Var_Value));
-                     Log_Debug
-                       ("Appending variable value with filters: "
-                        & To_String (Variable_String));
-                     New_Text.Append (Variable_String);
-                  end;
+                  Log_Debug
+                    ("Skip variable substitution and filter application");
+                  New_Text.Append (Var_Value);
                else
                   Log_Debug ("Applying filters");
                   declare
@@ -535,11 +496,11 @@ package body Mold_Lib.Impl.Text is
                         --  Error: filter not found or error in filter
                         --  application
                         if Args.Settings.On_Undefined = Ignore then
-                           Local_Inc_Result (Entity, Variables_Ignored);
+                           Local_Inc_Result (Entity.Kind, Variables_Ignored);
                            New_Text.Append (Var_Mold);
                         elsif Args.Settings.On_Undefined = Warning then
-                           Local_Inc_Result (Entity, Variables_Emptied);
-                           Local_Inc_Result (Entity, Warnings);
+                           Local_Inc_Result (Entity.Kind, Variables_Emptied);
+                           Local_Inc_Result (Entity.Kind, Warnings);
                            Log.Warning
                              ("Invalid text filter '"
                               & Filters
@@ -563,7 +524,7 @@ package body Mold_Lib.Impl.Text is
                         end if;
                      else
                         New_Text.Append (Var_Filter_Applied);
-                        Local_Inc_Result (Entity, Variables_Replaced);
+                        Local_Inc_Result (Entity.Kind, Variables_Replaced);
                      end if;
                   end;
                end if;
