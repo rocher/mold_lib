@@ -24,5 +24,7 @@ package Variables_Tests is
    procedure Test_Multiline (T : in out Test_Case'Class);
    procedure Test_Show_Variables (T : in out Test_Case'Class);
    procedure Test_Predefined_Variables (T : in out Test_Case'Class);
+   procedure Test_Date_Formats (T : in out Test_Case'Class);
+   procedure Test_Invalid_Date_Formats (T : in out Test_Case'Class);
 
 end Variables_Tests;

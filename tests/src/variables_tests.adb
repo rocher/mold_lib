@@ -6,6 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
+with Log_Wrapper;
 with Mold_Lib; use Mold_Lib;
 with Support;  use Support;
 
@@ -38,6 +39,9 @@ package body Variables_Tests is
       Register_Routine (T, Test_Show_Variables'Access, "Show Variables");
       Register_Routine
         (T, Test_Predefined_Variables'Access, "Predefined Variables");
+      Register_Routine (T, Test_Date_Formats'Access, "Date Formats");
+      Register_Routine
+        (T, Test_Invalid_Date_Formats'Access, "Invalid Date Formats");
    end Register_Tests;
 
    procedure Test_Variables_Definition (T : in out Test_Case'Class) is
@@ -588,6 +592,7 @@ package body Variables_Tests is
       Success  : Boolean;
       Results  : aliased Mold.Results_Type;
       Expected : aliased Mold.Results_Type;
+      Settings : aliased Mold.Settings_Type := Global_Settings.all;
    begin
 
       --  ----- valid predefined variables ------------------------------------
@@ -601,11 +606,11 @@ package body Variables_Tests is
          Log_Level  => Log.Level
       );
       Expected := [
-         Files_Processed    => 1,
-         Variables_Defined  => 0,
-         Variables_Found    => 9,
-         Variables_Replaced => 9,
-         others             => 0
+         Files_Processed    =>  1,
+         Variables_Defined  =>  0,
+         Variables_Found    => 22,
+         Variables_Replaced => 22,
+         others             =>  0
       ];
       --!pp on
       Check_Results
@@ -616,10 +621,11 @@ package body Variables_Tests is
 
       --  ----- invalid predefined variables ----------------------------------
       --!pp off
+      Settings.On_Undefined := Mold.Ignore;
       Success := Apply (
          Source     => "suite/mold/invalid-predefined-vars.txt.mold",
          Output_Dir => "suite/tmp/",
-         Settings   => Global_Settings,
+         Settings   => Settings'Unchecked_Access,
          Toml_File  => "suite/toml/empty.toml",
          Results    => Results'Unchecked_Access,
          Log_Level  => Log.Level
@@ -627,16 +633,181 @@ package body Variables_Tests is
       Expected := [
          Files_Processed     => 1,
          Variables_Defined   => 0,
-         Variables_Found     => 1,
-         Variables_Undefined => 1,
-         Variables_Ignored   => 1,
+         Variables_Found     => 4,
+         Variables_Undefined => 4,
+         Variables_Ignored   => 4,
          others              => 0
       ];
       --!pp on
       Check_Results
-        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
 
-      --  No need to check the MD5 digest.
+      Check_MD5_Digest
+        ("suite/tmp/invalid-predefined-vars.txt",
+         "1d3ceb2c6a5600d3f1c71be014ce2b2e",
+         "202ab8a256c8e8beb8ee037e80ea8dc1");
+
+      --!pp off
+      Settings.On_Undefined := Mold.Warning;
+      Success := Apply (
+         Source     => "suite/mold/invalid-predefined-vars.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unchecked_Access,
+         Toml_File  => "suite/toml/empty.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed     => 1,
+         Files_Overwritten   => 1,
+         Variables_Defined   => 0,
+         Variables_Found     => 4,
+         Variables_Undefined => 4,
+         Variables_Ignored   => 0,
+         Variables_Emptied   => 4,
+         Warnings            => 4,
+         others              => 0
+      ];
+      --!pp on
+      Check_Results
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
+
+      Check_MD5_Digest
+        ("suite/tmp/invalid-predefined-vars.txt",
+         "bb4782dcbf7698092160ede9c20413d6",
+         "652c9ea5589800a43a13bbf417910b88");
+      Log_Wrapper.Log_Debug (Results'Image);
    end Test_Predefined_Variables;
+
+   -----------------------
+   -- Test_Date_Formats --
+   -----------------------
+
+   procedure Test_Date_Formats (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
+      Success  : Boolean;
+      Settings : Mold.Settings_Type := Global_Settings.all;
+      Results  : aliased Results_Type;
+      Expected : aliased Results_Type;
+   begin
+      --!pp off
+      Success := Apply (
+         Source     => "suite/mold/date-formats.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unrestricted_Access,
+         Toml_File  => "suite/toml/empty.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed    =>   1,
+         Variables_Defined  =>   0,
+         Variables_Found    =>  12,
+         Variables_Replaced =>  12,
+         others             =>  0
+      ];
+      --!pp on
+
+      Check_Results
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
+   end Test_Date_Formats;
+
+   -------------------------------
+   -- Test_Invalid_Date_Formats --
+   -------------------------------
+
+   procedure Test_Invalid_Date_Formats (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
+      Success  : Boolean;
+      Settings : Mold.Settings_Type := Global_Settings.all;
+      Results  : aliased Results_Type;
+      Expected : aliased Results_Type;
+   begin
+      Settings.On_Undefined := Ignore;
+      --!pp off
+      Success := Apply (
+         Source     => "suite/mold/invalid-date-formats.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unrestricted_Access,
+         Toml_File  => "suite/toml/empty.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed     =>  1,
+         Variables_Defined   =>  0,
+         Variables_Found     => 11,
+         Variables_Undefined => 11,
+         Variables_Replaced  =>  0,
+         Variables_Ignored   => 11,
+         Variables_Emptied   =>  0,
+         Warnings            =>  0,
+         others              =>  0
+      ];
+      --!pp on
+
+      Check_Results
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
+
+      --  Apply same test with 'Warning' handling
+
+      Settings.On_Undefined := Warning;
+      Settings.Overwrite_Destination_Files := True;
+      --!pp off
+      Success := Apply (
+         Source     => "suite/mold/invalid-date-formats.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unrestricted_Access,
+         Toml_File  => "suite/toml/empty.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed            =>  1,
+         Mold_Lib.Files_Overwritten =>  1,
+         Variables_Defined          =>  0,
+         Variables_Found            => 11,
+         Variables_Undefined        => 11,
+         Variables_Replaced         =>  0,
+         Variables_Ignored          =>  0,
+         Variables_Emptied          => 11,
+         Warnings                   => 11,
+         others                     =>  0
+      ];
+      --!pp on
+
+      Check_Results
+        (Success, True, Results'Unchecked_Access, Expected'Unchecked_Access);
+
+      --  Apply same test with 'Error' handling
+
+      Settings.On_Undefined := Error;
+      Settings.Overwrite_Destination_Files := True;
+      --!pp off
+      Success := Apply (
+         Source     => "suite/mold/invalid-date-formats.txt.mold",
+         Output_Dir => "suite/tmp/",
+         Settings   => Settings'Unrestricted_Access,
+         Toml_File  => "suite/toml/empty.toml",
+         Results    => Results'Unchecked_Access,
+         Log_Level  => Log.Level
+      );
+      Expected := [
+         Files_Processed            =>  1,
+         Mold_Lib.Files_Overwritten =>  1,
+         Variables_Defined          =>  0,
+         Variables_Found            =>  1,
+         Variables_Undefined        =>  1,
+         Variables_Replaced         =>  0,
+         Variables_Ignored          =>  0,
+         Variables_Emptied          =>  0,
+         Warnings                   =>  0,
+         others                     =>  0
+      ];
+      --!pp on
+
+      Check_Results
+        (Success, False, Results'Unchecked_Access, Expected'Unchecked_Access);
+   end Test_Invalid_Date_Formats;
 
 end Variables_Tests;
