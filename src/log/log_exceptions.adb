@@ -6,7 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
-with Simple_Logging;
+with Simple_Logging; use Simple_Logging;
 
 package body Log_Exceptions is
 
@@ -20,21 +20,24 @@ package body Log_Exceptions is
      (Occurrence : Exception_Occurrence;
       Message    : String := "";
       Location   : String := Source_Location;
-      Entity     : String := Enclosing_Entity) is
+      Entity     : String := Enclosing_Entity)
+   is
+      Exception_Text : constant String :=
+        (if Log.Level = Log.Debug
+         then ("(EXCEPTION " & Exception_Name (Occurrence) & "): ")
+         else "");
+      Location_Text  : constant String :=
+        (if Log.Level = Log.Debug
+         then ", in " & Location & " (" & Entity & ")"
+         else "");
    begin
       Log.Error
-        ("(EXCEPTION "
-         & Exception_Name (Occurrence)
-         & "): "
+        (Exception_Text
          & Message
          & (if Message /= "" then "," else "")
-         & " '"
          & Exception_Message (Occurrence)
-         & "', in "
-         & Location
-         & " ("
-         & Entity
-         & ")");
+         --  & " '"
+         & Location_Text);
    end Log_Exception;
 
 end Log_Exceptions;
