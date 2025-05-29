@@ -33,6 +33,21 @@ package body Mold_Lib.Impl.Text is
       end if;
    end Local_Inc_Result;
 
+   ----------------------------------
+   -- Var_Value_Contains_Variables --
+   ----------------------------------
+
+   function Var_Value_Contains_Variables
+     (Var_Value : Unbounded_String) return Boolean
+   is
+      Matches : Reg.Match_Array (0 .. 4);
+   begin
+      --  Check if the variable value contains one or more variables
+      --  e.g. "foo is {{ ?bar/s }}"
+      Variable_Matcher.Match (To_String (Var_Value), Matches);
+      return Matches (0) /= Reg.No_Match;
+   end Var_Value_Contains_Variables;
+
    -------------------------------
    -- Manage_Undefined_Variable --
    -------------------------------
@@ -364,11 +379,6 @@ package body Mold_Lib.Impl.Text is
             --  The value of the variable, e.g. "bar", or the empty string if
             --  the variable is not defined
 
-            Var_Value_Matches     : Reg.Match_Array (0 .. 4);
-            Var_Value_Is_Variable : Boolean;
-            --  Whether the value of the variable is a variable itself or not
-            --  (e.g. "{{ #foo/s }}" where "foo" is a variable)
-
             Var_Is_Predefined : constant Boolean :=
               Index (To_Unbounded_String (Var_Name), "mold-") > 0;
             --  Whether the variable is a potentially predefined variable or
@@ -389,11 +399,6 @@ package body Mold_Lib.Impl.Text is
             --  reporting
          begin
 
-            --  Check if the variable value is a variable itself
-            --  (e.g. "{{ #foo/s }}" where "foo" is a variable)
-            Variable_Matcher.Match (To_String (Var_Value), Var_Value_Matches);
-            Var_Value_Is_Variable := Var_Value_Matches (0) /= Reg.No_Match;
-
             Log_Debug ("Entity Kind : " & Entity.Kind'Image);
             if Entity.Kind = file then
                Log_Debug ("LIN         : " & LIN'Image);
@@ -406,8 +411,6 @@ package body Mold_Lib.Impl.Text is
             Log_Debug ("Var_All_Name: '" & Var_All_Name & "'");
             Log_Debug ("Var_Name    : '" & Var_Name & "'");
             Log_Debug ("Var_Value   : '" & To_String (Var_Value) & "'");
-            Log_Debug
-              ("Is_Variable : " & Boolean'Image (Var_Value_Is_Variable));
             Log_Debug ("Is_Mandatory: " & Boolean'Image (Is_Mandatory));
             Log_Debug ("Is_Optional : " & Boolean'Image (Is_Optional));
             Log_Debug ("Filters     : '" & Filters & "'");
@@ -477,14 +480,13 @@ package body Mold_Lib.Impl.Text is
                if Filters = "" then
                   Local_Inc_Result (Entity.Kind, Variables_Replaced);
                   New_Text.Append (Var_Value);
-               elsif Var_Value_Is_Variable then
-                  --  If the value is a variable, we do not apply the filters
-                  --  to it, as it is expected to be replaced later. Instead,
-                  --  append the variable value, including prefix and filters,
-                  --  and keep the variable filters for later.
+               elsif Var_Value_Contains_Variables (Var_Value) then
+                  --  If the value contains one or more variable, do not apply
+                  --  the filters to it, as it is expected that variables to
+                  --  be replaced later.
                   Log_Debug
                     ("Skip variable substitution and filter application");
-                  New_Text.Append (Var_Value);
+                  New_Text.Append (Var_Mold);
                else
                   Log_Debug ("Applying filters");
                   declare
